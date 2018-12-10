@@ -1,0 +1,151 @@
+html {
+    position: relative;
+    min-height: 100%;
+}
+
+body {
+    padding-top: 4.5rem;
+    margin-bottom: 84px;
+    font-family: monospace;
+}
+
+.category-header {
+    border-bottom: 1px solid #888;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.product-card {
+    border: 1px solid #999;
+    border-radius: 2px;
+    margin-top: 10px;
+}
+
+.product-card-name h3 {
+    font-size: 16px;
+    padding-left: 5px;
+    padding-right: 5px;
+    padding-top: 3px;
+    padding-bottom: 3px;
+    margin: 0;
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
+.product-card-name h3 a {
+    color: darkblue;
+}
+
+.product-card-price {
+    font-size: 16px;
+    padding-left: 5px;
+    padding-right: 5px;
+    padding-top: 3px;
+    padding-bottom: 3px;
+    font-weight: 700;
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+.product-card-description p {
+    padding-top: 0;
+    padding-bottom: 0;
+    padding-left: 5px;
+    padding-right: 5px;
+    margin: 0;
+    font-size: 12px;
+}
+
+footer {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 64px;
+    background-color: #343a40;
+    margin-top: 20px;
+    padding: 20px;
+}
+
+.footer-text {
+    color: #888;
+    font-size: 14px;
+}
+
+.footer-link {
+    color: #888;
+}
+
+.footer-link:hover {
+    color: #fff;
+}
+
+.aside-header {
+    border-bottom: 1px solid #888;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.aside-header p {
+    padding: 0;
+    margin-bottom: 22px;
+}
+
+.filter label {
+    font-size: 14px;
+}
+
+.filter-header p {
+    font-size: 12px;
+    margin-top: 20px;
+}
+
+/*cart*/
+
+.product-cart-header {
+    border-bottom: 1px solid #999;
+    text-align: center;
+    background-color: #bbb;
+}
+
+.product-cart-row {
+    background-color: #eee;
+}
+
+.product-cart-row:nth-child(2n+1) {
+    background-color: rgba(0, 0, 0, 0.15);
+}
+
+.product-cart-row:hover {
+    background-color: rgba(0, 0, 0, 0.25);
+}
+
+/* product detailed*/
+.product-detailed-name {
+    text-transform: uppercase;
+    font-weight: 700;
+}
+
+.product-detailed-price {
+    font-weight: 700;
+    font-size: 18px;
+}
+
+.ch-row-group {
+    background-color: rgba(0, 0, 0, 0.2);
+    padding: 5px;
+
+}
+
+.ch-row {
+    background-color: rgba(0, 0, 0, 0.1);
+    margin-left: 0;
+    margin-right: 0;
+    padding: 5px;
+}
+
+.ch-row:nth-child(2n+1) {
+    background-color: rgba(0, 0, 0, 0.15);
+}
+
+.ch-row:hover {
+    background-color: rgba(0, 0, 0, 0.25);
+}
