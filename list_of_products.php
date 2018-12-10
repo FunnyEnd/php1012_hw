@@ -10,7 +10,7 @@ return array(
     array(
         'id' => 1,
         'cat' => 1,
-        'name' => 'some product name',
+        'name' => 'asome product name',
         'price' => 135,
         'image-path' => 'сomponents/images/empty.jpg',
         'ch' => array(
@@ -32,7 +32,7 @@ return array(
     array(
         'id' => 2,
         'cat' => 1,
-        'name' => 'some product name',
+        'name' => 'csome product name',
         'price' => 135,
         'image-path' => 'сomponents/images/empty.jpg',
         'ch' => array(
@@ -54,7 +54,7 @@ return array(
     array(
         'id' => 3,
         'cat' => 1,
-        'name' => 'some product name',
+        'name' => 'bsome product name',
         'price' => 135,
         'image-path' => 'сomponents/images/empty.jpg',
         'ch' => array(

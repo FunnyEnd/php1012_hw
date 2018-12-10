@@ -31,8 +31,7 @@
   <h2>Popular</h2>
 </div>
 <div class="row">
-  <?php foreach ($products as $p):
-      if($p['cat'] == 1) :?>
+  <?php foreach ($cat_1_products as $p):?>
   <div class="col-3">
     <div class="product-card">
       <a href="index.php?page=product&id=<?php echo $p['id'];?>"><img class="d-block w-100" src="<?php echo $p['image-path'];?>" alt=""></a>
@@ -49,15 +48,14 @@
       </div>
     </div>
   </div>
-  <?php endif; endforeach; ?>
+  <?php endforeach; ?>
   </div>
 </div>
 <div class="category-header d-flex justify-content-center">
   <h2>Popular at category 1</h2>
 </div>
 <div class="row">
-    <?php foreach ($products as $p):
-        if($p['cat'] == 2) :?>
+    <?php foreach ($cat_2_products as $p):?>
           <div class="col-3">
             <div class="product-card">
               <a href="index.php?page=product&id=<?php echo $p['id'];?>"><img class="d-block w-100" src="<?php echo $p['image-path'];?>" alt=""></a>
@@ -74,14 +72,13 @@
               </div>
             </div>
           </div>
-        <?php endif; endforeach; ?>
+        <?php endforeach; ?>
 </div>
 <div class="category-header d-flex justify-content-center">
   <h2>Popular at category 2</h2>
 </div>
 <div class="row">
-    <?php foreach ($products as $p):
-        if($p['cat'] == 3) :?>
+    <?php foreach ($cat_3_products as $p):?>
           <div class="col-3">
             <div class="product-card">
               <a href="index.php?page=product&id=<?php echo $p['id'];?>"><img class="d-block w-100" src="<?php echo $p['image-path'];?>" alt=""></a>
@@ -98,6 +95,6 @@
               </div>
             </div>
           </div>
-        <?php endif; endforeach; ?>
+        <?php endforeach; ?>
 </div>
 <?php include 'footer.php';?>

@@ -34,8 +34,7 @@
             </ul>
         </div>
         <div class="row">
-            <?php foreach ($products as $p):
-                if($p['cat'] == $cur_cat['id']) :?>
+            <?php foreach ($cur_cat_products as $p):?>
                     <div class="col-4">
                         <div class="product-card">
                             <a href="index.php?page=product&id=<?php echo $p['id'];?>"><img class="d-block w-100" src="<?php echo $p['image-path'];?>" alt=""></a>
@@ -52,7 +51,7 @@
                             </div>
                         </div>
                     </div>
-                <?php endif; endforeach; ?>
+                <?php endforeach; ?>
 
         </div>
         <div class="mt-4 d-flex  justify-content-center">
