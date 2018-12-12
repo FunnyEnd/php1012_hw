@@ -1,17 +1,13 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: phpstudent
- * Date: 10.12.18
- * Time: 18:02
- */
+namespace App\Models;
 
-class CategoryRepository
+class Category
 {
     private $category;
 
-    public function __construct($category)
+    public function __construct()
     {
+        $category = include('list_of_category.php');
         $this->category = $category;
     }
 
