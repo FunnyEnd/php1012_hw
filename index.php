@@ -2,8 +2,6 @@
 
 namespace App;
 
-set_include_path("/home/NIX/phpstudent/www/php1012_hw");
-
 const SITE_ROOT = "http://mysite.loc/";
 const TEMPLATE_FOLDER = "Templates/";
 
