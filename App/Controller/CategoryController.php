@@ -15,8 +15,9 @@ class CategoryController
         $this->category = new Category();
     }
 
-    public function showCategory($id)
+    public function showCategory($getRequest)
     {
+        $id = $getRequest['id'];
         $cur_cat = $this->category->getById($id);
         $cur_cat_products = $this->product->getByCatId($id);
         $category = $this->category->getAll();

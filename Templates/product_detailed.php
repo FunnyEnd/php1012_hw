@@ -1,15 +1,15 @@
 <?php include 'header.php'; ?>
 <div>
     <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="<?php echo SITE_ROOT;?>у">Home</a></li>
-        <li class="breadcrumb-item"><a href="index.php?page=cat&id=<?php echo $cur_cat['id'];?>"><?php echo $cur_cat['name'];?></a></li>
+        <li class="breadcrumb-item"><a href="/">Home</a></li>
+        <li class="breadcrumb-item"><a href="/category/<?php echo $cur_cat['id'];?>"><?php echo $cur_cat['name'];?></a></li>
         <li class="breadcrumb-item active"><?php echo $cur_prod['name'];?></li>
     </ol>
 </div>
 <div class="row">
     <div class="col-7">
         <div class="product-detailed-image">
-            <img class="w-100" src="<?php echo $cur_prod['image-path'];?>" alt="">
+            <img class="w-100" src="/<?php echo $cur_prod['image-path'];?>" alt="">
         </div>
     </div>
     <div class="col-5 d-flex align-self-center flex-column bd-highlight text-center">

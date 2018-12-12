@@ -6,12 +6,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
         integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
-  <link rel="stylesheet" href="сomponents/styles/main.css">
+  <link rel="stylesheet" href="/Components/styles/main.css">
 </head>
 <body>
 <nav class="navbar navbar-expand-md fixed-top navbar-dark bg-dark main-nav">
   <div class="container">
-    <a class="navbar-brand" href="<?php echo SITE_ROOT;?>">OnlineShop.com</a>
+    <a class="navbar-brand" href="/">OnlineShop.com</a>
     <ul class="navbar-nav">
       <li class="nav-item">
         <div class="dropdown">
@@ -20,7 +20,7 @@
           </button>
           <div class="dropdown-menu">
             <?php foreach ($category as $c):?>
-            <a class="dropdown-item" href="index.php?page=cat&id=<?php echo $c['id'];?>"><?php echo $c['name'];?></a>
+            <a class="dropdown-item" href="/category/<?php echo $c['id'];?>"><?php echo $c['name'];?></a>
             <?php endforeach;?>
           </div>
         </div>

@@ -8,13 +8,13 @@
     </ol>
     <div class="carousel-inner">
       <div class="carousel-item active">
-        <img class="d-block w-100" src="сomponents/images/header1.png" alt="Первый слайд">
+        <img class="d-block w-100" src="/Components/images/header1.png" alt="Первый слайд">
       </div>
       <div class="carousel-item">
-        <img class="d-block w-100" src="сomponents/images/header1.png" alt="Второй слайд">
+        <img class="d-block w-100" src="/Components/images/header1.png" alt="Второй слайд">
       </div>
       <div class="carousel-item">
-        <img class="d-block w-100" src="сomponents/images/header1.png" alt="Третий слайд">
+        <img class="d-block w-100" src="/Components/images/header1.png" alt="Третий слайд">
       </div>
     </div>
     <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
@@ -34,9 +34,9 @@
   <?php foreach ($cat_1_products as $p):?>
   <div class="col-3">
     <div class="product-card">
-      <a href="index.php?page=product&id=<?php echo $p['id'];?>"><img class="d-block w-100" src="<?php echo $p['image-path'];?>" alt=""></a>
+      <a href="product/<?php echo $p['id'];?>"><img class="d-block w-100" src="/<?php echo $p['image-path'];?>" alt=""></a>
       <div class="product-card-name">
-        <h3><a href="index.php?page=product&id=<?php echo $p['id'];?>"><?php echo $p['name'];?></a></h3>
+        <h3><a href="product/<?php echo $p['id'];?>"><?php echo $p['name'];?></a></h3>
       </div>
       <div class="product-card-price text-danger">
         <span><?php echo $p['price'];?> UAH</span>
@@ -58,9 +58,9 @@
     <?php foreach ($cat_2_products as $p):?>
           <div class="col-3">
             <div class="product-card">
-              <a href="index.php?page=product&id=<?php echo $p['id'];?>"><img class="d-block w-100" src="<?php echo $p['image-path'];?>" alt=""></a>
+              <a href="product/<?php echo $p['id'];?>"><img class="d-block w-100" src="/<?php echo $p['image-path'];?>" alt=""></a>
               <div class="product-card-name">
-                <h3><a href="index.php?page=product&id=<?php echo $p['id'];?>"><?php echo $p['name'];?></a></h3>
+                <h3><a href="product/<?php echo $p['id'];?>"><?php echo $p['name'];?></a></h3>
               </div>
               <div class="product-card-price text-danger">
                 <span><?php echo $p['price'];?> UAH</span>
@@ -81,9 +81,9 @@
     <?php foreach ($cat_3_products as $p):?>
           <div class="col-3">
             <div class="product-card">
-              <a href="index.php?page=product&id=<?php echo $p['id'];?>"><img class="d-block w-100" src="<?php echo $p['image-path'];?>" alt=""></a>
+              <a href="product/<?php echo $p['id'];?>"><img class="d-block w-100" src="/<?php echo $p['image-path'];?>" alt=""></a>
               <div class="product-card-name">
-                <h3><a href="index.php?page=product&id=<?php echo $p['id'];?>"><?php echo $p['name'];?></a></h3>
+                <h3><a href="product/<?php echo $p['id'];?>"><?php echo $p['name'];?></a></h3>
               </div>
               <div class="product-card-price text-danger">
                 <span><?php echo $p['price'];?> UAH</span>

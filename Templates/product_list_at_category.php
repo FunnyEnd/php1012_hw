@@ -1,7 +1,7 @@
 <?php include 'header.php'; ?>
 <div>
     <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="<?php echo SITE_ROOT;?>">Home</a></li>
+        <li class="breadcrumb-item"><a href="/">Home</a></li>
         <li class="breadcrumb-item active"><?php echo $cur_cat['name'];?></li>
     </ol>
 </div>
@@ -37,9 +37,9 @@
             <?php foreach ($cur_cat_products as $p):?>
                     <div class="col-4">
                         <div class="product-card">
-                            <a href="index.php?page=product&id=<?php echo $p['id'];?>"><img class="d-block w-100" src="<?php echo $p['image-path'];?>" alt=""></a>
+                            <a href="/product/<?php echo $p['id'];?>"><img class="d-block w-100" src="/<?php echo $p['image-path'];?>" alt=""></a>
                             <div class="product-card-name">
-                                <h3><a href="index.php?page=product&id=<?php echo $p['id'];?>"><?php echo $p['name'];?></a></h3>
+                                <h3><a href="/product/<?php echo $p['id'];?>"><?php echo $p['name'];?></a></h3>
                             </div>
                             <div class="product-card-price text-danger">
                                 <span><?php echo $p['price'];?> UAH</span>

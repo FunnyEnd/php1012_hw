@@ -12,7 +12,7 @@ return array(
         'cat' => 1,
         'name' => 'asome product name',
         'price' => 135,
-        'image-path' => 'сomponents/images/empty.jpg',
+        'image-path' => 'Components/images/empty.jpg',
         'ch' => array(
             'group1' => array(
                 'Field 1' => 'data',
@@ -27,14 +27,15 @@ return array(
                 'Field 2' => 'data'
             ),
         ),
-        'description' => 'some description of product some description of product some description of product some description of product.'
+        'description' => 'some descrip
+        tion of product some description of product some description of product some description of product.'
         ),
     array(
         'id' => 2,
         'cat' => 1,
         'name' => 'csome product name',
         'price' => 135,
-        'image-path' => 'сomponents/images/empty.jpg',
+        'image-path' => 'Components/images/empty.jpg',
         'ch' => array(
             'group1' => array(
                 'Field 1' => 'data',
@@ -56,7 +57,7 @@ return array(
         'cat' => 1,
         'name' => 'bsome product name',
         'price' => 135,
-        'image-path' => 'сomponents/images/empty.jpg',
+        'image-path' => 'Components/images/empty.jpg',
         'ch' => array(
             'group1' => array(
                 'Field 1' => 'data',
@@ -78,7 +79,7 @@ return array(
         'cat' => 1,
         'name' => 'some product name',
         'price' => 135,
-        'image-path' => 'сomponents/images/empty.jpg',
+        'image-path' => 'Components/images/empty.jpg',
         'ch' => array(
             'group1' => array(
                 'Field 1' => 'data',
@@ -100,7 +101,7 @@ return array(
         'cat' => 2,
         'name' => 'some product name',
         'price' => 135,
-        'image-path' => 'сomponents/images/empty.jpg',
+        'image-path' => 'Components/images/empty.jpg',
         'ch' => array(
             'group1' => array(
                 'Field 1' => 'data',
@@ -122,7 +123,7 @@ return array(
         'cat' => 2,
         'name' => 'some product name',
         'price' => 135,
-        'image-path' => 'сomponents/images/empty.jpg',
+        'image-path' => 'Components/images/empty.jpg',
         'ch' => array(
             'group1' => array(
                 'Field 1' => 'data',
@@ -144,7 +145,7 @@ return array(
         'cat' => 2,
         'name' => 'some product name',
         'price' => 135,
-        'image-path' => 'сomponents/images/empty.jpg',
+        'image-path' => 'Components/images/empty.jpg',
         'ch' => array(
             'group1' => array(
                 'Field 1' => 'data',
@@ -166,7 +167,7 @@ return array(
         'cat' => 2,
         'name' => 'some product name',
         'price' => 135,
-        'image-path' => 'сomponents/images/empty.jpg',
+        'image-path' => 'Components/images/empty.jpg',
         'ch' => array(
             'group1' => array(
                 'Field 1' => 'data',
@@ -188,7 +189,7 @@ return array(
         'cat' => 3,
         'name' => 'some product name',
         'price' => 135,
-        'image-path' => 'сomponents/images/empty.jpg',
+        'image-path' => 'Components/images/empty.jpg',
         'ch' => array(
             'group1' => array(
                 'Field 1' => 'data',
@@ -210,7 +211,7 @@ return array(
         'cat' => 3,
         'name' => 'some product name',
         'price' => 135,
-        'image-path' => 'сomponents/images/empty.jpg',
+        'image-path' => 'Components/images/empty.jpg',
         'ch' => array(
             'group1' => array(
                 'Field 1' => 'data',
@@ -232,7 +233,7 @@ return array(
         'cat' => 3,
         'name' => 'some product name',
         'price' => 135,
-        'image-path' => 'сomponents/images/empty.jpg',
+        'image-path' => 'Components/images/empty.jpg',
         'ch' => array(
             'group1' => array(
                 'Field 1' => 'data',
@@ -254,7 +255,7 @@ return array(
         'cat' => 3,
         'name' => 'some product name',
         'price' => 135,
-        'image-path' => 'сomponents/images/empty.jpg',
+        'image-path' => 'Components/images/empty.jpg',
         'ch' => array(
             'group1' => array(
                 'Field 1' => 'data',
