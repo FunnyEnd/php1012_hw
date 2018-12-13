@@ -16,7 +16,7 @@ class HomeController
         $this->category = new Category();
     }
 
-    public function showHome()
+    public function showHome(): string
     {
         $category = $this->category->getAll();
         $cat_1_products = $this->product->getByCatId(1);
