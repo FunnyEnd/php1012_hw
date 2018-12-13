@@ -32,6 +32,4 @@ $routCollection->addRout(new Rout(
 
 if (!$routCollection->calCurrentRout()) {
     http_response_code(404);
-//    $requestURI = $_SERVER['REQUEST_URI'];
-//    echo "Page '$requestURI' not found!";
 }
