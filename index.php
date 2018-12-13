@@ -2,34 +2,19 @@
 
 namespace App;
 
-//const SITE_ROOT = "http://mysite.loc/";
-const TEMPLATE_FOLDER = "Templates/";
-
 spl_autoload_register(function ($class) {
     $includeClassName = str_replace('\\', '/', $class . ".php");
     require $includeClassName;
 });
 
 use App\Collection\RoutCollection;
-use App\Models\Rout;
 
-$routCollection = new RoutCollection();
+const TEMPLATE_FOLDER = "Templates/";
 
-$routCollection->addRout(new Rout(
-    "/",
-    'App\Controller\HomeController::showHome'
-));
+RoutCollection::init();
 
-$routCollection->addRout(new Rout(
-    "/product/#id",
-    'App\Controller\ProductController::showProduct'
-));
+require 'App/routes.php';
 
-$routCollection->addRout(new Rout(
-    "/category/#id",
-    'App\Controller\CategoryController::showCategory'
-));
-
-if (!$routCollection->calCurrentRout()) {
+if (!RoutCollection::calCurrentRout()) {
     http_response_code(404);
 }

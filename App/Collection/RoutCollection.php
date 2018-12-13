@@ -6,27 +6,34 @@ use App\Models\Rout;
 
 class RoutCollection
 {
-    private $routArray;
+    private static $routArray;
 
-    public function __construct()
+    public static function init()
     {
-        $this->routArray = array();
+        if (self::$routArray == null) {
+            self::$routArray = array();
+        }
     }
 
-    public function addRout(Rout $rout): void
+    public static function addRout(Rout $rout): void
     {
-        array_push($this->routArray, $rout);
+        if (self::$routArray == null)
+            self::init();
+
+        array_push(self::$routArray, $rout);
     }
 
-    public function calCurrentRout(): bool
+    public static function calCurrentRout(): bool
     {
-        foreach ($this->routArray as $rout) {
+        if (self::$routArray == null)
+            return false;
+
+        foreach (self::$routArray as $rout) {
             if ($rout->isEqCurRequest()) {
                 $rout->executeController();
                 return true;
             }
         }
-
         return false;
     }
 }
