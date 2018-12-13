@@ -27,8 +27,7 @@ return array(
                 'Field 2' => 'data'
             ),
         ),
-        'description' => 'some descrip
-        tion of product some description of product some description of product some description of product.'
+        'description' => 'some description of product some description of product some description of product some description of product.'
         ),
     array(
         'id' => 2,

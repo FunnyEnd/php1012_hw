@@ -6,21 +6,23 @@ class Product
 {
     private $products;
     private $acceptOrderBy;
+    private $productStock;
 
     public function __construct()
     {
-        $products = include('list_of_products.php');
+        $products = include('Data/list_of_products.php');
         $this->products = $products;
         $this->acceptOrderBy = array('name', 'price');
+        $this->productStock = new ProductStock();
     }
 
     private function sortByname($a, $b)
     {
         $al = strtolower($a['name']);
         $bl = strtolower($b['name']);
-        if ($al == $bl) {
+        if ($al == $bl)
             return 0;
-        }
+
         return ($al > $bl) ? +1 : -1;
     }
 
@@ -28,9 +30,9 @@ class Product
     {
         $al = floatval($a['price']);
         $bl = floatval($b['price']);
-        if ($al == $bl) {
+        if ($al == $bl)
             return 0;
-        }
+
         return ($al > $bl) ? +1 : -1;
     }
 
@@ -41,19 +43,20 @@ class Product
         if ($k === false)
             die("Product with index $id don`t exist!");
 
-        return $this->products[$k];
+        $product = $this->products[$k];
+        $product['count'] = $this->productStock->getProductCountAtStockById(intval($id));
+        return $product;
     }
 
     public function getByCatId($catId, $orderBy = 'name')
     {
         $res = array();
-
         foreach ($this->products as $p) {
-            if ($p['cat'] == $catId)
+            if ($p['cat'] == $catId) {
+                $p['count'] = $this->productStock->getProductCountAtStockById(intval($p['id']));
                 array_push($res, $p);
+            }
         }
-
-
         if (in_array($orderBy, $this->acceptOrderBy))
             usort($res, array("App\Models\Product", "sortBy$orderBy"));
 
