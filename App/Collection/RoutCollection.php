@@ -13,12 +13,12 @@ class RoutCollection
         $this->routArray = array();
     }
 
-    public function addRout(Rout $rout)
+    public function addRout(Rout $rout): void
     {
         array_push($this->routArray, $rout);
     }
 
-    public function calCurrentRout()
+    public function calCurrentRout(): bool
     {
         foreach ($this->routArray as $rout) {
             if ($rout->isEqCurRequest()) {

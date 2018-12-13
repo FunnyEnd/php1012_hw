@@ -7,25 +7,22 @@ class Rout
     private $pattern;
     private $controller;
 
-    public function __construct($pattern, $controller)
+    public function __construct(string $pattern, string $controller)
     {
         $this->pattern = $pattern;
         $this->controller = $controller;
     }
 
-    public function getPattern()
+    public function getPattern(): string
     {
         return $this->pattern;
     }
 
-    public function isEqCurRequest()
+    public function isEqCurRequest(): bool
     {
         $requestURI = $this->getRequestURI();
-
         $requestURIArray = explode('/', $requestURI);
-
         $patternArray = $this->patternToArray();
-
         if (count($patternArray) !== count($requestURIArray))
             return false;
 
@@ -37,13 +34,11 @@ class Rout
         }
 
         return true;
-
     }
 
-    public function executeController()
+    public function executeController(): void
     {
         $getData = $this->getDataFromRequest();
-
         $data = explode('::', $this->controller);
         $className = $data[0];
         $method = $data[1];
@@ -54,17 +49,14 @@ class Rout
             $controller->$method($getData);
     }
 
-    private function getDataFromRequest()
+    private function getDataFromRequest(): array
     {
         $requestURI = $this->getRequestURI();
-
         if (!$this->isEqCurRequest($requestURI))
-            return;
+            return array();
 
         $requestURIArray = explode('/', $requestURI);
-
         $patternArray = $this->patternToArray();
-
         $res = array();
 
         foreach ($patternArray as $key => $patternVal) {
@@ -77,12 +69,12 @@ class Rout
         return $res;
     }
 
-    private function patternToArray()
+    private function patternToArray(): array
     {
         return explode('/', $this->pattern);
     }
 
-    public function getRequestURI()
+    public function getRequestURI(): string
     {
         $requestURI = $_SERVER['REQUEST_URI'];
 
