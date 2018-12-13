@@ -36,9 +36,9 @@ class Product
         return ($al > $bl) ? +1 : -1;
     }
 
-    public function getById($id)
+    public function getById(int $id): array
     {
-        $k = array_search(intval($id), array_column($this->products, 'id'));
+        $k = array_search($id, array_column($this->products, 'id'));
 
         if ($k === false)
             die("Product with index $id don`t exist!");
@@ -48,7 +48,7 @@ class Product
         return $product;
     }
 
-    public function getByCatId($catId, $orderBy = 'name')
+    public function getByCatId(int $catId, string $orderBy = 'name'): array
     {
         $res = array();
         foreach ($this->products as $p) {
