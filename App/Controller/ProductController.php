@@ -16,7 +16,7 @@ class ProductController
         $this->category = new Category();
     }
 
-    public function showProduct($getRequest)
+    public function showProduct(array $getRequest): string
     {
         $id = $getRequest['id'];
         $cur_prod = $this->product->getById($id);
