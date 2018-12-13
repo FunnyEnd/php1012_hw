@@ -2,7 +2,7 @@
 
 namespace App;
 
-const SITE_ROOT = "http://mysite.loc/";
+//const SITE_ROOT = "http://mysite.loc/";
 const TEMPLATE_FOLDER = "Templates/";
 
 spl_autoload_register(function ($class) {
