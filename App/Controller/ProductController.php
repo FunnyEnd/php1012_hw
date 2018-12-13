@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Controller;
 
 use App\Models\Product;
@@ -15,13 +16,12 @@ class ProductController
         $this->category = new Category();
     }
 
-    public function showProduct($getRequest){
+    public function showProduct($getRequest)
+    {
         $id = $getRequest['id'];
-//        var_dump($id);
         $cur_prod = $this->product->getById($id);
-        $cur_cat = $this->product->getById($cur_prod['cat']);
+        $cur_cat = $this->category->getById($cur_prod['cat']);
         $category = $this->category->getAll();
         return include \App\TEMPLATE_FOLDER . "product_detailed.php";
-//        return "";
     }
 }

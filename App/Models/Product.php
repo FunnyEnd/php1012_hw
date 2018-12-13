@@ -44,7 +44,7 @@ class Product
             die("Product with index $id don`t exist!");
 
         $product = $this->products[$k];
-        $product['count'] = $this->productStock->getProductCountAtStockById(intval($id));
+        $product['count'] = $this->productStock->getProductCountAtStockById($id);
         return $product;
     }
 
@@ -53,7 +53,7 @@ class Product
         $res = array();
         foreach ($this->products as $p) {
             if ($p['cat'] == $catId) {
-                $p['count'] = $this->productStock->getProductCountAtStockById(intval($p['id']));
+                $p['count'] = $this->productStock->getProductCountAtStockById($p['id']);
                 array_push($res, $p);
             }
         }
