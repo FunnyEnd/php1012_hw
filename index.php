@@ -7,7 +7,4 @@ spl_autoload_register(function ($class) {
 });
 
 $application = new \Framework\ApplicationKernel\Application();
-
-$kernel = new \Framework\FrameworkKernel\Kernel();
-
-$kernel->loadApplication($application);
+$application->load();
