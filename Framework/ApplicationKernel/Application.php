@@ -8,12 +8,12 @@ class Application
 {
     // todo: change to singleton
 
-    public function initRoutes()
+    private function initRoutes()
     {
         require 'App/routes.php';
     }
 
-    public function initConfig()
+    private function initConfig()
     {
         foreach (glob("App/Config/*.config.php") as $filename) {
             include $filename;
