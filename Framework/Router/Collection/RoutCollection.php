@@ -25,8 +25,9 @@ class RoutCollection
 
     public static function calCurrentRout(): bool
     {
-        if (self::$routArray == null)
+        if (self::$routArray == null) {
             return false;
+        }
 
         foreach (self::$routArray as $rout) {
             if ($rout->isEqCurRequest()) {

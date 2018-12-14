@@ -12,12 +12,14 @@ class Category
     }
 
     public function getById($id){
-        $cat_index = array_search(intval($id), array_column($this->category, 'id'));
+        $k = array_search(intval($id), array_column($this->category, 'id'));
 
-        if($cat_index === false)
+        if($k === false) {
+            trigger_error('Category with index $id don`t exist!', E_USER_WARNING);
             die("Category with index $id don`t exist!");
+        }
 
-        return $this->category[$cat_index];
+        return $this->category[$k];
     }
 
     public function getAll(){

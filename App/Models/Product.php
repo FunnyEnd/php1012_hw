@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Extensions\ProductExtension;
+
 class Product
 {
     private $products;
@@ -40,8 +42,14 @@ class Product
     {
         $k = array_search($id, array_column($this->products, 'id'));
 
-        if ($k === false)
-            die("Product with index $id don`t exist!");
+//        if ($k === false) {
+//            trigger_error('Product with index $id don`t exist!', E_USER_ERROR);
+//            die("'Product with index $id don`t exist!");
+//        }
+
+        if ($k === false) {
+            throw new ProductExtension("Product with index $id don`t exist!");
+        }
 
         $product = $this->products[$k];
         $product['count'] = $this->productStock->getProductCountAtStockById($id);

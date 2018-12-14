@@ -3,6 +3,7 @@
 namespace Framework\ApplicationKernel;
 
 use Framework\Router\Collection\RoutCollection;
+use UnderflowException;
 
 class Application
 {
@@ -25,7 +26,8 @@ class Application
         $this->initRoutes();
 
         if (!RoutCollection::calCurrentRout()) {
-            http_response_code(404);
+            throw new UnderflowException("Rout don`t found.");
+//            http_response_code(404);
         }
     }
 }
