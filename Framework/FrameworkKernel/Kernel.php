@@ -10,6 +10,7 @@ class Kernel
     {
         $application->initConfig();
         $application->initRoutes();
+        
         if (!RoutCollection::calCurrentRout()) {
             http_response_code(404);
         }

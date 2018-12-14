@@ -4,6 +4,8 @@ namespace Framework\ApplicationKernel;
 
 class Application
 {
+    // todo: change to singleton
+
     public function initRoutes()
     {
         require 'App/routes.php';
@@ -11,6 +13,8 @@ class Application
 
     public function initConfig()
     {
-        include 'App/Config/templates.config.php';
+        foreach (glob("App/Config/*.config.php") as $filename) {
+            include $filename;
+        }
     }
 }
