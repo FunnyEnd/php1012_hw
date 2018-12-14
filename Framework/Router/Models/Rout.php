@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models;
+namespace Framework\Router\Models;
 
 class Rout
 {

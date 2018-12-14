@@ -23,6 +23,6 @@ class HomeController
         $cat_2_products = $this->product->getByCatId(2);
         $cat_3_products = $this->product->getByCatId(3);
 
-        return include \App\TEMPLATE_FOLDER . "home.php";
+        return include \App\Config\TEMPLATE_FOLDER . "home.php";
     }
 }

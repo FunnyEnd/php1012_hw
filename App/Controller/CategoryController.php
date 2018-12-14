@@ -22,6 +22,6 @@ class CategoryController
         $cur_cat = $this->category->getById($id);
         $cur_cat_products = $this->product->getByCatId($id);
         $category = $this->category->getAll();
-        return include \App\TEMPLATE_FOLDER . "product_list_at_category.php";
+        return include \App\Config\TEMPLATE_FOLDER . "product_list_at_category.php";
     }
 }

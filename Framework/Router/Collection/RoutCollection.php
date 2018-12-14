@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Collection;
+namespace Framework\Router\Collection;
 
-use App\Models\Rout;
+use Framework\Router\Models\Rout;
 
 class RoutCollection
 {
     private static $routArray;
 
-    public static function init()
+    private static function init()
     {
         if (self::$routArray == null) {
             self::$routArray = array();

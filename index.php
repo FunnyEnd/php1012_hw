@@ -1,20 +1,13 @@
 <?php
-
-namespace App;
-
 spl_autoload_register(function ($class) {
     $includeClassName = str_replace('\\', '/', $class . ".php");
-    require $includeClassName;
+    if (file_exists($includeClassName))
+        require $includeClassName;
+
 });
 
-use App\Collection\RoutCollection;
+$application = new \Framework\ApplicationKernel\Application();
 
-const TEMPLATE_FOLDER = "Templates/";
+$kernel = new \Framework\FrameworkKernel\Kernel();
 
-RoutCollection::init();
-
-require 'App/routes.php';
-
-if (!RoutCollection::calCurrentRout()) {
-    http_response_code(404);
-}
+$kernel->loadApplication($application);

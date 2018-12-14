@@ -1,7 +1,8 @@
 <?php
+namespace App;
 
-use App\Collection\RoutCollection;
-use App\Models\Rout;
+use Framework\Router\Collection\RoutCollection;
+use Framework\Router\Models\Rout;
 
 RoutCollection::addRout(new Rout(
     "/",
