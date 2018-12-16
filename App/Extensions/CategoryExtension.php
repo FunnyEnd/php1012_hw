@@ -4,7 +4,7 @@ namespace App\Extensions;
 
 use Exception;
 
-class ProductExtension extends Exception
+class CategoryExtension extends Exception
 {
   public function __construct($message, $code = 0, Exception $previous = null)
   {

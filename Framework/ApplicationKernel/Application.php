@@ -7,27 +7,28 @@ use UnderflowException;
 
 class Application
 {
-    // todo: change to singleton
+  // todo: change to singleton
 
-    private function initRoutes()
-    {
-        require 'App/routes.php';
+  private function initRoutes()
+  {
+    require 'App/routes.php';
+  }
+
+  private function initConfig()
+  {
+    foreach (glob("App/Config/*.config.php") as $filename) {
+      include $filename;
     }
+  }
 
-    private function initConfig()
-    {
-        foreach (glob("App/Config/*.config.php") as $filename) {
-            include $filename;
-        }
-    }
+  public function load()
+  {
+    $this->initConfig();
+    $this->initRoutes();
 
-    public function load(){
-        $this->initConfig();
-        $this->initRoutes();
-
-        if (!RoutCollection::calCurrentRout()) {
-            throw new UnderflowException("Rout don`t found.");
+    if (!RoutCollection::calCurrentRout()) {
+      throw new UnderflowException("Rout don`t found.");
 //            http_response_code(404);
-        }
     }
+  }
 }
