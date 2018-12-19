@@ -2,6 +2,7 @@
 
 namespace Framework\Router\Collection;
 
+use Framework\HTTP\Response;
 use Framework\Router\Models\Rout;
 
 class RoutCollection
@@ -31,7 +32,8 @@ class RoutCollection
 
         foreach (self::$routArray as $rout) {
             if ($rout->isEqCurRequest()) {
-                $rout->executeController();
+                $html = $rout->executeController();
+                Response::setContent($html);
                 return true;
             }
         }

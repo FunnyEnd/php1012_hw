@@ -28,7 +28,6 @@ class Application
 
     if (!RoutCollection::calCurrentRout()) {
       throw new UnderflowException("Rout don`t found.");
-//            http_response_code(404);
     }
   }
 }

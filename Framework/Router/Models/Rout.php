@@ -6,11 +6,15 @@ class Rout
 {
     private $pattern;
     private $controller;
+    private $requestClass;
+    private $method;
 
-    public function __construct(string $pattern, string $controller)
+    public function __construct(string $method, string $pattern, string $controller, string $requestClass = "")
     {
+        $this->method = $method;
         $this->pattern = $pattern;
         $this->controller = $controller;
+        $this->requestClass = $requestClass;
     }
 
     public function getPattern(): string
@@ -18,8 +22,24 @@ class Rout
         return $this->pattern;
     }
 
+    public function getCurrentMethod(){
+        $curMethod = 'get';
+
+        if (isset($_POST['__method'])) {
+            $curMethod = $_POST['__method'];
+        } else if (count($_POST) > 0) {
+            $curMethod = 'post';
+        }
+
+        return $curMethod;
+    }
+
     public function isEqCurRequest(): bool
     {
+        if ($this->method != $this->getCurrentMethod())
+            return false;
+
+
         $requestURI = $this->getRequestURI();
         $requestURIArray = explode('/', $requestURI);
         $patternArray = $this->patternToArray();
@@ -36,17 +56,29 @@ class Rout
         return true;
     }
 
-    public function executeController(): void
+    public function executeController(): string
     {
-        $getData = $this->getDataFromRequest();
+        $customRequest = null;
+
+        if (!empty($this->requestClass)) {
+            $requestClass = "App\\Request\\" . $this->requestClass;
+            $customRequest = new $requestClass();
+            $requestURI = $this->getRequestURI();
+            $customRequest->setGetData($this->getDataFromRequest($requestURI));
+
+            if (!$customRequest->valid())
+                header('Location: /');
+        }
+
+
         $data = explode('::', $this->controller);
         $className = $data[0];
         $method = $data[1];
         $controller = new $className();
-        if (count($getData) == 0)
-            $controller->$method();
+        if ($customRequest == null)
+            return $controller->$method();
         else
-            $controller->$method($getData);
+            return $controller->$method($customRequest);
     }
 
     private function getDataFromRequest(): array
