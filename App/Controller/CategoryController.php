@@ -2,41 +2,41 @@
 
 namespace App\Controller;
 
-use App\Models\Product;
-use App\Models\Category;
 use App\Request\CategoryShowRequest;
+use App\Services\CategoryService;
+use App\Services\ProductService;
 use Framework\HTTP\Response;
 use Framework\TemplateEngine\View;
 
 class CategoryController
 {
-    private $product;
-    private $category;
+    private $productService;
+    private $categoryService;
 
     public function __construct()
     {
-        $this->product = new Product();
-        $this->category = new Category();
+        $this->productService = new ProductService();
+        $this->categoryService = new CategoryService();
     }
 
     public function showCategory(CategoryShowRequest $request): string
     {
         $id = $request->get('id');
-        $cur_cat = $this->category->getById($id);
+        $currentCategory = $this->categoryService->findById($id);
 
-        if (empty($cur_cat)){
+        if (empty($currentCategory)) {
             Response::setResponseCode(404);
             // todo: page category don`t exist
             return View::render('404');
         }
 
-        $cur_cat_products = $this->product->getByCatId($id);
-        $category = $this->category->getAll();
+        $productsAtCurrentCategory = $this->productService->findByCategoryId($id);
+        $categoryList = $this->categoryService->findAll();
 
         return View::render('product_list_at_category', array(
-                'cur_cat' => $cur_cat,
-                'cur_cat_products' => $cur_cat_products,
-                'category' => $category
+                'cur_cat' => $currentCategory,
+                'cur_cat_products' => $productsAtCurrentCategory,
+                'category' => $categoryList
         ));
     }
 }

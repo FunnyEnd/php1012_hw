@@ -2,34 +2,33 @@
 
 namespace App\Controller;
 
-use App\Models\Product;
-use App\Models\Category;
+use App\Services\CategoryService;
+use App\Services\ProductService;
 use Framework\TemplateEngine\View;
 
 class HomeController
 {
-    private $product;
-    private $category;
+    private $productService;
+    private $categoryService;
 
     public function __construct()
     {
-        $this->product = new Product();
-        $this->category = new Category();
+        $this->productService = new ProductService();
+        $this->categoryService = new CategoryService();
     }
 
     public function showHome(): string
     {
-
-        $category = $this->category->getAll();
-        $cat_1_products = $this->product->getByCatId(1);
-        $cat_2_products = $this->product->getByCatId(2);
-        $cat_3_products = $this->product->getByCatId(3);
+        $category = $this->categoryService->findAll();
+        $catFirstProducts = $this->productService->findByCategoryId(1);
+        $catSecondProducts = $this->productService->findByCategoryId(2);
+        $catThirdProducts = $this->productService->findByCategoryId(3);
 
         return View::render('home', array(
                 'category' => $category,
-                'cat_1_products' => $cat_1_products,
-                'cat_2_products' => $cat_2_products,
-                'cat_3_products' => $cat_3_products
+                'cat_1_products' => $catFirstProducts,
+                'cat_2_products' => $catSecondProducts,
+                'cat_3_products' => $catThirdProducts
         ));
     }
 }

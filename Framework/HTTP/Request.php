@@ -4,7 +4,7 @@ namespace Framework\HTTP;
 
 use InvalidArgumentException;
 
-class Request implements RequestInterface
+class Request
 {
 
     protected $getData = array();
@@ -46,7 +46,7 @@ class Request implements RequestInterface
      */
     public function get(string $param): string
     {
-        if(isset($this->getData[$param]))
+        if (isset($this->getData[$param]))
             return $this->getData[$param];
         else
             throw new InvalidArgumentException("Invalid get argument.");
@@ -59,7 +59,7 @@ class Request implements RequestInterface
      */
     public function post(string $param)
     {
-        if(isset($this->postData[$param]))
+        if (isset($this->postData[$param]))
             return $this->postData[$param];
         else
             throw new InvalidArgumentException("Invalid get argument.");
@@ -72,7 +72,7 @@ class Request implements RequestInterface
      */
     public function delete(string $param)
     {
-        if(isset($this->deleteData[$param]))
+        if (isset($this->deleteData[$param]))
             return $this->deleteData[$param];
         else
             throw new InvalidArgumentException("Invalid get argument.");
@@ -85,7 +85,7 @@ class Request implements RequestInterface
      */
     public function update(string $param)
     {
-        if(isset($this->updateData[$param]))
+        if (isset($this->updateData[$param]))
             return $this->updateData[$param];
         else
             throw new InvalidArgumentException("Invalid get argument.");
@@ -100,4 +100,27 @@ class Request implements RequestInterface
         return true;
     }
 
+    public static function getRequestURI(): string
+    {
+        $requestURI = $_SERVER['REQUEST_URI'];
+        if (strlen($requestURI) > 1 && (ord($requestURI[strlen($requestURI) - 1]) === ord('/')))
+            $requestURI = substr($requestURI, 0, strlen($requestURI) - 1);
+        return $requestURI;
+    }
+
+    public static function getRequestURIArray(): array
+    {
+        return explode('/', self::getRequestURI());
+    }
+
+    public static function getCurrentMethod(): string
+    {
+        $curMethod = 'get';
+        if (isset($_POST['__method'])) {
+            $curMethod = $_POST['__method'];
+        } else if (count($_POST) > 0) {
+            $curMethod = 'post';
+        }
+        return $curMethod;
+    }
 }

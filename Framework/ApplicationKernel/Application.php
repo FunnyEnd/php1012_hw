@@ -2,32 +2,32 @@
 
 namespace Framework\ApplicationKernel;
 
-use Framework\Router\Collection\RoutCollection;
+use Framework\Router\RoutCollection;
 use UnderflowException;
 
 class Application
 {
-  // todo: change to singleton
+    // todo: change to singleton
 
-  private function initRoutes()
-  {
-    require 'App/routes.php';
-  }
-
-  private function initConfig()
-  {
-    foreach (glob("App/Config/*.config.php") as $filename) {
-      include $filename;
+    private function initRoutes()
+    {
+        require 'App/routes.php';
     }
-  }
 
-  public function load()
-  {
-    $this->initConfig();
-    $this->initRoutes();
-
-    if (!RoutCollection::calCurrentRout()) {
-      throw new UnderflowException("Rout don`t found.");
+    private function initConfig()
+    {
+        foreach (glob("App/Config/*.config.php") as $filename) {
+            include $filename;
+        }
     }
-  }
+
+    public function load()
+    {
+        $this->initConfig();
+        $this->initRoutes();
+
+        if (!RoutCollection::calCurrentRout()) {
+            throw new UnderflowException("Rout don`t found.");
+        }
+    }
 }

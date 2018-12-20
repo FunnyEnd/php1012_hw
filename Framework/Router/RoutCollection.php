@@ -1,9 +1,8 @@
 <?php
 
-namespace Framework\Router\Collection;
+namespace Framework\Router;
 
 use Framework\HTTP\Response;
-use Framework\Router\Models\Rout;
 
 class RoutCollection
 {

@@ -2,27 +2,27 @@
 
 namespace App\Controller;
 
-use App\Models\Product;
-use App\Models\Category;
 use App\Request\ProductShowRequest;
+use App\Services\CategoryService;
+use App\Services\ProductService;
 use Framework\HTTP\Response;
 use Framework\TemplateEngine\View;
 
 class ProductController
 {
-    private $product;
-    private $category;
+    private $productService;
+    private $categoryService;
 
     function __construct()
     {
-        $this->product = new Product();
-        $this->category = new Category();
+        $this->productService = new ProductService();
+        $this->categoryService = new CategoryService();
     }
 
     public function showProduct(ProductShowRequest $request): string
     {
         $id = $request->get("id");
-        $cur_prod = $this->product->getById($id);
+        $cur_prod = $this->productService->findById($id);
 
         if(empty($cur_prod)){
             Response::setResponseCode(404);
@@ -30,7 +30,7 @@ class ProductController
             return View::render('404');
         }
 
-        $cur_cat = $this->category->getById($cur_prod['cat']);
+        $cur_cat = $this->categoryService->findById($cur_prod['cat']);
 
         if(empty($cur_cat)){
             Response::setResponseCode(404);
@@ -38,7 +38,7 @@ class ProductController
             return View::render('404');
         }
 
-        $category = $this->category->getAll();
+        $category = $this->categoryService->findAll();
 
         return View::render('product_detailed', array(
                 'cur_cat' => $cur_cat,
