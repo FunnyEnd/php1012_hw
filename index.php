@@ -1,6 +1,6 @@
 <?php
 spl_autoload_register(function ($class) {
-    $includeClassName = str_replace('\\', '/', $class . ".php");
+    $includeClassName = str_replace('\\', DIRECTORY_SEPARATOR, $class . ".php");
     if (file_exists($includeClassName))
         require $includeClassName;
 });

@@ -11,12 +11,12 @@ class Application
 
     private function initRoutes()
     {
-        require 'App/routes.php';
+        require 'src/routes.php';
     }
 
     private function initConfig()
     {
-        foreach (glob("App/Config/*.config.php") as $filename) {
+        foreach (glob("src/Config/*.config.php") as $filename) {
             include $filename;
         }
     }
