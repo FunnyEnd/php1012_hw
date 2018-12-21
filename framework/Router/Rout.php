@@ -3,6 +3,8 @@
 namespace Framework\Router;
 
 use Framework\HTTP\Request;
+use Framework\Logger\FileLogger;
+use Framework\Logger\Log;
 use http\Exception\UnexpectedValueException;
 use ReflectionClass;
 
@@ -11,12 +13,16 @@ class Rout
     private $pattern;
     private $controller;
     private $method;
+    private $logger;
 
     public function __construct(string $method, string $pattern, string $controller)
     {
         $this->method = $method;
         $this->pattern = $pattern;
         $this->controller = $controller;
+
+        $fileLogger = new FileLogger();
+        $this->logger = new Log($fileLogger);
     }
 
     public function getPattern(): string
@@ -60,7 +66,7 @@ class Rout
             $className = $controllerData['class'];
             $method = $controllerData['method'];
             $controller = new $className();
-            if(!method_exists($controller, $method))
+            if (!method_exists($controller, $method))
                 throw new UnexpectedValueException('Invalid method name.');
 
             $customRequest = null;
@@ -86,10 +92,10 @@ class Rout
                 return $controller->$method($customRequest);
 
         } catch (\ReflectionException $e) {
-            var_dump($e->getMessage());
+            $this->logger->error($e->getMessage());
             die();
-        } catch (UnexpectedValueException $uve){
-            var_dump($uve->getMessage());
+        } catch (UnexpectedValueException $uve) {
+            $this->logger->error($uve->getMessage());
             die();
         }
     }
@@ -112,6 +118,4 @@ class Rout
     {
         return explode('/', $this->pattern);
     }
-
-
 }

@@ -1,22 +1,19 @@
 <?php
 
-namespace Framework;
+namespace Framework\Logger;
 
 
 class Log
 {
-    private static $logFile;
+    private $logger;
 
-
-
-    public static function init(string $logFile): void
+    /**
+     * Log constructor.
+     * @param LoggerInterface $logger
+     */
+    public function __construct(LoggerInterface $logger)
     {
-        self::$logFile = $logFile;
-    }
-
-    private static function logToFile(): void
-    {
-
+        $this->logger = $logger;
     }
 
     /**
@@ -26,8 +23,9 @@ class Log
      * @param array $context
      * @return void
      */
-    public static function emergency(string $message, array $context = array()): void
+    public function emergency(string $message, array $context = array()): void
     {
+        $this->logger->emergency($message, $context);
     }
 
     /**
@@ -40,8 +38,9 @@ class Log
      * @param array $context
      * @return void
      */
-    public static function alert(string $message, array $context = array()): void
+    public function alert(string $message, array $context = array()): void
     {
+        $this->logger->alert($message, $context);
     }
 
     /**
@@ -53,8 +52,9 @@ class Log
      * @param array $context
      * @return void
      */
-    public static function critical(string $message, array $context = array()): void
+    public function critical(string $message, array $context = array()): void
     {
+        $this->logger->critical($message, $context);
     }
 
     /**
@@ -65,8 +65,9 @@ class Log
      * @param array $context
      * @return void
      */
-    public static function error(string $message, array $context = array()): void
+    public function error(string $message, array $context = array()): void
     {
+        $this->logger->error($message, $context);
     }
 
     /**
@@ -79,8 +80,9 @@ class Log
      * @param array $context
      * @return void
      */
-    public static function warning(string $message, array $context = array()): void
+    public function warning(string $message, array $context = array()): void
     {
+        $this->logger->warning($message, $context);
     }
 
     /**
@@ -90,8 +92,9 @@ class Log
      * @param array $context
      * @return void
      */
-    public static function notice(string $message, array $context = array()): void
+    public function notice(string $message, array $context = array()): void
     {
+        $this->logger->notice($message, $context);
     }
 
     /**
@@ -103,8 +106,9 @@ class Log
      * @param array $context
      * @return void
      */
-    public static function info(string $message, array $context = array()): void
+    public function info(string $message, array $context = array()): void
     {
+        $this->logger->info($message, $context);
     }
 
     /**
@@ -114,8 +118,9 @@ class Log
      * @param array $context
      * @return void
      */
-    public static function debug(string $message, array $context = array()): void
+    public function debug(string $message, array $context = array()): void
     {
+        $this->logger->debug($message, $context);
     }
 
     /**
@@ -126,7 +131,8 @@ class Log
      * @param array $context
      * @return void
      */
-    public static function log(string $level, $message, array $context = array()): void
+    public function log(string $level, string $message, array $context = array()): void
     {
+        $this->logger->log($level, $message, $context);
     }
 }

@@ -2,7 +2,7 @@
 
 namespace Framework\Router;
 
-use Framework\HTTP\Response;
+use UnderflowException;
 
 class RoutCollection
 {
@@ -23,19 +23,25 @@ class RoutCollection
         array_push(self::$routArray, $rout);
     }
 
-    public static function calCurrentRout(): bool
+    public static function calCurrentRout(): string
     {
         if (self::$routArray == null) {
             return false;
         }
 
+        $success = false;
+        $html = "";
         foreach (self::$routArray as $rout) {
             if ($rout->isEqCurRequest()) {
                 $html = $rout->executeController();
-                Response::setContent($html);
-                return true;
+                $success = true;
             }
         }
-        return false;
+
+        if($success){
+            return $html;
+        } else {
+            throw new UnderflowException("Rout don`t found.");
+        }
     }
 }

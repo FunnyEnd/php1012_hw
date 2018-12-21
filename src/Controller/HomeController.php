@@ -19,13 +19,13 @@ class HomeController
 
     public function showHome(): string
     {
-        $category = $this->categoryService->findAll();
+        $categoryList = $this->categoryService->findAll();
         $catFirstProducts = $this->productService->findByCategoryId(1);
         $catSecondProducts = $this->productService->findByCategoryId(2);
         $catThirdProducts = $this->productService->findByCategoryId(3);
 
         return View::render('home', array(
-                'category' => $category,
+                'category' => $categoryList,
                 'cat_1_products' => $catFirstProducts,
                 'cat_2_products' => $catSecondProducts,
                 'cat_3_products' => $catThirdProducts

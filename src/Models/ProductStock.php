@@ -8,7 +8,7 @@ class ProductStock
 
   public function __construct()
   {
-    $productAtStock = require('Data/list_of_product_at_stock.php');
+    $productAtStock = require('data/list_of_product_at_stock.php');
     $this->productAtStock = $productAtStock;
   }
 

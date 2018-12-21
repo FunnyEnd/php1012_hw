@@ -8,7 +8,7 @@ class Category
 
     public function __construct()
     {
-        $category = include('Data/list_of_category.php');
+        $category = include('data/list_of_category.php');
         $this->category = $category;
     }
 

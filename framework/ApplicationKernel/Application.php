@@ -2,32 +2,37 @@
 
 namespace Framework\ApplicationKernel;
 
+use Framework\Config;
+use Framework\Logger\FileLogger;
+use Framework\Logger\Log;
 use Framework\Router\RoutCollection;
 use UnderflowException;
 
 class Application
 {
-    // todo: change to singleton
+    private $logger;
+
+    public function __construct()
+    {
+        $this->initRoutes();
+
+        $fileLogger = new FileLogger();
+        $this->logger = new Log($fileLogger);
+
+        Config::init();
+    }
 
     private function initRoutes()
     {
         require 'src/routes.php';
     }
 
-    private function initConfig()
+    public function execute(): string
     {
-        foreach (glob("src/Config/*.config.php") as $filename) {
-            include $filename;
-        }
-    }
-
-    public function load()
-    {
-        $this->initConfig();
-        $this->initRoutes();
-
-        if (!RoutCollection::calCurrentRout()) {
-            throw new UnderflowException("Rout don`t found.");
+        try {
+            return RoutCollection::calCurrentRout();
+        } catch (UnderflowException $ue) {
+            $this->logger->error($ue->getMessage());
         }
     }
 }

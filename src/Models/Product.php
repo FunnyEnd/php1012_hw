@@ -12,7 +12,7 @@ class Product
 
     public function __construct()
     {
-        $products = include('Data/list_of_products.php');
+        $products = include('data/list_of_products.php');
         $this->products = $products;
         $this->acceptOrderBy = array('name', 'price');
         $this->productStock = new ProductStock();
