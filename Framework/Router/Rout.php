@@ -3,6 +3,7 @@
 namespace Framework\Router;
 
 use Framework\HTTP\Request;
+use http\Exception\UnexpectedValueException;
 use ReflectionClass;
 
 class Rout
@@ -55,10 +56,13 @@ class Rout
     public function executeController(): string
     {
         try {
-
             $controllerData = $this->getControllerData();
             $className = $controllerData['class'];
             $method = $controllerData['method'];
+            $controller = new $className();
+            if(!method_exists($controller, $method))
+                throw new UnexpectedValueException('Invalid method name.');
+
             $customRequest = null;
             $reflectorRequest = new ReflectionClass($className);
             $reflectorMethodParam = $reflectorRequest->getMethod($method)->getParameters();
@@ -74,8 +78,8 @@ class Rout
                 if (!$customRequest->valid())
                     header('Location: /');
             }
+            // TODO: rewrite to call_user_func_array()
 
-            $controller = new $className();
             if ($customRequest == null)
                 return $controller->$method();
             else
@@ -83,6 +87,9 @@ class Rout
 
         } catch (\ReflectionException $e) {
             var_dump($e->getMessage());
+            die();
+        } catch (UnexpectedValueException $uve){
+            var_dump($uve->getMessage());
             die();
         }
     }

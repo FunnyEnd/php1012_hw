@@ -115,6 +115,8 @@ class Request
 
     public static function getCurrentMethod(): string
     {
+        // TODO: rewrite to $_SERVER['REQUEST_METHOD']
+
         $curMethod = 'get';
         if (isset($_POST['__method'])) {
             $curMethod = $_POST['__method'];
