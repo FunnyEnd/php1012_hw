@@ -1,0 +1,20 @@
+{
+  "name": "phpstudent/mysite",
+  "description": "shop",
+  "type": "project",
+  "authors": [
+    {
+      "name": "FunnyEnd",
+      "email": "kornienko_aa@yahoo.com"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "App\\": "src/",
+      "Framework\\": "framework/"
+    }
+  },
+  "require": {
+    "zaine/zaine": "^1.0"
+  }
+}

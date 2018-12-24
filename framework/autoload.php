@@ -3,7 +3,7 @@
 /* Framework loader*/
 spl_autoload_register(function (string $class) {
 
-    preg_match("/^(([A-Z]{1}[a-z0-9]*)+[\\\]{1})+([A-Z]{1}[a-z0-9]*)+$/", $class, $match);
+    preg_match("/^(([A-Z]{1}[a-z0-9]*)+\\\{1})+([A-Z]{1}[a-z0-9]*)+$/", $class, $match);
     if( count($match) == 0){
         return;
     }
@@ -21,30 +21,4 @@ spl_autoload_register(function (string $class) {
     if (file_exists($fullClassPath)) {
         require_once $fullClassPath;
     }
-});
-
-set_exception_handler(function (Throwable $e) {
-    $errorTime = date("H:i:m");
-    $backtrace = $e->getTraceAsString();
-    $res = "[$errorTime] Uncaught exception. " . $e->getMessage() . $backtrace . "\n";
-    $fileLogger = new \Framework\Logger\FileLogger();
-    $log = new \Framework\Logger\Log($fileLogger);
-    $log->error($res);
-});
-
-set_error_handler(function ($errorType, $errorText, $errfile, $errline) {
-    $errorTime = date("H:i:m");
-    $backtrace = debug_backtrace();
-    $backtraceStr = "";
-    foreach ($backtrace as $b) {
-        if ($b['function'] == '{closure}')
-            continue;
-
-        $backtraceStr .= $b['file'] . " at line " . $b['line'] . ". Call function " . $b['function'] . "(); \n";
-    }
-    $res = "[$errorTime] {$errorType}. $errorText $errfile at line $errline \n$backtraceStr \n";
-
-    $fileLogger = new \Framework\Logger\FileLogger();
-    $log = new \Framework\Logger\Log($fileLogger);
-    $log->error($res);
 });
