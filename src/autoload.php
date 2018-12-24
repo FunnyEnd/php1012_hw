@@ -1,6 +1,12 @@
 <?php
 // TODO: camelCase
 spl_autoload_register(function (string $class) {
+
+    preg_match("/^(([A-Z]{1}[a-z0-9]*)+[\\\]{1})+([A-Z]{1}[a-z0-9]*)+$/", $class, $match);
+    if( count($match) == 0){
+        return;
+    }
+
     $appPrefix = "App\\";
     $baseDir = BASE_PATH . "/src/";
 
