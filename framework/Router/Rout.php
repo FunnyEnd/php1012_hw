@@ -21,8 +21,7 @@ class Rout
         $this->pattern = $pattern;
         $this->controller = $controller;
 
-        $fileLogger = new FileLogger();
-        $this->logger = new Log($fileLogger);
+        $this->logger = new \Zaine\Log("Framework\Router");
     }
 
     public function getPattern(): string
@@ -59,44 +58,32 @@ class Rout
         return true;
     }
 
-    public function executeController(): string
+    public function executeController(Request $request): string
     {
         try {
             $controllerData = $this->getControllerData();
+
             $className = $controllerData['class'];
             $method = $controllerData['method'];
+
             $controller = new $className();
+
             if (!method_exists($controller, $method))
-                throw new UnexpectedValueException('Invalid method name.');
+                throw new \UnexpectedValueException("Oh, method $method() don`t exit at $className. Rename method name or create new method $className->$method()");
 
-            $customRequest = null;
-            $reflectorRequest = new ReflectionClass($className);
-            $reflectorMethodParam = $reflectorRequest->getMethod($method)->getParameters();
-            $paramMethodArray = array();
-            foreach ($reflectorMethodParam as $p)
-                array_push($paramMethodArray, $p->getClass()->name);
+            $reflectorMethodParam = (new \ReflectionClass($className))->getMethod($method)->getParameters();
 
-            if (count($paramMethodArray) != 0) {
-                $requestClass = $paramMethodArray[0];
-                $customRequest = new $requestClass();
-                $customRequest->setGetData($this->getDataFromRequest());
-
-                if (!$customRequest->valid())
-                    header('Location: /');
-            }
-            // TODO: rewrite to call_user_func_array()
-
-            if ($customRequest == null)
+            if (count($reflectorMethodParam) != 0) {
+                // TODO: rewrite to call_user_func_array()
+                $request->setGetData($this->getDataFromRequest());
+                return $controller->$method($request);
+            } else {
                 return $controller->$method();
-            else
-                return $controller->$method($customRequest);
-
+            }
         } catch (\ReflectionException $e) {
             $this->logger->error($e->getMessage());
-            die();
-        } catch (UnexpectedValueException $uve) {
+        } catch (\UnexpectedValueException $uve) {
             $this->logger->error($uve->getMessage());
-            die();
         }
     }
 

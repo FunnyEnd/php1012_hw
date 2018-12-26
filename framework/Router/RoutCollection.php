@@ -2,6 +2,7 @@
 
 namespace Framework\Router;
 
+use Framework\HTTP\Request;
 use UnderflowException;
 
 class RoutCollection
@@ -23,17 +24,16 @@ class RoutCollection
         array_push(self::$routArray, $rout);
     }
 
-    public static function calCurrentRout(): string
+    public static function calCurrentRout(Request $request): string
     {
         if (self::$routArray == null) {
             return false;
         }
-
         $success = false;
         $html = "";
         foreach (self::$routArray as $rout) {
             if ($rout->isEqCurRequest()) {
-                $html = $rout->executeController();
+                $html = $rout->executeController($request);
                 $success = true;
             }
         }

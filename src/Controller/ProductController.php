@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Request\ProductShowRequest;
 use App\Services\CategoryService;
 use App\Services\ProductService;
+use Framework\HTTP\Request;
 use Framework\HTTP\Response;
 use Framework\TemplateEngine\View;
 
@@ -19,7 +20,7 @@ class ProductController
         $this->categoryService = new CategoryService();
     }
 
-    public function showProduct(ProductShowRequest $request): string
+    public function showProduct(Request $request): string
     {
         $id = $request->get("id");
         $cur_prod = $this->productService->findById($id);

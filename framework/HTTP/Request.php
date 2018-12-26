@@ -12,8 +12,9 @@ class Request
     protected $updateData = array();
     protected $deleteData = array();
 
+    private static $instance = null;
 
-    public function __construct()
+    private function __construct()
     {
         if (isset($_POST['__method'])) {
             switch ($_POST['__method']) {
@@ -34,6 +35,18 @@ class Request
         }
     }
 
+    private function __clone() {}
+
+    public static function getInstance()
+    {
+        if (null === self::$instance)
+        {
+            self::$instance = new self();
+        }
+        return self::$instance;
+    }
+
+    // TODO: rewrite this
     public function setGetData(array $param): void
     {
         $this->getData = $param;
@@ -89,15 +102,6 @@ class Request
             return $this->updateData[$param];
         else
             throw new InvalidArgumentException("Invalid get argument.");
-    }
-
-    /**
-     * Valid input data.
-     * @return bool
-     */
-    public function valid(): bool
-    {
-        return true;
     }
 
     public static function getRequestURI(): string

@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Request\CategoryShowRequest;
 use App\Services\CategoryService;
 use App\Services\ProductService;
+use Framework\HTTP\Request;
 use Framework\HTTP\Response;
 use Framework\TemplateEngine\View;
 
@@ -19,7 +20,7 @@ class CategoryController
         $this->categoryService = new CategoryService();
     }
 
-    public function showCategory(CategoryShowRequest $request): string
+    public function showCategory(Request $request): string
     {
         $id = $request->get('id');
         $currentCategory = $this->categoryService->findById($id);

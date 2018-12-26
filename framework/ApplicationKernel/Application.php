@@ -27,10 +27,10 @@ class Application
         require 'src/routes.php';
     }
 
-    public function execute(): string
+    public function execute($request): string
     {
         try {
-            return RoutCollection::calCurrentRout();
+            return RoutCollection::calCurrentRout($request);
         } catch (UnderflowException $ue) {
             $this->logger->error($ue->getMessage());
         }
