@@ -6,7 +6,7 @@ use Framework\Exception\ViewExtension;
 
 class View
 {
-    private const PATH = "view/";
+    private const PATH = "src/View/";
 
     public static function render(string $string, array $data = array()): string
     {
