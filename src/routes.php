@@ -5,6 +5,7 @@ namespace App;
 use Framework\Router\RoutCollection;
 use Framework\Router\Rout;
 
+// :d - digit
 RoutCollection::addRout(new Rout(
         "get",
         "/",
@@ -13,12 +14,14 @@ RoutCollection::addRout(new Rout(
 
 RoutCollection::addRout(new Rout(
         "get",
-        "/product/#id",
-        "App\Controller\ProductController::showProduct"
+        "/product/:d",
+        "App\Controller\ProductController::showProduct",
+        ['id']
 ));
 
 RoutCollection::addRout(new Rout(
         "get",
-        "/category/#id",
-        "App\Controller\CategoryController::showCategory"
+        "/category/:d",
+        "App\Controller\CategoryController::showCategory",
+        ['id']
 ));

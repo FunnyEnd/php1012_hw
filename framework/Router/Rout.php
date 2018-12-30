@@ -7,6 +7,7 @@ use Framework\Logger\FileLogger;
 use Framework\Logger\Log;
 use http\Exception\UnexpectedValueException;
 use ReflectionClass;
+use ReflectionException;
 
 class Rout
 {
@@ -14,19 +15,53 @@ class Rout
     private $controller;
     private $method;
     private $logger;
+    private $controllerParam;
 
-    public function __construct(string $method, string $pattern, string $controller)
+    public function __construct(string $method, string $pattern, string $controller, array $controllerParam = array())
     {
         $this->method = $method;
         $this->pattern = $pattern;
         $this->controller = $controller;
-
+        $this->controllerParam = $controllerParam;
         $this->logger = new \Zaine\Log("Framework\Router");
     }
 
-    public function getPattern(): string
+    public function isEqCurRequest(): bool
     {
-        return $this->pattern;
+        if ($this->method != Request::getCurrentMethod())
+            return false;
+
+        $requestURI = Request::getRequestURI();
+        $reg = $this->convertToPreg($this->pattern);
+        return (preg_match($reg, $requestURI) == 0) ? false : true;
+    }
+
+    public function executeController(Request $request): string
+    {
+        try {
+            $controllerInfo = $this->getControllerData();
+            $reflector = new ReflectionClass($controllerInfo['class']);
+            // if method don`t exit at controller
+            if (!$reflector->hasMethod($controllerInfo['method'])) {
+                throw new UnexpectedValueException(
+                        "Oh, method {$controllerInfo['method']}" .
+                        " don`t exit at {$controllerInfo['class']}.");
+            }
+            $param = array();
+            // if exist request param at controller method
+            if (count($reflector->getMethod($controllerInfo['method'])->getParameters()) != 0) {
+                $request->setGetData($this->getDataFromRequest());
+                $param[] = $request;
+            }
+            return call_user_func_array(
+                    array($reflector->newInstance(), $controllerInfo['method']),
+                    $param
+            );
+        } catch (ReflectionException $e) {
+            $this->logger->error($e->getMessage());
+        } catch (UnexpectedValueException $uve) {
+            $this->logger->error($uve->getMessage());
+        }
     }
 
     private function getControllerData(): array
@@ -38,71 +73,42 @@ class Rout
         );
     }
 
-    public function isEqCurRequest(): bool
+    private function convertToPreg(string $pattern): string
     {
-        if ($this->method != Request::getCurrentMethod())
-            return false;
+        $search = array();
+        $replacements = array();
 
-        $requestURI = Request::getRequestURI();
-        $requestURIArray = explode('/', $requestURI);
-        $patternArray = $this->patternToArray();
-        if (count($patternArray) !== count($requestURIArray))
-            return false;
+        $search[] = '/:d/';
+        $replacements[] = '([[:digit:]]+)';
 
-        foreach ($patternArray as $key => $patternVal) {
-            if ($patternVal != '' && (ord($patternVal[0]) != ord('#'))) {
-                if ($requestURIArray[$key] != $patternVal)
-                    return false;
-            }
-        }
-        return true;
-    }
+        $search[] = '/\\//';
+        $replacements[] = '\\/';
 
-    public function executeController(Request $request): string
-    {
-        try {
-            $controllerData = $this->getControllerData();
-
-            $className = $controllerData['class'];
-            $method = $controllerData['method'];
-
-            $controller = new $className();
-
-            if (!method_exists($controller, $method))
-                throw new \UnexpectedValueException("Oh, method $method() don`t exit at $className. Rename method name or create new method $className->$method()");
-
-            $reflectorMethodParam = (new \ReflectionClass($className))->getMethod($method)->getParameters();
-
-            if (count($reflectorMethodParam) != 0) {
-                // TODO: rewrite to call_user_func_array()
-                $request->setGetData($this->getDataFromRequest());
-                return $controller->$method($request);
-            } else {
-                return $controller->$method();
-            }
-        } catch (\ReflectionException $e) {
-            $this->logger->error($e->getMessage());
-        } catch (\UnexpectedValueException $uve) {
-            $this->logger->error($uve->getMessage());
-        }
+        return "/^" . preg_replace($search, $replacements, $pattern) . "$/";
     }
 
     private function getDataFromRequest(): array
     {
-        $requestURIArray = Request::getRequestURIArray();
-        $patternArray = $this->patternToArray();
-        $res = array();
-        foreach ($patternArray as $key => $patternVal) {
-            if ($patternVal != '' && (ord($patternVal[0]) == ord('#'))) {
-                $resKey = substr($patternVal, 1, strlen($patternVal));
-                $res[$resKey] = $requestURIArray[$key];
-            }
+        $requestURI = Request::getRequestURI();
+        $reg = $this->convertToPreg($this->pattern);
+        if (preg_match($reg, $requestURI, $matches) != 0) {
+            if (count($matches) == 1)
+                return array();
         }
-        return $res;
+        unset($matches[0]);
+        sort($matches);
+        return $this->arrayMergeDataAndKey($matches, $this->controllerParam);
     }
 
-    private function patternToArray(): array
+    private function arrayMergeDataAndKey(array $dataArray, array $keyArray): array
     {
-        return explode('/', $this->pattern);
+        $result = array();
+        if (count($dataArray) != count($keyArray))
+            throw new \InvalidArgumentException("dataArray and keyArray has different count");
+
+        foreach ($dataArray as $key => $item)
+            $result[$keyArray[$key]] = $item;
+
+        return $result;
     }
 }
