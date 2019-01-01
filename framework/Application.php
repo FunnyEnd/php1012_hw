@@ -1,36 +1,32 @@
 <?php
 
-namespace Framework\ApplicationKernel;
+namespace Framework;
 
-use Framework\Config;
-use Framework\Logger\FileLogger;
-use Framework\Logger\Log;
-use Framework\Router\RoutCollection;
+use Framework\Routing\Router;
 use UnderflowException;
+use Zaine\Log;
 
 class Application
 {
+    private const SRC_ROUTING_FILE = 'src/routes.php';
     private $logger;
 
     public function __construct()
     {
         $this->initRoutes();
-
-        $fileLogger = new FileLogger();
-        $this->logger = new Log($fileLogger);
-
+        $this->logger = new Log("APP");
         Config::init();
     }
 
     private function initRoutes()
     {
-        require 'src/routes.php';
+        require self::SRC_ROUTING_FILE;
     }
 
     public function execute($request): string
     {
         try {
-            return RoutCollection::calCurrentRout($request);
+            return Router::goToCurrentRoute($request);
         } catch (UnderflowException $ue) {
             $this->logger->error($ue->getMessage());
         }

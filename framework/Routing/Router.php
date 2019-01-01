@@ -1,11 +1,11 @@
 <?php
 
-namespace Framework\Router;
+namespace Framework\Routing;
 
 use Framework\HTTP\Request;
 use UnderflowException;
 
-class RoutCollection
+class Router
 {
     private static $routArray;
 
@@ -16,7 +16,7 @@ class RoutCollection
         }
     }
 
-    public static function addRout(Rout $rout): void
+    public static function addRout(Route $rout): void
     {
         if (self::$routArray == null)
             self::init();
@@ -24,7 +24,7 @@ class RoutCollection
         array_push(self::$routArray, $rout);
     }
 
-    public static function calCurrentRout(Request $request): string
+    public static function goToCurrentRoute(Request $request): string
     {
         if (self::$routArray == null) {
             return false;

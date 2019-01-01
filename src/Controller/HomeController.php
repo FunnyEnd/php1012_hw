@@ -5,7 +5,7 @@ namespace App\Controller;
 use App\Services\CategoryService;
 use App\Services\ProductService;
 use Framework\BaseController;
-use Framework\TemplateEngine\View;
+use Framework\View;
 
 class HomeController extends BaseController
 {

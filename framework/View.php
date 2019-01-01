@@ -1,6 +1,6 @@
 <?php
 
-namespace Framework\TemplateEngine;
+namespace Framework;
 
 use Framework\Exception\ViewExtension;
 

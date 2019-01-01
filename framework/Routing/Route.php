@@ -1,6 +1,6 @@
 <?php
 
-namespace Framework\Router;
+namespace Framework\Routing;
 
 use Framework\HTTP\Request;
 use InvalidArgumentException;
@@ -8,7 +8,7 @@ use UnexpectedValueException;
 use ReflectionClass;
 use ReflectionException;
 
-class Rout
+class Route
 {
     private $pattern;
     private $controller;

@@ -2,24 +2,24 @@
 
 namespace App;
 
-use Framework\Router\RoutCollection;
-use Framework\Router\Rout;
+use Framework\Routing\Router;
+use Framework\Routing\Route;
 
 // :d - digit
-RoutCollection::addRout(new Rout(
+Router::addRout(new Route(
         "get",
         "/",
         'App\Controller\HomeController::showHome'
 ));
 
-RoutCollection::addRout(new Rout(
+Router::addRout(new Route(
         "get",
         "/product/:d",
         "App\Controller\ProductController::showProduct",
         ['id']
 ));
 
-RoutCollection::addRout(new Rout(
+Router::addRout(new Route(
         "get",
         "/category/:d",
         "App\Controller\CategoryController::showCategory",

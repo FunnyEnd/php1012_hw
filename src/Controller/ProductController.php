@@ -2,13 +2,12 @@
 
 namespace App\Controller;
 
-use App\Request\ProductShowRequest;
 use App\Services\CategoryService;
 use App\Services\ProductService;
 use Framework\BaseController;
 use Framework\HTTP\Request;
 use Framework\HTTP\Response;
-use Framework\TemplateEngine\View;
+use Framework\View;
 
 class ProductController extends BaseController
 {

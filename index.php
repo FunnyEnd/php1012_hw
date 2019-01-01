@@ -29,6 +29,6 @@ set_error_handler(function ($errorType, $errorText, $errfile, $errline) {
 });
 
 $request = \Framework\HTTP\Request::getInstance();
-$application = new \Framework\ApplicationKernel\Application();
+$application = new \Framework\Application();
 \Framework\HTTP\Response::setContent($application->execute($request));
 \Framework\HTTP\Response::send();
