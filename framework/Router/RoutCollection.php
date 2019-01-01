@@ -32,7 +32,7 @@ class RoutCollection
         $success = false;
         $html = "";
         foreach (self::$routArray as $rout) {
-            if ($rout->isEqCurRequest()) {
+            if ($rout->isValid()) {
                 $html = $rout->executeController($request);
                 $success = true;
             }

@@ -6,7 +6,6 @@ use InvalidArgumentException;
 
 class Request
 {
-
     protected $getData = array();
     protected $postData = array();
     protected $updateData = array();
@@ -27,7 +26,6 @@ class Request
                     {
                         $this->deleteData = $_POST;
                         break;
-
                     }
             }
         } else {
@@ -35,12 +33,13 @@ class Request
         }
     }
 
-    private function __clone() {}
+    private function __clone()
+    {
+    }
 
     public static function getInstance()
     {
-        if (null === self::$instance)
-        {
+        if (null === self::$instance) {
             self::$instance = new self();
         }
         return self::$instance;
@@ -102,31 +101,5 @@ class Request
             return $this->updateData[$param];
         else
             throw new InvalidArgumentException("Invalid get argument.");
-    }
-
-    public static function getRequestURI(): string
-    {
-        $requestURI = $_SERVER['REQUEST_URI'];
-        if (strlen($requestURI) > 1 && (ord($requestURI[strlen($requestURI) - 1]) === ord('/')))
-            $requestURI = substr($requestURI, 0, strlen($requestURI) - 1);
-        return $requestURI;
-    }
-
-    public static function getRequestURIArray(): array
-    {
-        return explode('/', self::getRequestURI());
-    }
-
-    public static function getCurrentMethod(): string
-    {
-        // TODO: rewrite to $_SERVER['REQUEST_METHOD']
-
-        $curMethod = 'get';
-        if (isset($_POST['__method'])) {
-            $curMethod = $_POST['__method'];
-        } else if (count($_POST) > 0) {
-            $curMethod = 'post';
-        }
-        return $curMethod;
     }
 }

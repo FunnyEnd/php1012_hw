@@ -5,17 +5,19 @@ namespace App\Controller;
 use App\Request\CategoryShowRequest;
 use App\Services\CategoryService;
 use App\Services\ProductService;
+use Framework\BaseController;
 use Framework\HTTP\Request;
 use Framework\HTTP\Response;
 use Framework\TemplateEngine\View;
 
-class CategoryController
+class CategoryController extends BaseController
 {
     private $productService;
     private $categoryService;
 
     public function __construct()
     {
+        parent::__construct();
         $this->productService = new ProductService();
         $this->categoryService = new CategoryService();
     }

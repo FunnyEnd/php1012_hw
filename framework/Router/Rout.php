@@ -3,9 +3,8 @@
 namespace Framework\Router;
 
 use Framework\HTTP\Request;
-use Framework\Logger\FileLogger;
-use Framework\Logger\Log;
-use http\Exception\UnexpectedValueException;
+use InvalidArgumentException;
+use UnexpectedValueException;
 use ReflectionClass;
 use ReflectionException;
 
@@ -23,15 +22,15 @@ class Rout
         $this->pattern = $pattern;
         $this->controller = $controller;
         $this->controllerParam = $controllerParam;
-        $this->logger = new \Zaine\Log("Framework\Router");
+        $this->logger = new \Zaine\Log(get_class($this));
     }
 
-    public function isEqCurRequest(): bool
+    public function isValid(): bool
     {
-        if ($this->method != Request::getCurrentMethod())
+        if ($this->method != $this->getCurrentMethod())
             return false;
 
-        $requestURI = Request::getRequestURI();
+        $requestURI = $this->getURI();
         $reg = $this->convertToPreg($this->pattern);
         return (preg_match($reg, $requestURI) == 0) ? false : true;
     }
@@ -40,28 +39,20 @@ class Rout
     {
         try {
             $controllerInfo = $this->getControllerData();
-            $reflector = new ReflectionClass($controllerInfo['class']);
-            // if method don`t exit at controller
-            if (!$reflector->hasMethod($controllerInfo['method'])) {
-                throw new UnexpectedValueException(
-                        "Oh, method {$controllerInfo['method']}" .
-                        " don`t exit at {$controllerInfo['class']}.");
+            $controller = (new ReflectionClass($controllerInfo['class']))->newInstance();
+
+            if ($controller->methodHasRequestParam($controllerInfo['method'])) {
+                $request->setGetData($this->getRequestParam());
+                return $controller->callMethod($controllerInfo['method'], [$request]);
+            } else {
+                return $controller->callMethod($controllerInfo['method'], []);
             }
-            $param = array();
-            // if exist request param at controller method
-            if (count($reflector->getMethod($controllerInfo['method'])->getParameters()) != 0) {
-                $request->setGetData($this->getDataFromRequest());
-                $param[] = $request;
-            }
-            return call_user_func_array(
-                    array($reflector->newInstance(), $controllerInfo['method']),
-                    $param
-            );
         } catch (ReflectionException $e) {
             $this->logger->error($e->getMessage());
         } catch (UnexpectedValueException $uve) {
             $this->logger->error($uve->getMessage());
         }
+        return "";
     }
 
     private function getControllerData(): array
@@ -87,9 +78,9 @@ class Rout
         return "/^" . preg_replace($search, $replacements, $pattern) . "$/";
     }
 
-    private function getDataFromRequest(): array
+    private function getRequestParam(): array
     {
-        $requestURI = Request::getRequestURI();
+        $requestURI = $this->getURI();
         $reg = $this->convertToPreg($this->pattern);
         if (preg_match($reg, $requestURI, $matches) != 0) {
             if (count($matches) == 1)
@@ -104,11 +95,31 @@ class Rout
     {
         $result = array();
         if (count($dataArray) != count($keyArray))
-            throw new \InvalidArgumentException("dataArray and keyArray has different count");
+            throw new InvalidArgumentException("dataArray and keyArray has different count");
 
         foreach ($dataArray as $key => $item)
             $result[$keyArray[$key]] = $item;
 
         return $result;
+    }
+
+    private function getCurrentMethod(): string
+    {
+        // TODO: rewrite to $_SERVER['REQUEST_METHOD']
+        $curMethod = 'get';
+        if (isset($_POST['__method'])) {
+            $curMethod = $_POST['__method'];
+        } else if (count($_POST) > 0) {
+            $curMethod = 'post';
+        }
+        return $curMethod;
+    }
+
+    private function getURI(): string
+    {
+        $requestURI = $_SERVER['REQUEST_URI'];
+        if (strlen($requestURI) > 1 && (ord($requestURI[strlen($requestURI) - 1]) === ord('/')))
+            $requestURI = substr($requestURI, 0, strlen($requestURI) - 1);
+        return $requestURI;
     }
 }

@@ -4,15 +4,17 @@ namespace App\Controller;
 
 use App\Services\CategoryService;
 use App\Services\ProductService;
+use Framework\BaseController;
 use Framework\TemplateEngine\View;
 
-class HomeController
+class HomeController extends BaseController
 {
     private $productService;
     private $categoryService;
 
     public function __construct()
     {
+        parent::__construct();
         $this->productService = new ProductService();
         $this->categoryService = new CategoryService();
     }
