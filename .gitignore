@@ -3,3 +3,4 @@ composer.phar
 config.php
 vendor/*
 *.log
+db_dump/*
