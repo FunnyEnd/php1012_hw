@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
         integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
-  <link rel="stylesheet" href="/Components/styles/main.css">
+  <link rel="stylesheet" href="/public/styles/main.css">
 </head>
 <body>
 <nav class="navbar navbar-expand-md fixed-top navbar-dark bg-dark main-nav">
@@ -19,9 +19,11 @@
             Catalog
           </button>
           <div class="dropdown-menu">
-            <?php foreach ($category as $c):?>
-            <a class="dropdown-item" href="/category/<?php echo $c['id'];?>"><?php echo $c['name'];?></a>
-            <?php endforeach;?>
+
+              <?php foreach ($category as $cat): ?>
+                <a class="dropdown-item" href="/category/<?php echo $cat->getId(); ?>"><?= $cat->getTitle(); ?></a>
+              <?php endforeach; ?>
+
           </div>
         </div>
       </li>

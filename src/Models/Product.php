@@ -2,67 +2,102 @@
 
 namespace App\Models;
 
-use App\Extensions\ProductExtension;
+use Framework\BaseModel;
 
-class Product
+class Product extends BaseModel
 {
-    private $products;
-    private $acceptOrderBy;
-    private $productStock;
+    private $id;
+    private $title;
+    private $description;
+    private $availability;
+    private $category;
+    private $price;
+    private $image;
 
-    public function __construct()
+    public function getId(): int
     {
-        $products = include('data/list_of_products.php');
-        $this->products = $products;
-        $this->acceptOrderBy = array('name', 'price');
-        $this->productStock = new ProductStock();
+        return $this->id;
     }
 
-    private function sortByname($a, $b)
+    public function setId(int $id): void
     {
-        $al = strtolower($a['name']);
-        $bl = strtolower($b['name']);
-        if ($al == $bl)
-            return 0;
-
-        return ($al > $bl) ? +1 : -1;
+        $this->id = $id;
     }
 
-    private function sortByprice($a, $b)
+    public function getTitle(): string
     {
-        $al = floatval($a['price']);
-        $bl = floatval($b['price']);
-        if ($al == $bl)
-            return 0;
-
-        return ($al > $bl) ? +1 : -1;
+        return $this->title;
     }
 
-    public function getById(int $id): array
+    public function setTitle(string $title): void
     {
-        $k = array_search($id, array_column($this->products, 'id'));
-
-        if ($k === false) {
-            return array();
-        }
-
-        $product = $this->products[$k];
-        $product['count'] = $this->productStock->getProductCountAtStockById($id);
-        return $product;
+        $this->title = $title;
     }
 
-    public function getByCatId(int $catId, string $orderBy = 'name'): array
+    public function getDescription(): string
     {
-        $res = array();
-        foreach ($this->products as $p) {
-            if ($p['cat'] == $catId) {
-                $p['count'] = $this->productStock->getProductCountAtStockById($p['id']);
-                array_push($res, $p);
-            }
-        }
-        if (in_array($orderBy, $this->acceptOrderBy))
-            usort($res, array("App\Models\Product", "sortBy$orderBy"));
+        return $this->description;
+    }
 
-        return $res;
+    public function setDescription(string $description): void
+    {
+        $this->description = $description;
+    }
+
+    public function getAvailability(): int
+    {
+        return $this->availability;
+    }
+
+    public function setAvailability(int $availability): void
+    {
+        $this->availability = $availability;
+    }
+
+    public function getCategory(): Category
+    {
+        return $this->category;
+    }
+
+    public function setCategory(Category $category): void
+    {
+        $this->category = $category;
+    }
+
+    public function getPrice(): float
+    {
+        return $this->price;
+    }
+
+    public function setPrice(float $price): void
+    {
+        $this->price = round($price, 2);
+    }
+
+    public function getImage(): Image
+    {
+        return $this->image;
+    }
+
+    public function setImage(Image $image): void
+    {
+        $this->image = $image;
+    }
+
+    /**
+     * Convert array to Product
+     * @param array $data
+     */
+    public function formArray(array $data): void
+    {
+        $this->setId($data['id']);
+        $this->setTitle($data['title']);
+        $this->setDescription($data['description']);
+        $this->setCategory($data['category']);
+        $this->setAvailability($data['availability']);
+        $this->setPrice($data['price']);
+        $this->setImage($data['image']);
+        $this->setCreateAt($data['create_at']);
+        $this->setUpdateAt($data['update_at']);
     }
 }

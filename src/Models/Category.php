@@ -2,28 +2,39 @@
 
 namespace App\Models;
 
-class Category
+use Framework\BaseModel;
+
+class Category extends BaseModel
 {
-    private $category;
+    private $id;
+    private $title;
 
-    public function __construct()
+    public function getId(): int
     {
-        $category = include('data/list_of_category.php');
-        $this->category = $category;
+        return $this->id;
     }
 
-    public function getById($id)
+    public function setId(int $id): void
     {
-        $k = array_search(intval($id), array_column($this->category, 'id'));
-        if ($k === false) {
-            return array();
-        }
-        return $this->category[$k];
+        $this->id = $id;
     }
 
-    public function getAll()
+    public function getTitle(): string
     {
-        return $this->category;
+        return $this->title;
+    }
+
+    public function setTitle(string $title): void
+    {
+        $this->title = $title;
+    }
+
+    public function formArray(array $data): void
+    {
+        $this->setId($data['id']);
+        $this->setTitle($data['title']);
+        $this->setCreateAt($data['create_at']);
+        $this->setUpdateAt($data['update_at']);
     }
 
 }

@@ -2,6 +2,7 @@
 
 namespace Framework\Routing;
 
+use Framework\Dispatcher;
 use Framework\HTTP\Request;
 use InvalidArgumentException;
 use UnexpectedValueException;
@@ -35,11 +36,18 @@ class Route
         return (preg_match($reg, $requestURI) == 0) ? false : true;
     }
 
-    public function executeController(Request $request): string
+    public function executeController(Request $request, Dispatcher $dispatcher): string
     {
         try {
             $controllerInfo = $this->getControllerData();
-            $controller = (new ReflectionClass($controllerInfo['class']))->newInstance();
+            $class = new ReflectionClass($controllerInfo['class']);
+            $constructorParam = $class->getConstructor()->getParameters();
+            $param = array();
+            foreach ($constructorParam as $c) {
+                array_push($param, $dispatcher->get($c->getClass()->name));
+            }
+
+            $controller = (new ReflectionClass($controllerInfo['class']))->newInstanceArgs($param);
 
             if ($controller->methodHasRequestParam($controllerInfo['method'])) {
                 $request->setGetData($this->getRequestParam());
@@ -103,9 +111,12 @@ class Route
         return $result;
     }
 
+    /**
+     * @todo rewrite to $_SERVER['REQUEST_METHOD']
+     * @return string
+     */
     private function getCurrentMethod(): string
     {
-        // TODO: rewrite to $_SERVER['REQUEST_METHOD']
         $curMethod = 'get';
         if (isset($_POST['__method'])) {
             $curMethod = $_POST['__method'];

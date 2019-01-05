@@ -45,7 +45,10 @@ class Request
         return self::$instance;
     }
 
-    // TODO: rewrite this
+    /**
+     * @todo rewrite this
+     * @param array $param
+     */
     public function setGetData(array $param): void
     {
         $this->getData = $param;

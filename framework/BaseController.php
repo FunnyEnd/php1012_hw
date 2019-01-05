@@ -5,22 +5,19 @@ namespace Framework;
 use ReflectionClass;
 use ReflectionException;
 use UnexpectedValueException;
-use Zaine\Log;
 
 abstract class BaseController
 {
-    protected $logger;
-
-    public function __construct()
-    {
-        $this->logger = new Log(get_class($this));
-    }
-
     public function hasMethod(string $method): bool
     {
         return method_exists($this, $method);
     }
 
+    /**
+     * This method checks if the method being tested contains a Request type argument.
+     * @param string $method
+     * @return bool
+     */
     public function methodHasRequestParam(string $method): bool
     {
         try {
@@ -34,7 +31,7 @@ abstract class BaseController
                 return true;
 
         } catch (ReflectionException $e) {
-            $this->logger->error($e->getMessage());
+            die($e->getMessage());
         }
 
         return false;

@@ -2,6 +2,7 @@
 
 namespace Framework\Routing;
 
+use Framework\Dispatcher;
 use Framework\HTTP\Request;
 use UnderflowException;
 
@@ -24,7 +25,7 @@ class Router
         array_push(self::$routArray, $rout);
     }
 
-    public static function goToCurrentRoute(Request $request): string
+    public static function goToCurrentRoute(Request $request, Dispatcher $dispatcher): string
     {
         if (self::$routArray == null) {
             return false;
@@ -33,7 +34,7 @@ class Router
         $html = "";
         foreach (self::$routArray as $rout) {
             if ($rout->isValid()) {
-                $html = $rout->executeController($request);
+                $html = $rout->executeController($request, $dispatcher);
                 $success = true;
             }
         }

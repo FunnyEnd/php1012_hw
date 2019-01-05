@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "6760cc38ac3c40022ea178470fa6fbc9",
+    "content-hash": "3f8c80218e2724f6c09286a4a3dd1d88",
     "packages": [
         {
             "name": "clemon/clemon",
@@ -374,6 +374,8 @@
     "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
-    "platform": [],
+    "platform": {
+        "ext-pdo": "*"
+    },
     "platform-dev": []
 }
