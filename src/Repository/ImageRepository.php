@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Extensions\ImageNotExistExtension;
 use App\Models\Image;
 use DateTime;
 use Framework\BaseRepository;
@@ -17,10 +18,14 @@ class ImageRepository extends BaseRepository
      * Find image by id
      * @param int $id
      * @return Image
+     * @throws ImageNotExistExtension
      */
     public function findById(int $id): Image
     {
         $result = $this->db->getOne(self::SELECT_BY_ID, [$id]);
+        if (empty($result))
+            throw new ImageNotExistExtension();
+
         return $this->mapArrayToImage($result);
     }
 

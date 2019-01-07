@@ -336,16 +336,16 @@
         },
         {
             "name": "zaine/zaine",
-            "version": "1.0.0",
+            "version": "1.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/FunnyEnd/ZaineLogger.git",
-                "reference": "d69cffb9e1af3d2eb2bd2fb6675106089b741486"
+                "reference": "64611cc949d45666b34cb63ba993b9ba1dcf8ea4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/FunnyEnd/ZaineLogger/zipball/d69cffb9e1af3d2eb2bd2fb6675106089b741486",
-                "reference": "d69cffb9e1af3d2eb2bd2fb6675106089b741486",
+                "url": "https://api.github.com/repos/FunnyEnd/ZaineLogger/zipball/64611cc949d45666b34cb63ba993b9ba1dcf8ea4",
+                "reference": "64611cc949d45666b34cb63ba993b9ba1dcf8ea4",
                 "shasum": ""
             },
             "require": {
@@ -365,7 +365,7 @@
                 }
             ],
             "description": "zaine logger",
-            "time": "2018-12-24T15:55:27+00:00"
+            "time": "2019-01-06T23:42:23+00:00"
         }
     ],
     "packages-dev": [],

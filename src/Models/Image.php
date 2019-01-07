@@ -6,8 +6,19 @@ use Framework\BaseModel;
 
 class Image extends BaseModel
 {
+    private $id;
     private $path;
     private $alt;
+
+    public function getId(): int
+    {
+        return $this->id;
+    }
+
+    public function setId(int $id): void
+    {
+        $this->id = $id;
+    }
 
     public function getPath(): string
     {
@@ -31,6 +42,7 @@ class Image extends BaseModel
 
     public function formArray(array $data): void
     {
+        $this->setId($data['id']);
         $this->setPath($data['path']);
         $this->setAlt($data['alt']);
         $this->setCreateAt($data['create_at']);
