@@ -11,18 +11,12 @@ use Framework\BaseRepository;
 class UsersRepository extends BaseRepository
 {
     private const SELECT_BY_ID = /** @lang text */
-            "select * from users where id = id";
+            "select * from users where id = :id";
     private const SELECT_BY_EMAIL = /** @lang text */
             "select * from users where email = :email";
-    private const UPDATE_BY_ID_SQL = /** @lang text */
-            "update products set title = :title, description = :description, availability = :availability, " .
-            " category_id = :category_id, price = :price, image_id = :image_id, " .
-            " update_at = :update_at where id = :id;";
     private const INSERT_SQL = /** @lang text */
             "insert into users (email, password, first_name, last_name, is_admin, create_at, update_at) " .
             "values (:email, :password, :first_name, :last_name, :is_admin, :create_at, :update_at) ";
-    private const DELETE_BY_ID_SQL = /** @lang text */
-            "delete from products where id = :id";
 
     /**
      * Find user by id
@@ -82,32 +76,6 @@ class UsersRepository extends BaseRepository
 
         return $user;
     }
-
-//    public function update(Product $product): Product
-//    {
-//        $currentDateTime = new DateTime();
-//        $this->db->execute(self::UPDATE_BY_ID_SQL, [
-//                "title" => $product->getTitle(),
-//                "description" => $product->getDescription(),
-//                "availability" => $product->getAvailability(),
-//                "category_id" => $product->getCategory()->getId(),
-//                "price" => $product->getPrice(),
-//                "image_id" => $product->getImage()->getId(),
-//                "update_at" => $currentDateTime->format(self::DATETIME_FORMAT),
-//                "id" => $product->getId()
-//        ]);
-//
-//        $product->setUpdateAt($currentDateTime);
-//
-//        return $product;
-//    }
-//
-//    public function delete(Product $product): void
-//    {
-//        $this->db->execute(self::DELETE_BY_ID_SQL, [
-//                "id" => $product->getId()
-//        ]);
-//    }
 
     /**
      * Convert array to user object

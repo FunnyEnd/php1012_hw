@@ -11,6 +11,7 @@ use Framework\HTTP\Request;
 use Framework\HTTP\Response;
 use Framework\View;
 
+// todo rename Controller to Controllers
 class AuthController extends BaseController
 {
     private $categoryRepository;
