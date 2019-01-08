@@ -33,10 +33,6 @@ class Session
     {
     }
 
-    private function __wakeup()
-    {
-    }
-
     public function start(): void
     {
         if ($this->sessionExist())

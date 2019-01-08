@@ -21,6 +21,12 @@ class AuthService
         $this->userService = $userService;
     }
 
+    /**
+     * todo log UserNotExistExtension
+     * @param string $email
+     * @param string $password
+     * @return bool
+     */
     public function auth(string $email, string $password): bool
     {
         try {
@@ -28,10 +34,13 @@ class AuthService
         } catch (UserNotExistExtension $e) {
             return false;
         }
+
         if ($user->getPassword() == $this->userService->hashPassword($password)) {
             $this->session->start();
             $this->session->set(self::ID_COOKIE_KEY, $user->getId());
+            return true;
         }
+
         return false;
     }
 

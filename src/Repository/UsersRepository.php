@@ -13,7 +13,7 @@ class UsersRepository extends BaseRepository
     private const SELECT_BY_ID = /** @lang text */
             "select * from users where id = id";
     private const SELECT_BY_EMAIL = /** @lang text */
-            "select * from users where email = email";
+            "select * from users where email = :email";
     private const UPDATE_BY_ID_SQL = /** @lang text */
             "update products set title = :title, description = :description, availability = :availability, " .
             " category_id = :category_id, price = :price, image_id = :image_id, " .

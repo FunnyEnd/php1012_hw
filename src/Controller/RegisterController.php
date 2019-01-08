@@ -6,6 +6,7 @@ use App\Extensions\UserAlreadyExistExtension;
 use App\Models\User;
 use App\Repository\CategoryRepository;
 use App\Repository\UsersRepository;
+use App\Services\AuthService;
 use App\Services\UserService;
 use Framework\BaseController;
 use Framework\HTTP\Request;
@@ -17,19 +18,24 @@ class RegisterController extends BaseController
     private $categoryRepository;
     private $userService;
     private $usersRepository;
+    private $authService;
 
-    public function __construct(CategoryRepository $categoryRepository, UserService $userService, UsersRepository $usersRepository)
+    public function __construct(CategoryRepository $categoryRepository, UserService $userService,
+                                UsersRepository $usersRepository, AuthService $authService)
     {
         $this->categoryRepository = $categoryRepository;
         $this->userService = $userService;
         $this->usersRepository = $usersRepository;
+        $this->authService = $authService;
     }
 
     public function index()
     {
         $category = $this->categoryRepository->findAll();
+        $isAuth = $this->authService->isAuth();
         return View::render("register", [
                 "category" => $category,
+                "auth" => $isAuth,
                 "error" => "",
                 "email" => "",
                 "password" => "",
@@ -40,7 +46,6 @@ class RegisterController extends BaseController
 
     public function register(Request $request)
     {
-        $category = $this->categoryRepository->findAll();
         try {
             $user = new User();
             $user->setEmail($request->post("email"));
@@ -50,8 +55,11 @@ class RegisterController extends BaseController
             $user->setIsAdmin(false);
             $this->usersRepository->save($user);
         } catch (UserAlreadyExistExtension $e) {
+            $category = $this->categoryRepository->findAll();
+            $isAuth = $this->authService->isAuth();
             return View::render("register", [
                     "category" => $category,
+                    "auth" => $isAuth,
                     "error" => "User already exist",
                     "email" => $request->post("email"),
                     "password" => $request->post("password"),

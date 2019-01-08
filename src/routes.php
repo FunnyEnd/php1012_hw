@@ -30,6 +30,12 @@ Router::addRout(new Route(
         ['id']
 ));
 Router::addRout(new Route(
+        Router::POST_METHOD,
+        "/auth",
+        "App\Controller\AuthController::auth",
+        ['id']
+));
+Router::addRout(new Route(
         Router::GET_METHOD,
         "/register",
         "App\Controller\RegisterController::index",
@@ -39,5 +45,12 @@ Router::addRout(new Route(
         Router::POST_METHOD,
         "/register",
         "App\Controller\RegisterController::register",
+        ['id']
+));
+
+Router::addRout(new Route(
+        Router::GET_METHOD,
+        "/logout",
+        "App\Controller\AuthController::logout",
         ['id']
 ));

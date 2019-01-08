@@ -46,9 +46,18 @@
       <li class="nav-item">
         <a class="nav-link" href="#">Cart <span class="badge badge-light badge-pill">0</span></a>
       </li>
-      <li class="nav-item">
-        <a class="nav-link" href="#">Login</a>
-      </li>
+        <?php if (!$auth): ?>
+          <li class="nav-item">
+            <a class="nav-link" href="/auth">Log In</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/register">Register</a>
+          </li>
+        <?php else: ?>
+          <li class="nav-item">
+            <a class="nav-link" href="/logout">Log Out</a>
+          </li>
+        <?php endif; ?>
     </ul>
   </div>
 </nav>
