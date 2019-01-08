@@ -77,7 +77,7 @@ class Request
         if (isset($this->postData[$param]))
             return $this->postData[$param];
         else
-            throw new InvalidArgumentException("Invalid get argument.");
+            throw new InvalidArgumentException("Invalid post argument.");
     }
 
     /**
@@ -90,7 +90,7 @@ class Request
         if (isset($this->deleteData[$param]))
             return $this->deleteData[$param];
         else
-            throw new InvalidArgumentException("Invalid get argument.");
+            throw new InvalidArgumentException("Invalid delete argument.");
     }
 
     /**
@@ -103,6 +103,6 @@ class Request
         if (isset($this->updateData[$param]))
             return $this->updateData[$param];
         else
-            throw new InvalidArgumentException("Invalid get argument.");
+            throw new InvalidArgumentException("Invalid update argument.");
     }
 }

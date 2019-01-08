@@ -6,6 +6,7 @@ class Response
 {
     private static $content;
     private static $responseCode;
+    private static $headers = [];
 
     public static function setContent(string $content): void
     {
@@ -17,9 +18,17 @@ class Response
         self::$responseCode = $responseCode;
     }
 
+    public static function redirect($location)
+    {
+        array_push(self::$headers, "Location: {$location}");
+    }
+
     public static function send(): void
     {
         http_response_code(self::$responseCode);
+        foreach (self::$headers as $h)
+            header($h);
+
         echo self::$content;
     }
 }

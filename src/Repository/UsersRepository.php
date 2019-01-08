@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Extensions\UserAlreadyExistExtension;
 use App\Extensions\UserNotExistExtension;
 use App\Models\User;
 use DateTime;
@@ -52,9 +53,19 @@ class UsersRepository extends BaseRepository
         return $this->mapArrayToUser($result);
     }
 
+    /**
+     * @param User $user
+     * @return User
+     * @throws UserAlreadyExistExtension
+     */
     public function save(User $user): User
     {
         $currentDateTime = new DateTime();
+
+        $result = $this->db->getOne(self::SELECT_BY_EMAIL, ["email" => $user->getEmail()]);
+        if (!empty($result))
+            throw new UserAlreadyExistExtension();
+
         $this->db->execute(self::INSERT_SQL, [
                 "email" => $user->getEmail(),
                 "password" => $user->getPassword(),

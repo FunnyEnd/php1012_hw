@@ -11,6 +11,7 @@ use ReflectionException;
 
 class Route
 {
+
     private $pattern;
     private $controller;
     private $method;
@@ -41,10 +42,11 @@ class Route
         try {
             $controllerInfo = $this->getControllerData();
             $class = new ReflectionClass($controllerInfo['class']);
-            $constructorParam = $class->getConstructor()->getParameters();
-            $param = array();
-            foreach ($constructorParam as $c) {
-                array_push($param, $dispatcher->get($c->getClass()->name));
+            $param = [];
+            if ($class->hasMethod("__construct")) {
+                $constructorParam = $class->getConstructor()->getParameters();
+                foreach ($constructorParam as $c)
+                    array_push($param, $dispatcher->get($c->getClass()->name));
             }
 
             $controller = (new ReflectionClass($controllerInfo['class']))->newInstanceArgs($param);
@@ -111,18 +113,12 @@ class Route
         return $result;
     }
 
-    /**
-     * @todo rewrite to $_SERVER['REQUEST_METHOD']
-     * @return string
-     */
     private function getCurrentMethod(): string
     {
-        $curMethod = 'get';
-        if (isset($_POST['__method'])) {
+        $curMethod = $_SERVER['REQUEST_METHOD'];
+        if (isset($_POST['__method']))
             $curMethod = $_POST['__method'];
-        } else if (count($_POST) > 0) {
-            $curMethod = 'post';
-        }
+
         return $curMethod;
     }
 

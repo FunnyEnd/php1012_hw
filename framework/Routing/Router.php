@@ -8,6 +8,10 @@ use UnderflowException;
 
 class Router
 {
+    public const GET_METHOD = "GET";
+    public const POST_METHOD = "POST";
+    public const UPDATE_METHOD = "UPDATE";
+    public const DELETE_METHOD = "DELETE";
     private static $routArray;
 
     private static function init()
@@ -39,7 +43,7 @@ class Router
             }
         }
 
-        if($success){
+        if ($success) {
             return $html;
         } else {
             throw new UnderflowException("Rout don`t found.");
