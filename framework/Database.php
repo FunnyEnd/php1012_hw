@@ -4,11 +4,13 @@ namespace Framework;
 
 use PDO;
 use PDOException;
+use Zaine\Log;
 
 class Database
 {
     private static $instance;
     private $pdo;
+    private $logger;
 
     private const LAST_INSERT_ID_SQL = "SELECT LAST_INSERT_ID() as id;";
 
@@ -20,10 +22,6 @@ class Database
         return static::$instance;
     }
 
-    /**
-     * @todo log error messages
-     * Database constructor.
-     */
     private function __construct()
     {
         $host = Config::get("db_host");
@@ -31,6 +29,8 @@ class Database
         $user = Config::get("db_user");
         $pass = Config::get("db_password");
         $charset = Config::get("db_charset");
+
+        $this->logger = new Log("Database");
 
         $dsn = "mysql:host=$host;dbname=$db;charset=$charset";
         $opt = [
@@ -46,70 +46,77 @@ class Database
         }
     }
 
-    /**
-     * @todo log error messages
-     * @param string $query
-     * @param array $param
-     * @return array
-     */
     public function getAll(string $query, array $param = []): array
     {
-        $stmt = $this->pdo->prepare($query);
-        $stmt->execute($param);
+        try {
+            $stmt = $this->pdo->prepare($query);
 
-        $res = [];
-        while ($row = $stmt->fetch(PDO::FETCH_ASSOC))
-            array_push($res, ($row !== false) ? $row : []);
+            $stmt->execute($param);
 
-        return $res;
+            $res = [];
+            while ($row = $stmt->fetch(PDO::FETCH_ASSOC))
+                array_push($res, ($row !== false) ? $row : []);
+
+            return $res;
+        } catch (PDOException $e) {
+            $this->logger->error($e->getMessage());
+            $this->logger->error($e->getTraceAsString());
+        }
+        return [];
     }
 
-    /**
-     * @todo log error messages
-     * @param string $query
-     * @param array $param
-     * @return array
-     */
     public function getOne(string $query, array $param = []): array
     {
-        $stmt = $this->pdo->prepare($query);
-        $stmt->execute($param);
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        return ($row !== false) ? $row : [];
+        try {
+            $stmt = $this->pdo->prepare($query);
+            $stmt->execute($param);
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
+            return ($row !== false) ? $row : [];
+        } catch (PDOException $e) {
+            $this->logger->error($e->getMessage());
+            $this->logger->error($e->getTraceAsString());
+        }
+        return [];
     }
 
-    /**
-     * @todo log error messages
-     * @param string $query
-     * @param array $param
-     */
     public function execute(string $query, array $param = []): void
     {
         try {
             $stmt = $this->pdo->prepare($query);
             $stmt->execute($param);
         } catch (PDOException $e) {
-            var_dump($e->getTrace());
-            die($e->getMessage());
+            $this->logger->error($e->getMessage());
+            $this->logger->error($e->getTraceAsString());
         }
     }
 
     /**
-     * @todo log error messages
-     * @return int
+     * @return int last inserted id or -1 if don`t find last inserted id
      */
     public function insertId(): int
     {
-        $stmt = $this->pdo->prepare(self::LAST_INSERT_ID_SQL);
-        $stmt->execute([]);
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        return $row['id'];
+        try {
+            $stmt = $this->pdo->prepare(self::LAST_INSERT_ID_SQL);
+            $stmt->execute([]);
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
+            return $row['id'];
+        } catch (PDOException $e) {
+            $this->logger->error($e->getMessage());
+            $this->logger->error($e->getTraceAsString());
+        }
+        return -1;
     }
 
+    /**
+     * For singleton
+     */
     private function __clone()
     {
     }
 
+    /**
+     * For singleton
+     */
     private function __wakeup()
     {
     }
