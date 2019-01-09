@@ -4,6 +4,7 @@ namespace Framework;
 
 use Framework\HTTP\Request;
 use Framework\Routing\Router;
+use Throwable;
 use UnderflowException;
 use Zaine\Log;
 
@@ -17,6 +18,8 @@ class Application
 
     public function __construct()
     {
+        $this->intiErrorHandler();
+        $this->initExceptionHandler();
         Config::init();
         $this->initRoutes();
         $this->dispatcher = new Dispatcher();
@@ -49,6 +52,24 @@ class Application
         }
     }
 
+    private function intiErrorHandler():void{
+        set_error_handler(function ($errorType, $errorText, $errfile, $errline) {
+            $errorTime = date("H:i:m");
+            $backtrace = debug_backtrace();
+            $backtraceStr = "";
+            foreach ($backtrace as $b) {
+                if ($b['function'] == '{closure}')
+                    continue;
+
+                $backtraceStr .= $b['file'] . ". Call function " . $b['function'] . "(); \n";
+            }
+            $res = "[$errorTime] {$errorType}. $errorText $errfile at line $errline \n$backtraceStr \n";
+
+            $log = new \Zaine\Log("Error handler");
+            $log->error($res);
+        });
+    }
+
     public function execute(Request $request): string
     {
         try {
@@ -57,5 +78,16 @@ class Application
             $this->logger->error($ue->getMessage());
         }
         return "";
+    }
+
+    private function initExceptionHandler()
+    {
+        set_exception_handler(function (Throwable $e) {
+            $errorTime = date("H:i:m");
+            $backtrace = $e->getTraceAsString();
+            $res = "[$errorTime] Uncaught exception. " . $e->getMessage() . $backtrace . "\n";
+            $log = new \Zaine\Log("Exception handler");
+            $log->error($res);
+        });
     }
 }
