@@ -20,7 +20,7 @@ set_error_handler(function ($errorType, $errorText, $errfile, $errline) {
         if ($b['function'] == '{closure}')
             continue;
 
-        $backtraceStr .= $b['file'] . " at line " . $b['line'] . ". Call function " . $b['function'] . "(); \n";
+        $backtraceStr .= $b['file'] . ". Call function " . $b['function'] . "(); \n";
     }
     $res = "[$errorTime] {$errorType}. $errorText $errfile at line $errline \n$backtraceStr \n";
 

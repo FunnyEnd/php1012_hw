@@ -29,7 +29,12 @@ class AuthController extends BaseController
     {
         $category = $this->categoryRepository->findAll();
         $isAuth = $this->authService->isAuth();
-        return View::render("auth", ["category" => $category, 'auth' => $isAuth]);
+        return View::render("auth", [
+                "category" => $category,
+                'auth' => $isAuth,
+                "email" => "",
+                "password" => ""
+        ]);
     }
 
     public function auth(Request $request)
