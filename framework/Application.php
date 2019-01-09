@@ -52,17 +52,14 @@ class Application
         }
     }
 
-    private function intiErrorHandler():void{
+    private function intiErrorHandler(): void
+    {
         set_error_handler(function ($errorType, $errorText, $errfile, $errline) {
             $errorTime = date("H:i:m");
             $backtrace = debug_backtrace();
-            $backtraceStr = "";
-            foreach ($backtrace as $b) {
-                if ($b['function'] == '{closure}')
-                    continue;
-
-                $backtraceStr .= $b['file'] . ". Call function " . $b['function'] . "(); \n";
-            }
+            ob_start();
+            var_dump($backtrace);
+            $backtraceStr = ob_get_clean();
             $res = "[$errorTime] {$errorType}. $errorText $errfile at line $errline \n$backtraceStr \n";
 
             $log = new \Zaine\Log("Error handler");
@@ -72,8 +69,18 @@ class Application
 
     public function execute(Request $request): string
     {
+
         try {
-            return Router::goToCurrentRoute($request, $this->dispatcher);
+            $time_start = microtime(true);
+
+            $content = Router::goToCurrentRoute($request, $this->dispatcher);
+
+            $time_end = microtime(true);
+            $execution_time = ($time_end - $time_start) / 60;
+            $uri = $_SERVER['REQUEST_URI'];
+            $this->logger->emergency("Total Execution Time: {$execution_time} mins. URI: {$uri}.\n");
+
+            return $content;
         } catch (UnderflowException $ue) {
             $this->logger->error($ue->getMessage());
         }
@@ -86,7 +93,7 @@ class Application
             $errorTime = date("H:i:m");
             $backtrace = $e->getTraceAsString();
             $res = "[$errorTime] Uncaught exception. " . $e->getMessage() . $backtrace . "\n";
-            $log = new \Zaine\Log("Exception handler");
+            $log = new Log("Exception handler");
             $log->error($res);
         });
     }

@@ -14,4 +14,7 @@ abstract class BaseRepository
     {
         $this->db = Database::getInstance();
     }
+
+
+    abstract public function findById(int $id);
 }

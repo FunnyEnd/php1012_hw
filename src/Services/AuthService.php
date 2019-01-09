@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Extensions\UserNotExistExtension;
 use App\Repository\UsersRepository;
 use Framework\Session;
+use Zaine\Log;
 
 class AuthService
 {
@@ -13,25 +14,22 @@ class AuthService
     private $session;
     private $usersRepository;
     private $userService;
+    private $logger;
 
     public function __construct(Session $session, UsersRepository $usersRepository, UserService $userService)
     {
         $this->session = $session;
         $this->usersRepository = $usersRepository;
         $this->userService = $userService;
+        $this->logger = new Log("AuthService");
     }
 
-    /**
-     * todo log UserNotExistExtension
-     * @param string $email
-     * @param string $password
-     * @return bool
-     */
     public function auth(string $email, string $password): bool
     {
         try {
             $user = $this->usersRepository->findByEmail($email);
         } catch (UserNotExistExtension $e) {
+            $this->logger->warning("User with email '$email' and password '$password' mot found.");
             return false;
         }
 
@@ -63,6 +61,7 @@ class AuthService
                 return true;
 
         } catch (UserNotExistExtension $e) {
+            $this->logger->warning("Can not found current user.");
             return false;
         }
 
