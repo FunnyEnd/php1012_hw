@@ -76,9 +76,9 @@ class Application
             $content = Router::goToCurrentRoute($request, $this->dispatcher);
 
             $time_end = microtime(true);
-            $execution_time = ($time_end - $time_start) / 60;
+            $execution_time = ($time_end - $time_start);
             $uri = $_SERVER['REQUEST_URI'];
-            $this->logger->emergency("Total Execution Time: {$execution_time} mins. URI: {$uri}.\n");
+            $this->logger->emergency("Total Execution Time: {$execution_time}. URI: {$uri}.\n");
 
             return $content;
         } catch (UnderflowException $ue) {
