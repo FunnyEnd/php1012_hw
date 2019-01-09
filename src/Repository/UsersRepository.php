@@ -7,6 +7,7 @@ use App\Extensions\UserNotExistExtension;
 use App\Models\User;
 use DateTime;
 use Framework\BaseRepository;
+use Framework\Constants;
 
 class UsersRepository extends BaseRepository
 {
@@ -66,8 +67,8 @@ class UsersRepository extends BaseRepository
                 "first_name" => $user->getFirstName(),
                 "last_name" => $user->getLastName(),
                 "is_admin" => $user->getIsAdmin(),
-                "create_at" => $currentDateTime->format(self::DATETIME_FORMAT),
-                "update_at" => $currentDateTime->format(self::DATETIME_FORMAT),
+                "create_at" => $currentDateTime->format(Constants::DATETIME_FORMAT),
+                "update_at" => $currentDateTime->format(Constants::DATETIME_FORMAT),
         ]);
 
         $user->setCreateAt($currentDateTime);
@@ -85,8 +86,8 @@ class UsersRepository extends BaseRepository
     private function mapArrayToUser(array $row): User
     {
         $user = new User();
-        $row['create_at'] = DateTime::createFromFormat('Y-m-d H:i:s', $row['create_at']);
-        $row['update_at'] = DateTime::createFromFormat('Y-m-d H:i:s', $row['update_at']);
+        $row['create_at'] = DateTime::createFromFormat(Constants::DATETIME_FORMAT, $row['create_at']);
+        $row['update_at'] = DateTime::createFromFormat(Constants::DATETIME_FORMAT, $row['update_at']);
         $user->formArray($row);
         return $user;
     }

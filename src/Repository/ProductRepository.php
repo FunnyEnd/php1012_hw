@@ -8,6 +8,7 @@ use App\Extensions\ProductNotExistExtension;
 use App\Models\Product;
 use DateTime;
 use Framework\BaseRepository;
+use Framework\Constants;
 
 class ProductRepository extends BaseRepository
 {
@@ -92,8 +93,8 @@ class ProductRepository extends BaseRepository
                 "category_id" => $product->getCategory()->getId(),
                 "price" => $product->getPrice(),
                 "image_id" => $product->getImage()->getId(),
-                "create_at" => $currentDateTime->format(self::DATETIME_FORMAT),
-                "update_at" => $currentDateTime->format(self::DATETIME_FORMAT),
+                "create_at" => $currentDateTime->format(Constants::DATETIME_FORMAT),
+                "update_at" => $currentDateTime->format(Constants::DATETIME_FORMAT),
         ]);
 
         $product->setCreateAt($currentDateTime);
@@ -113,7 +114,7 @@ class ProductRepository extends BaseRepository
                 "category_id" => $product->getCategory()->getId(),
                 "price" => $product->getPrice(),
                 "image_id" => $product->getImage()->getId(),
-                "update_at" => $currentDateTime->format(self::DATETIME_FORMAT),
+                "update_at" => $currentDateTime->format(Constants::DATETIME_FORMAT),
                 "id" => $product->getId()
         ]);
 
@@ -138,8 +139,8 @@ class ProductRepository extends BaseRepository
     private function mapArrayToProduct(array $row): Product
     {
         $product = new Product();
-        $row['create_at'] = DateTime::createFromFormat('Y-m-d H:i:s', $row['create_at']);
-        $row['update_at'] = DateTime::createFromFormat('Y-m-d H:i:s', $row['update_at']);
+        $row['create_at'] = DateTime::createFromFormat(Constants::DATETIME_FORMAT, $row['create_at']);
+        $row['update_at'] = DateTime::createFromFormat(Constants::DATETIME_FORMAT, $row['update_at']);
         try {
             $row['category'] = $this->categoryRepository->findById($row['category_id']);
             $row['image'] = $this->imageRepository->findById($row['image_id']);

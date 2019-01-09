@@ -6,6 +6,7 @@ use App\Extensions\ImageNotExistExtension;
 use App\Models\Image;
 use DateTime;
 use Framework\BaseRepository;
+use Framework\Constants;
 
 class ImageRepository extends BaseRepository
 {
@@ -51,8 +52,8 @@ class ImageRepository extends BaseRepository
     private function mapArrayToImage(array $row): Image
     {
         $image = new Image();
-        $row['create_at'] = DateTime::createFromFormat('Y-m-d H:i:s', $row['create_at']);
-        $row['update_at'] = DateTime::createFromFormat('Y-m-d H:i:s', $row['update_at']);
+        $row['create_at'] = DateTime::createFromFormat(Constants::DATETIME_FORMAT, $row['create_at']);
+        $row['update_at'] = DateTime::createFromFormat(Constants::DATETIME_FORMAT, $row['update_at']);
         $image->formArray($row);
         return $image;
     }

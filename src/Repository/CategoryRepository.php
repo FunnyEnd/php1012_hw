@@ -6,6 +6,7 @@ use App\Extensions\CategoryNotExistExtension;
 use App\Models\Category;
 use DateTime;
 use Framework\BaseRepository;
+use Framework\Constants;
 
 class CategoryRepository extends BaseRepository
 {
@@ -51,8 +52,8 @@ class CategoryRepository extends BaseRepository
     private function mapArrayToCategory(array $row): Category
     {
         $category = new Category();
-        $row['create_at'] = DateTime::createFromFormat('Y-m-d H:i:s', $row['create_at']);
-        $row['update_at'] = DateTime::createFromFormat('Y-m-d H:i:s', $row['update_at']);
+        $row['create_at'] = DateTime::createFromFormat(Constants::DATETIME_FORMAT, $row['create_at']);
+        $row['update_at'] = DateTime::createFromFormat(Constants::DATETIME_FORMAT, $row['update_at']);
         $category->formArray($row);
         return $category;
     }
