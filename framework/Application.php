@@ -11,7 +11,7 @@ use Zaine\Log;
 class Application
 {
     private const SRC_ROUTING_FILE = 'src/routes.php';
-    private const SRC_SERVOCES_FILE = 'src/services.php';
+    private const SRC_SERVICES_PHP = 'src/services.php';
 
     private $logger;
     private $dispatcher;
@@ -46,7 +46,7 @@ class Application
 
     private function initServices()
     {
-        $services = require self::SRC_SERVOCES_FILE;
+        $services = require self::SRC_SERVICES_PHP;
         foreach ($services as $service) {
             $this->addClass($service[0], $service[1]);
         }
