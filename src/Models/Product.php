@@ -64,9 +64,14 @@ class Product extends BaseModel
         $this->category = $category;
     }
 
-    public function getPrice(): int
+    public function getPriceAtCoins(): int
     {
         return $this->price;
+    }
+
+    public function getPriceAtBills(): float
+    {
+        return $this->fromCoinsToBills($this->price);
     }
 
     public function setPrice(int $price): void
@@ -99,5 +104,10 @@ class Product extends BaseModel
         $this->setImage($data['image']);
         $this->setCreateAt($data['create_at']);
         $this->setUpdateAt($data['update_at']);
+    }
+
+    private function fromCoinsToBills(int $coins): float
+    {
+        return $coins / 100;
     }
 }

@@ -38,7 +38,7 @@ class CategoryController extends BaseController
 
         $products = $this->productRepository->findByCategoryId($id);
 
-        return UserView::render('product_list_at_category', array(
+        return UserView::render('category', array(
                 'categoryCurrent' => $currentCategory,
                 'products' => $products,
         ));

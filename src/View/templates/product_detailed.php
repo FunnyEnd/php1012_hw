@@ -18,7 +18,7 @@
       <h3><?= $product->getTitle(); ?></h3>
     </div>
     <div class="product-detailed-price text-danger bd-highlight">
-      <p><?= $product->getPrice(); ?> UAH</p>
+      <p><?= $product->getPriceAtBills(); ?> UAH</p>
     </div>
     <div class="bd-highlight">
       <form class="form-group" action="/">

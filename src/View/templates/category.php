@@ -43,7 +43,7 @@
                 <h3><a href="/product/<?= $product->getId(); ?>"><?= $product->getTitle(); ?></a></h3>
               </div>
               <div class="product-card-price text-danger">
-                <span><?= $product->getPrice(); ?> UAH</span>
+                <span><?= $product->getPriceAtBills(); ?> UAH</span>
               </div>
               <div class="product-card-description">
                 <p>asdasd: asdasda</p>
