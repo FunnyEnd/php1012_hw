@@ -120,14 +120,14 @@ class ProductRepository extends BaseRepository
         try {
             $currentDateTime = new DateTime();
             $this->db->execute(self::INSERT_SQL, [
-                    "title" => $product->getTitle(),
-                    "description" => $product->getDescription(),
-                    "availability" => $product->getAvailability(),
-                    "category_id" => $product->getCategory()->getId(),
-                    "price" => $product->getPrice(),
-                    "image_id" => $product->getImage()->getId(),
-                    "create_at" => $currentDateTime->format(Constants::DATETIME_FORMAT),
-                    "update_at" => $currentDateTime->format(Constants::DATETIME_FORMAT),
+                    'title' => $product->getTitle(),
+                    'description' => $product->getDescription(),
+                    'availability' => $product->getAvailability(),
+                    'category_id' => $product->getCategory()->getId(),
+                    'price' => $product->getPrice(),
+                    'image_id' => $product->getImage()->getId(),
+                    'create_at' => $currentDateTime->format(Constants::DATETIME_FORMAT),
+                    'update_at' => $currentDateTime->format(Constants::DATETIME_FORMAT),
             ]);
 
             $product->setCreateAt($currentDateTime);
@@ -196,7 +196,7 @@ class ProductRepository extends BaseRepository
         $row['update_at'] = DateTime::createFromFormat(Constants::DATETIME_FORMAT, $row['update_at']);
 
         $product = new Product();
-        $product->formArray($row);
+        $product->fromArray($row);
         return $product;
     }
 }

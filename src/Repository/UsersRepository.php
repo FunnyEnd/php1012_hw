@@ -57,18 +57,18 @@ class UsersRepository extends BaseRepository
     {
         $currentDateTime = new DateTime();
 
-        $result = $this->db->getOne(self::SELECT_BY_EMAIL, ["email" => $user->getEmail()]);
+        $result = $this->db->getOne(self::SELECT_BY_EMAIL, ['email' => $user->getEmail()]);
         if (!empty($result))
             throw new UserAlreadyExistExtension();
 
         $this->db->execute(self::INSERT_SQL, [
-                "email" => $user->getEmail(),
-                "password" => $user->getPassword(),
-                "first_name" => $user->getFirstName(),
-                "last_name" => $user->getLastName(),
-                "is_admin" => $user->getIsAdmin(),
-                "create_at" => $currentDateTime->format(Constants::DATETIME_FORMAT),
-                "update_at" => $currentDateTime->format(Constants::DATETIME_FORMAT),
+                'email' => $user->getEmail(),
+                'password' => $user->getPassword(),
+                'first_name' => $user->getFirstName(),
+                'last_name' => $user->getLastName(),
+                'is_admin' => $user->getIsAdmin(),
+                'create_at' => $currentDateTime->format(Constants::DATETIME_FORMAT),
+                'update_at' => $currentDateTime->format(Constants::DATETIME_FORMAT),
         ]);
 
         $user->setCreateAt($currentDateTime);
@@ -88,7 +88,7 @@ class UsersRepository extends BaseRepository
         $user = new User();
         $row['create_at'] = DateTime::createFromFormat(Constants::DATETIME_FORMAT, $row['create_at']);
         $row['update_at'] = DateTime::createFromFormat(Constants::DATETIME_FORMAT, $row['update_at']);
-        $user->formArray($row);
+        $user->fromArray($row);
         return $user;
     }
 }

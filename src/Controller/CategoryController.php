@@ -5,23 +5,20 @@ namespace App\Controller;
 use App\Extensions\CategoryNotExistExtension;
 use App\Repository\CategoryRepository;
 use App\Repository\ProductRepository;
-use App\Services\AuthService;
+use App\View\UserView;
 use Framework\BaseController;
 use Framework\HTTP\Request;
 use Framework\HTTP\Response;
-use Framework\View;
 
 class CategoryController extends BaseController
 {
     private $productRepository;
     private $categoryRepository;
-    private $authService;
 
-    public function __construct(ProductRepository $productRepository, CategoryRepository $categoryRepository, AuthService $authService)
+    public function __construct(ProductRepository $productRepository, CategoryRepository $categoryRepository)
     {
         $this->productRepository = $productRepository;
         $this->categoryRepository = $categoryRepository;
-        $this->authService = $authService;
     }
 
     /**
@@ -36,18 +33,14 @@ class CategoryController extends BaseController
             $currentCategory = $this->categoryRepository->findById($id);
         } catch (CategoryNotExistExtension $e) {
             Response::setResponseCode(404);
-            return View::render('404');
+            return UserView::render('404');
         }
 
         $products = $this->productRepository->findByCategoryId($id);
-        $categoryList = $this->categoryRepository->findAll();
-        $isAuth = $this->authService->isAuth();
 
-        return View::render('product_list_at_category', array(
+        return UserView::render('product_list_at_category', array(
                 'categoryCurrent' => $currentCategory,
-                'auth' => $isAuth,
                 'products' => $products,
-                'category' => $categoryList
         ));
     }
 }

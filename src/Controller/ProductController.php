@@ -3,25 +3,20 @@
 namespace App\Controller;
 
 use App\Extensions\ProductNotExistExtension;
-use App\Repository\CategoryRepository;
 use App\Repository\ProductRepository;
-use App\Services\AuthService;
+use App\View\UserView;
 use Framework\BaseController;
 use Framework\HTTP\Request;
 use Framework\HTTP\Response;
-use Framework\View;
 
 class ProductController extends BaseController
 {
     private $productRepository;
-    private $categoryRepository;
-    private $authService;
 
-    function __construct(ProductRepository $productRepository, CategoryRepository $categoryRepository, AuthService $authService)
+
+    function __construct(ProductRepository $productRepository)
     {
         $this->productRepository = $productRepository;
-        $this->categoryRepository = $categoryRepository;
-        $this->authService = $authService;
     }
 
     /**
@@ -31,20 +26,15 @@ class ProductController extends BaseController
      */
     public function showProduct(Request $request): string
     {
-        $productId = $request->get("id");
+        $productId = $request->get('id');
         try {
             $product = $this->productRepository->findById($productId);
         } catch (ProductNotExistExtension $e) {
             Response::setResponseCode(404);
-            return View::render('404');
+            return UserView::render('404');
         }
 
-        $category = $this->categoryRepository->findAll();
-        $isAuth = $this->authService->isAuth();
-
-        return View::render('product_detailed', array(
-                'category' => $category,
-                'auth' => $isAuth,
+        return UserView::render('product_detailed', array(
                 'product' => $product
         ));
     }

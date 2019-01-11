@@ -88,7 +88,7 @@ class Product extends BaseModel
      * Convert array to Product
      * @param array $data
      */
-    public function formArray(array $data): void
+    public function fromArray(array $data): void
     {
         $this->setId($data['id']);
         $this->setTitle($data['title']);

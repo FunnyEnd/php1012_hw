@@ -4,70 +4,72 @@ namespace App\Controller;
 
 use App\Extensions\UserAlreadyExistExtension;
 use App\Models\User;
-use App\Repository\CategoryRepository;
 use App\Repository\UsersRepository;
 use App\Services\AuthService;
 use App\Services\UserService;
+use App\View\UserView;
+use DateTime;
+use Exception;
 use Framework\BaseController;
 use Framework\HTTP\Request;
 use Framework\HTTP\Response;
-use Framework\View;
+use Zaine\Log;
 
 class RegisterController extends BaseController
 {
-    private $categoryRepository;
     private $userService;
     private $usersRepository;
-    private $authService;
 
-    public function __construct(CategoryRepository $categoryRepository, UserService $userService,
-                                UsersRepository $usersRepository, AuthService $authService)
+    public function __construct(UserService $userService, UsersRepository $usersRepository)
     {
-        $this->categoryRepository = $categoryRepository;
         $this->userService = $userService;
         $this->usersRepository = $usersRepository;
-        $this->authService = $authService;
     }
 
     public function index()
     {
-        $category = $this->categoryRepository->findAll();
-        $isAuth = $this->authService->isAuth();
-        return View::render("register", [
-                "category" => $category,
-                "auth" => $isAuth,
-                "error" => "",
-                "email" => "",
-                "password" => "",
-                "firstName" => "",
-                "lastName" => ""
+        return UserView::render('register', [
+                'error' => '',
+                'email' => '',
+                'password' => '',
+                'firstName' => '',
+                'lastName' => ''
         ]);
     }
 
-    public function register(Request $request)
+    public function register(Request $request, AuthService $authService, Log $logger)
     {
         try {
             $user = new User();
-            $user->setEmail($request->post("email"));
-            $user->setPassword($this->userService->hashPassword($request->post("password")));
-            $user->setFirstName($request->post("first-name"));
-            $user->setLastName($request->post("last-name"));
-            $user->setIsAdmin(false);
+            $dateTime = new DateTime();
+            $user->fromArray([
+                    'id' => 0,
+                    'email' => $request->post('email'),
+                    'password' => $this->userService->hashPassword($request->post('password')),
+                    'first_name' => $request->post('first-name'),
+                    'last_name' => $request->post('last-name'),
+                    'is_admin' => 0,
+                    'create_at' => $dateTime,
+                    'update_at' => $dateTime
+            ]);
+
             $this->usersRepository->save($user);
         } catch (UserAlreadyExistExtension $e) {
-            $category = $this->categoryRepository->findAll();
-            $isAuth = $this->authService->isAuth();
-            return View::render("register", [
-                    "category" => $category,
-                    "auth" => $isAuth,
-                    "error" => "User already exist",
-                    "email" => $request->post("email"),
-                    "password" => $request->post("password"),
-                    "firstName" => $request->post("first-name"),
-                    "lastName" => $request->post("last-name")
+            return UserView::render('register', [
+                    'error' => 'User already exist',
+                    'email' => $request->post('email'),
+                    'password' => $request->post('password'),
+                    'firstName' => $request->post('first-name'),
+                    'lastName' => $request->post('last-name')
             ]);
+        } catch (Exception $e){
+            $logger->error($e->getMessage());
+            return '';
         }
-        Response::redirect("/");
-        return "";
+
+        $authService->auth($request->post('email'), $request->post('password'));
+
+        Response::redirect('/');
+        return '';
     }
 }

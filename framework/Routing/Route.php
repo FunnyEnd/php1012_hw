@@ -37,32 +37,52 @@ class Route
         return (preg_match($reg, $requestURI) == 0) ? false : true;
     }
 
+    // todo: rewrite large method
     public function executeController(Request $request): string
     {
         try {
             $controllerInfo = $this->getControllerData();
             $class = new ReflectionClass($controllerInfo['class']);
-            $param = [];
-            if ($class->hasMethod("__construct")) {
-                $constructorParam = $class->getConstructor()->getParameters();
-                foreach ($constructorParam as $c)
-                    array_push($param, Dispatcher::get($c->getClass()->name));
-            }
 
-            $controller = (new ReflectionClass($controllerInfo['class']))->newInstanceArgs($param);
+            $constructParams = [];
+            $methodParam = [];
 
-            if ($controller->methodHasRequestParam($controllerInfo['method'])) {
-                $request->setGetData($this->getRequestParam());
-                return $controller->callMethod($controllerInfo['method'], [$request]);
+            // get __construct method params
+            if ($class->hasMethod('__construct')) {
+                $params = $class->getConstructor()->getParameters();
+                foreach ($params as $p)
+                    array_push($constructParams, Dispatcher::get($p->getClass()->name));
             } else {
-                return $controller->callMethod($controllerInfo['method'], []);
+                throw new UnexpectedValueException(
+                        "Oh, method `__construct` don`t exit at {$controllerInfo['class']}.");
             }
+
+            // get call method method params
+            if ($class->hasMethod($controllerInfo['method'])) {
+                $params = $class->getMethod($controllerInfo['method'])->getParameters();
+                foreach ($params as $p)
+                    array_push($methodParam, Dispatcher::get($p->getClass()->name));
+            } else {
+                throw new UnexpectedValueException(
+                        "Oh, method `{$controllerInfo['method']}` don`t exit at {$controllerInfo['class']}.");
+            }
+
+            // set get data to request object
+            $request->setGetData($this->getRequestParam());
+
+            // create controller instance
+            $controller = (new ReflectionClass($controllerInfo['class']))->newInstanceArgs($constructParams);
+
+            // returned result of the method invoked by the controller
+            return $controller->callMethod($controllerInfo['method'], $methodParam);
+
         } catch (ReflectionException $e) {
             $this->logger->error($e->getMessage());
-        } catch (UnexpectedValueException $uve) {
-            $this->logger->error($uve->getMessage());
+        } catch (UnexpectedValueException $e) {
+            $this->logger->error($e->getMessage());
         }
-        return "";
+
+        return '';
     }
 
     private function getControllerData(): array
@@ -85,7 +105,7 @@ class Route
         $search[] = '/\\//';
         $replacements[] = '\\/';
 
-        return "/^" . preg_replace($search, $replacements, $pattern) . "$/";
+        return '/^' . preg_replace($search, $replacements, $pattern) . '$/';
     }
 
     private function getRequestParam(): array
@@ -105,7 +125,7 @@ class Route
     {
         $result = array();
         if (count($dataArray) != count($keyArray))
-            throw new InvalidArgumentException("dataArray and keyArray has different count");
+            throw new InvalidArgumentException('dataArray and keyArray has different count');
 
         foreach ($dataArray as $key => $item)
             $result[$keyArray[$key]] = $item;

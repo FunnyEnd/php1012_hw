@@ -63,12 +63,12 @@ class User extends BaseModel
         $this->lastName = $lastName;
     }
 
-    public function getIsAdmin(): bool
+    public function getIsAdmin(): int
     {
         return $this->isAdmin;
     }
 
-    public function setIsAdmin(bool $isAdmin): void
+    public function setIsAdmin(int $isAdmin): void
     {
         $this->isAdmin = $isAdmin;
     }
@@ -77,7 +77,7 @@ class User extends BaseModel
      * Convert array to User
      * @param array $data
      */
-    public function formArray(array $data): void
+    public function fromArray(array $data): void
     {
         $this->setId($data['id']);
         $this->setEmail($data['email']);

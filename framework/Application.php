@@ -25,6 +25,8 @@ class Application
         $this->logger = new Log("APP");
 
         Dispatcher::addInstance(Session::class, Session::getInstance());
+        Dispatcher::addInstance(Request::class, Request::getInstance());
+        Dispatcher::addClass(Log::class,['Logger']);
     }
 
     private function initRoutes()
@@ -50,7 +52,7 @@ class Application
             $backtraceStr = ob_get_clean();
             $res = "[$errorTime] {$errorType}. $errorText $errfile at line $errline \n$backtraceStr \n";
 
-            $log = new \Zaine\Log("Error handler");
+            $log = new Log("Error handler");
             $log->error($res);
         });
     }
