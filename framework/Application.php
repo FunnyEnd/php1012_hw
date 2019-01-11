@@ -14,7 +14,6 @@ class Application
     private const SRC_SERVICES_PHP = 'src/services.php';
 
     private $logger;
-    private $dispatcher;
 
     public function __construct()
     {
@@ -22,21 +21,10 @@ class Application
         $this->initExceptionHandler();
         Config::init();
         $this->initRoutes();
-        $this->dispatcher = new Dispatcher();
         $this->initServices();
         $this->logger = new Log("APP");
 
-        $this->addInstance(Session::class, Session::getInstance());
-    }
-
-    public function addClass(string $class, array $params, bool $share = true)
-    {
-        $this->dispatcher->addClass($class, $params, $share);
-    }
-
-    public function addInstance(string $class, $obj, bool $share = true)
-    {
-        $this->dispatcher->addInstance($class, $obj, $share);
+        Dispatcher::addInstance(Session::class, Session::getInstance());
     }
 
     private function initRoutes()
@@ -48,7 +36,7 @@ class Application
     {
         $services = require self::SRC_SERVICES_PHP;
         foreach ($services as $service) {
-            $this->addClass($service[0], $service[1]);
+            Dispatcher::addClass($service[0], $service[1]);
         }
     }
 
@@ -73,7 +61,7 @@ class Application
         try {
             $time_start = microtime(true);
 
-            $content = Router::goToCurrentRoute($request, $this->dispatcher);
+            $content = Router::goToCurrentRoute($request);
 
             $time_end = microtime(true);
             $execution_time = ($time_end - $time_start);

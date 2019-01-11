@@ -3,8 +3,7 @@
 namespace Framework\Exception;
 
 use Exception;
-use Framework\Logger\FileLogger;
-use Framework\Logger\Log;
+use Zaine\Log;
 
 class ViewExtension extends Exception
 {
@@ -13,9 +12,7 @@ class ViewExtension extends Exception
     public function __construct($message, $code = 0, Exception $previous = null)
     {
         parent::__construct($message, $code, $previous);
-        $fileLogger = new FileLogger();
-        $this->logger = new Log($fileLogger);
-
+        $this->logger = new Log("Framework\\View");
     }
 
     public function __toString()

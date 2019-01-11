@@ -8,48 +8,47 @@
 
 namespace Framework;
 
-
 use ReflectionClass;
 use ReflectionException;
 
 class Dispatcher
 {
-    private $services = [];
+    private static $services = [];
 
-    private $instantiated = [];
+    private static $instantiated = [];
 
-    private $shared = [];
+    private static $shared = [];
 
-    public function addInstance(string $class, $service, bool $share = true)
+    public static function addInstance(string $class, $service, bool $share = true)
     {
-        $this->services[$class] = $service;
-        $this->instantiated[$class] = $service;
-        $this->shared[$class] = $share;
+        self::$services[$class] = $service;
+        self::$instantiated[$class] = $service;
+        self::$shared[$class] = $share;
     }
 
-    public function addClass(string $class, array $params, bool $share = true)
+    public static function addClass(string $class, array $params, bool $share = true)
     {
-        $this->services[$class] = $params;
-        $this->shared[$class] = $share;
+        self::$services[$class] = $params;
+        self::$shared[$class] = $share;
     }
 
-    public function has(string $interface): bool
+    public static function has(string $interface): bool
     {
-        return isset($this->services[$interface]) || isset($this->instantiated[$interface]);
+        return isset(self::$services[$interface]) || isset(self::$instantiated[$interface]);
     }
 
-    public function get(string $class)
+    public static function get(string $class)
     {
-        if (isset($this->instantiated[$class]) && $this->shared[$class])
-            return $this->instantiated[$class];
+        if (isset(self::$instantiated[$class]) && self::$shared[$class])
+            return self::$instantiated[$class];
 
-        $args = $this->services[$class];
+        $args = self::$services[$class];
 
         try {
             $object = (new ReflectionClass($class))->newInstanceArgs($args);
 
-            if ($this->shared[$class])
-                $this->instantiated[$class] = $object;
+            if (self::$shared[$class])
+                self::$instantiated[$class] = $object;
 
             return $object;
         } catch (ReflectionException $e) {

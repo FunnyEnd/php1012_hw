@@ -37,7 +37,7 @@ class Route
         return (preg_match($reg, $requestURI) == 0) ? false : true;
     }
 
-    public function executeController(Request $request, Dispatcher $dispatcher): string
+    public function executeController(Request $request): string
     {
         try {
             $controllerInfo = $this->getControllerData();
@@ -46,7 +46,7 @@ class Route
             if ($class->hasMethod("__construct")) {
                 $constructorParam = $class->getConstructor()->getParameters();
                 foreach ($constructorParam as $c)
-                    array_push($param, $dispatcher->get($c->getClass()->name));
+                    array_push($param, Dispatcher::get($c->getClass()->name));
             }
 
             $controller = (new ReflectionClass($controllerInfo['class']))->newInstanceArgs($param);
