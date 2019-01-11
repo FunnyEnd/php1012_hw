@@ -74,7 +74,7 @@ class Product extends BaseModel
         return $this->fromCoinsToBills($this->price);
     }
 
-    public function setPrice(int $price): void
+    public function setPriceAtCoins(int $price): void
     {
         $this->price = $price;
     }
@@ -100,7 +100,7 @@ class Product extends BaseModel
         $this->setDescription($data['description']);
         $this->setCategory($data['category']);
         $this->setAvailability($data['availability']);
-        $this->setPrice($data['price']);
+        $this->setPriceAtCoins($data['price']);
         $this->setImage($data['image']);
         $this->setCreateAt($data['create_at']);
         $this->setUpdateAt($data['update_at']);
