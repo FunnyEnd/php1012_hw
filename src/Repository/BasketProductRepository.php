@@ -10,8 +10,11 @@ use App\Models\Image;
 use App\Models\Product;
 use App\Models\User;
 use DateTime;
+use Exception;
 use Framework\BaseRepository;
 use Framework\Constants;
+use Framework\Dispatcher;
+use Zaine\Log;
 
 class BasketProductRepository extends BaseRepository
 {
@@ -25,6 +28,7 @@ class BasketProductRepository extends BaseRepository
             "left join products on products.id = baskets_products.product_id ".
             "left join images on images.id = products.image_id ".
             "where baskets_products.id = :id";
+
     private const SELECT_BY_USER_ID = /** @lang text */
             "select baskets_products.id, baskets_products.basket_id, baskets.user_id, baskets_products.count, ".
             "baskets_products.product_id, baskets_products.create_at, baskets_products.update_at, ".
@@ -35,6 +39,10 @@ class BasketProductRepository extends BaseRepository
             "left join products on products.id = baskets_products.product_id ".
             "left join images on images.id = products.image_id ".
             "where baskets.user_id = :user_id";
+
+    private const INSERT_SQL = /** @lang text */
+            "insert into baskets_products (basket_id, product_id, count, create_at, update_at) values (:basket_id, :product_id, :count, " .
+            ":create_at, :update_at)";
 
     /**
      * @param int $id
@@ -62,6 +70,28 @@ class BasketProductRepository extends BaseRepository
 
     public function save(BasketProduct $basketProduct)
     {
+        try {
+            $currentDateTime = new DateTime();
+            $this->db->execute(self::INSERT_SQL, [
+                    'basket_id' => $basketProduct->getBasket()->getId(),
+                    'product_id' => $basketProduct->getProduct()->getId(),
+                    'count' => $basketProduct->getCount(),
+                    'create_at' => $currentDateTime->format(Constants::DATETIME_FORMAT),
+                    'update_at' => $currentDateTime->format(Constants::DATETIME_FORMAT),
+            ]);
+
+            $basketProduct->setCreateAt($currentDateTime);
+            $basketProduct->setUpdateAt($currentDateTime);
+            $basketProduct->setId($this->db->insertId());
+            return $basketProduct;
+
+        } catch (Exception $e) {
+            $logger = Dispatcher::get(Log::class);
+            $logger->error($e->getMessage());
+            $logger->error($e->getTraceAsString());
+        }
+
+        return new BasketProduct();
     }
 
     public function update(BasketProduct $basketProduct)

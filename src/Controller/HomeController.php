@@ -3,6 +3,9 @@
 namespace App\Controller;
 
 use App\Extensions\BasketProductNotExistExtension;
+use App\Models\Basket;
+use App\Models\BasketProduct;
+use App\Models\Product;
 use App\Repository\BasketProductRepository;
 use App\Repository\ProductRepository;
 use App\View\UserView;
@@ -20,7 +23,16 @@ class HomeController extends BaseController
 
     public function showHome(BasketProductRepository $basketProductRepository): string
     {
-        $basketProduct = $basketProductRepository->findByUserId(10);
+        $p = new Product();
+        $p->setId(10);
+        $b = new Basket();
+        $b->setId(1);
+        $bp = new BasketProduct();
+        $bp->setBasket($b);
+        $bp->setProduct($p);
+        $bp->setCount(10);
+
+        $basketProduct = $basketProductRepository->save($bp);
         var_dump($basketProduct);
 
 
