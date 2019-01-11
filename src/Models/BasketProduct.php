@@ -6,9 +6,20 @@ use Framework\BaseModel;
 
 class BasketProduct extends BaseModel
 {
+    private $id;
     private $basket;
     private $product;
     private $count;
+
+    public function getId(): int
+    {
+        return $this->id;
+    }
+
+    public function setId(int $id): void
+    {
+        $this->id = $id;
+    }
 
     public function getBasket(): Basket
     {
@@ -20,7 +31,7 @@ class BasketProduct extends BaseModel
         $this->basket = $basket;
     }
 
-    public function getProduct() : Product
+    public function getProduct(): Product
     {
         return $this->product;
     }
@@ -46,6 +57,7 @@ class BasketProduct extends BaseModel
      */
     public function fromArray(array $data): void
     {
+        $this->setId($data['id']);
         $this->setBasket($data['basket']);
         $this->setProduct($data['product']);
         $this->setCount($data['count']);
