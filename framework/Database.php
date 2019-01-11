@@ -76,6 +76,7 @@ class Database
             $this->logger->error($e->getMessage());
             $this->logger->error($e->getTraceAsString());
         }
+
         return [];
     }
 

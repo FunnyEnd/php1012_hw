@@ -7,5 +7,6 @@ return [
         [\App\Repository\UsersRepository::class, []],
         [\App\Services\AuthService::class,
                 [\Framework\Session::getInstance(), new \App\Repository\UsersRepository(), new \App\Services\UserService()]],
-        [\App\Services\UserService::class, []]
+        [\App\Services\UserService::class, []],
+        [\App\Repository\BasketProductRepository::class, []]
 ];

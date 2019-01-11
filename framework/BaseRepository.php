@@ -16,5 +16,5 @@ abstract class BaseRepository
     }
 
 
-    abstract public function findById(int $id);
+//    abstract public function findById(int $id);
 }
