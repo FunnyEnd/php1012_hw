@@ -64,14 +64,14 @@ class Product extends BaseModel
         $this->category = $category;
     }
 
-    public function getPrice(): float
+    public function getPrice(): int
     {
         return $this->price;
     }
 
-    public function setPrice(float $price): void
+    public function setPrice(int $price): void
     {
-        $this->price = round($price, 2);
+        $this->price = $price;
     }
 
     public function getImage(): Image
