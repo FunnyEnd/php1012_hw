@@ -20,13 +20,8 @@ class HomeController extends BaseController
 
     public function showHome(BasketProductRepository $basketProductRepository): string
     {
-        try {
-            $basketProduct = $basketProductRepository->findById(3);
-            var_dump($basketProduct);
-        } catch (BasketProductNotExistExtension $e) {
-            var_dump($e->getMessage());
-            die($e->getTraceAsString());
-        }
+        $basketProduct = $basketProductRepository->findByUserId(10);
+        var_dump($basketProduct);
 
 
 

@@ -25,6 +25,16 @@ class BasketProductRepository extends BaseRepository
             "left join products on products.id = baskets_products.product_id ".
             "left join images on images.id = products.image_id ".
             "where baskets_products.id = :id";
+    private const SELECT_BY_USER_ID = /** @lang text */
+            "select baskets_products.id, baskets_products.basket_id, baskets.user_id, baskets_products.count, ".
+            "baskets_products.product_id, baskets_products.create_at, baskets_products.update_at, ".
+            "products.title as 'product_title', products.price as 'product_price', ".
+            "images.path as 'product_image_path', images.alt as 'product_image_alt', products.image_id as 'product_image_id' ".
+            "FROM baskets_products ".
+            "left join baskets on baskets.id = baskets_products.basket_id ".
+            "left join products on products.id = baskets_products.product_id ".
+            "left join images on images.id = products.image_id ".
+            "where baskets.user_id = :user_id";
 
     /**
      * @param int $id
@@ -40,8 +50,14 @@ class BasketProductRepository extends BaseRepository
         return $this->mapArrayToBasketProduct($result);
     }
 
-    public function findByUserId(int $userId)
+    public function findByUserId(int $userId):array
     {
+        $result = $this->db->getAll(self::SELECT_BY_USER_ID, ['user_id' => $userId]);
+        $basketProduct = [];
+        foreach ($result as $r)
+            array_push($basketProduct, $this->mapArrayToBasketProduct($r));
+
+        return $basketProduct;
     }
 
     public function save(BasketProduct $basketProduct)
