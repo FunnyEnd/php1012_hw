@@ -2,11 +2,6 @@
 
 namespace App\Controller;
 
-use App\Extensions\BasketProductNotExistExtension;
-use App\Models\Basket;
-use App\Models\BasketProduct;
-use App\Models\Product;
-use App\Repository\BasketProductRepository;
 use App\Repository\ProductRepository;
 use App\View\UserView;
 use Framework\BaseController;
@@ -21,22 +16,8 @@ class HomeController extends BaseController
         $this->productRepository = $productRepository;
     }
 
-    public function showHome(BasketProductRepository $basketProductRepository): string
+    public function showHome(): string
     {
-        $p = new Product();
-        $p->setId(10);
-        $b = new Basket();
-        $b->setId(1);
-        $bp = new BasketProduct();
-        $bp->setBasket($b);
-        $bp->setProduct($p);
-        $bp->setCount(10);
-
-        $basketProduct = $basketProductRepository->save($bp);
-        var_dump($basketProduct);
-
-
-
         return UserView::render('home', [
                 'categoryFirstProducts' => $this->productRepository->findByCategoryId(1)
         ]);

@@ -19,30 +19,54 @@ use Zaine\Log;
 class BasketProductRepository extends BaseRepository
 {
     private const SELECT_BY_ID = /** @lang text */
-            "select baskets_products.id, baskets_products.basket_id, baskets.user_id, baskets_products.count, ".
-            "baskets_products.product_id, baskets_products.create_at, baskets_products.update_at, ".
-            "products.title as 'product_title', products.price as 'product_price', ".
-            "images.path as 'product_image_path', images.alt as 'product_image_alt', products.image_id as 'product_image_id' ".
-            "FROM baskets_products ".
-            "left join baskets on baskets.id = baskets_products.basket_id ".
-            "left join products on products.id = baskets_products.product_id ".
-            "left join images on images.id = products.image_id ".
+            "select baskets_products.id, baskets_products.basket_id, baskets.user_id, baskets_products.count, " .
+            "baskets_products.product_id, baskets_products.create_at, baskets_products.update_at, " .
+            "products.title as 'product_title', products.price as 'product_price', " .
+            "images.path as 'product_image_path', images.alt as 'product_image_alt', products.image_id as 'product_image_id' " .
+            "FROM baskets_products " .
+            "left join baskets on baskets.id = baskets_products.basket_id " .
+            "left join products on products.id = baskets_products.product_id " .
+            "left join images on images.id = products.image_id " .
             "where baskets_products.id = :id";
 
     private const SELECT_BY_USER_ID = /** @lang text */
-            "select baskets_products.id, baskets_products.basket_id, baskets.user_id, baskets_products.count, ".
-            "baskets_products.product_id, baskets_products.create_at, baskets_products.update_at, ".
-            "products.title as 'product_title', products.price as 'product_price', ".
-            "images.path as 'product_image_path', images.alt as 'product_image_alt', products.image_id as 'product_image_id' ".
-            "FROM baskets_products ".
-            "left join baskets on baskets.id = baskets_products.basket_id ".
-            "left join products on products.id = baskets_products.product_id ".
-            "left join images on images.id = products.image_id ".
+            "select baskets_products.id, baskets_products.basket_id, baskets.user_id, baskets_products.count, " .
+            "baskets_products.product_id, baskets_products.create_at, baskets_products.update_at, " .
+            "products.title as 'product_title', products.price as 'product_price', " .
+            "images.path as 'product_image_path', images.alt as 'product_image_alt', products.image_id as 'product_image_id' " .
+            "FROM baskets_products " .
+            "left join baskets on baskets.id = baskets_products.basket_id " .
+            "left join products on products.id = baskets_products.product_id " .
+            "left join images on images.id = products.image_id " .
             "where baskets.user_id = :user_id";
+
+    private const SELECT_COUNT_BY_PRODUCT_ID_AND_BASKET_ID = /** @lang text */
+            "SELECT count(id) as 'count' " .
+            "FROM baskets_products " .
+            "where product_id = :product_id AND basket_id = :basket_id";
+
+    private const SELECT_BY_PRODUCT_ID_AND_BASKET_ID = /** @lang text */
+            "select baskets_products.id, baskets_products.basket_id, baskets.user_id, baskets_products.count, " .
+            "baskets_products.product_id, baskets_products.create_at, baskets_products.update_at, " .
+            "products.title as 'product_title', products.price as 'product_price', " .
+            "images.path as 'product_image_path', images.alt as 'product_image_alt', products.image_id as 'product_image_id' " .
+            "FROM baskets_products " .
+            "left join baskets on baskets.id = baskets_products.basket_id " .
+            "left join products on products.id = baskets_products.product_id " .
+            "left join images on images.id = products.image_id " .
+            "where baskets_products.basket_id = :basket_id AND baskets_products.product_id = :product_id";
 
     private const INSERT_SQL = /** @lang text */
             "insert into baskets_products (basket_id, product_id, count, create_at, update_at) values (:basket_id, :product_id, :count, " .
             ":create_at, :update_at)";
+
+    private const UPDATE_SQL = /** @lang text */
+            "update baskets_products " .
+            "set `count` = :count, `update_at` = :update_at " .
+            "where product_id = :product_id AND basket_id = :basket_id";
+
+    private const DELETE_BY_ID_SQL = /** @lang text */
+            "delete from baskets_products where id = :id";
 
     /**
      * @param int $id
@@ -58,7 +82,7 @@ class BasketProductRepository extends BaseRepository
         return $this->mapArrayToBasketProduct($result);
     }
 
-    public function findByUserId(int $userId):array
+    public function findByUserId(int $userId): array
     {
         $result = $this->db->getAll(self::SELECT_BY_USER_ID, ['user_id' => $userId]);
         $basketProduct = [];
@@ -68,7 +92,26 @@ class BasketProductRepository extends BaseRepository
         return $basketProduct;
     }
 
-    public function save(BasketProduct $basketProduct)
+    /**
+     * @param int $productId
+     * @param int $basketId
+     * @return BasketProduct
+     * @throws BasketProductNotExistExtension
+     */
+    public function findByProductIdAndBasketId(int $productId, int $basketId): BasketProduct
+    {
+        $result = $this->db->getOne(self::SELECT_BY_PRODUCT_ID_AND_BASKET_ID, [
+                        'product_id' => $productId,
+                        'basket_id' => $basketId]
+        );
+
+        if (empty($result))
+            throw new BasketProductNotExistExtension();
+
+        return $this->mapArrayToBasketProduct($result);
+    }
+
+    public function save(BasketProduct $basketProduct): BasketProduct
     {
         try {
             $currentDateTime = new DateTime();
@@ -94,12 +137,44 @@ class BasketProductRepository extends BaseRepository
         return new BasketProduct();
     }
 
-    public function update(BasketProduct $basketProduct)
+    public function update(BasketProduct $basketProduct): BasketProduct
     {
+        try {
+            $currentDateTime = new DateTime();
+            $this->db->execute(self::UPDATE_SQL, [
+                    'basket_id' => $basketProduct->getBasket()->getId(),
+                    'product_id' => $basketProduct->getProduct()->getId(),
+                    'count' => $basketProduct->getCount(),
+                    'update_at' => $currentDateTime->format(Constants::DATETIME_FORMAT),
+            ]);
+
+            $basketProduct->setUpdateAt($currentDateTime);
+            return $basketProduct;
+
+        } catch (Exception $e) {
+            $logger = Dispatcher::get(Log::class);
+            $logger->error($e->getMessage());
+            $logger->error($e->getTraceAsString());
+        }
+
+        return new BasketProduct();
     }
 
     public function delete(BasketProduct $basketProduct)
     {
+        $this->db->execute(self::DELETE_BY_ID_SQL, [
+                "id" => $basketProduct->getId()
+        ]);
+    }
+
+    public function isProductExist(BasketProduct $basketProduct): bool
+    {
+        $result = $this->db->getOne(self::SELECT_COUNT_BY_PRODUCT_ID_AND_BASKET_ID, [
+                'product_id' => $basketProduct->getProduct()->getId(),
+                'basket_id' => $basketProduct->getBasket()->getId()
+        ]);
+
+        return (intval($result['count']) !== 0);
     }
 
     /**

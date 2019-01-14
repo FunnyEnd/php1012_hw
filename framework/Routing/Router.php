@@ -5,6 +5,7 @@ namespace Framework\Routing;
 use Framework\Dispatcher;
 use Framework\HTTP\Request;
 use UnderflowException;
+use Zaine\Log;
 
 class Router
 {
@@ -31,22 +32,16 @@ class Router
 
     public static function goToCurrentRoute(Request $request): string
     {
-        if (self::$routArray == null) {
+        if (self::$routArray == null || empty(self::$routArray)) {
             return false;
         }
-        $success = false;
-        $html = "";
+
         foreach (self::$routArray as $rout) {
             if ($rout->isValid()) {
-                $html = $rout->executeController($request);
-                $success = true;
+                return $rout->executeController($request);
             }
         }
 
-        if ($success) {
-            return $html;
-        } else {
-            throw new UnderflowException("Rout don`t found.");
-        }
+        throw new UnderflowException("Rout don`t found for request {$_SERVER['REQUEST_URI']}");
     }
 }

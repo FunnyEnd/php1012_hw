@@ -59,7 +59,6 @@ class Application
 
     public function execute(Request $request): string
     {
-
         try {
             $time_start = microtime(true);
 
