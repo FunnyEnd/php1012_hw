@@ -48,3 +48,13 @@ Router::addRout(new Route(
         "/logout",
         "App\Controller\AuthController::logout"
 ));
+Router::addRout(new Route(
+        Router::GET_METHOD,
+        '/basket',
+        'App\Controller\BasketController::index'
+));
+Router::addRout(new Route(
+        Router::POST_METHOD,
+        '/basket',
+        'App\Controller\BasketController::store'
+));
