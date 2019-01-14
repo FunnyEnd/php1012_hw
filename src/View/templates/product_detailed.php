@@ -1,4 +1,26 @@
 <?php include 'header.php'; ?>
+<!-- Modal -->
+<div class="modal fade" id="basket-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Basket</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>Product successfully added to cart!</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-success" data-dismiss="modal">Continue shopping</button>
+        <a href="/basket" class="btn btn-primary" >Go to basket</a>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Modal end-->
 <div>
   <ol class="breadcrumb">
     <li class="breadcrumb-item"><a href="/">Home</a></li>
@@ -21,12 +43,13 @@
       <p><?= $product->getPriceAtBills(); ?> UAH</p>
     </div>
     <div class="bd-highlight">
-      <form class="form-group" action="/">
+      <form class="form-group" action="/" id="add-product-to-basket-form">
         <div class="product-detailed-count">
-          <input class="form-control w-50 ml-auto mr-auto" type="number" value="1">
+          <input class="form-control w-50 ml-auto mr-auto" type="number" name="count" value="1">
+          <input type="hidden" name="id" value="<?= $product->getId();?>">
         </div>
         <div class="product-detailed-buy mt-3">
-          <button type="submit" class="btn btn-success w-50 ml-auto mr-auto">Buy</button>
+          <button type="button" id="buy_button" class="btn btn-success w-50 ml-auto mr-auto">Buy</button>
         </div>
       </form>
     </div>
@@ -53,4 +76,21 @@
     </div>
   </div>
 </div>
+<script>
+    $("#buy_button").on('click', function () {
+        var formData = $('#add-product-to-basket-form').serializeArray().reduce(function(obj, item) {
+            obj[item.name] = item.value;
+            return obj;
+        }, {});
+        $.ajax({
+            url: "/basket",
+            type: "POST",
+            data: formData,
+            success: function (result) {
+                console.log(result);
+                $('#basket-modal').modal('show');
+            }
+        });
+    })
+</script>
 <?php include 'footer.php'; ?>

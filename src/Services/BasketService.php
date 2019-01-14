@@ -17,28 +17,28 @@ class BasketService
         $this->basketProductRepository = $basketProductRepository;
     }
 
-    public function addProductsToBasket(array $basketProducts): void
+    public function addProductToBasket(BasketProduct $basketProduct): void
     {
-        foreach ($basketProducts as $basketProduct) {
-            if ($this->basketProductRepository->isProductExist($basketProduct)) {
-                try {
 
-                    $basketProductFromDataBase = $this->basketProductRepository->findByProductIdAndBasketId(
-                            $basketProduct->getProduct()->getId(),
-                            $basketProduct->getBasket()->getId()
-                    );
+        if ($this->basketProductRepository->isProductExist($basketProduct)) {
+            try {
 
-                    $basketProduct->setCount($basketProduct->getCount() + $basketProductFromDataBase->getCount());
-                    $this->basketProductRepository->update($basketProduct);
-                } catch (BasketProductNotExistExtension $e) {
-                    $logger = Dispatcher::get(Log::class);
-                    $logger->error("Product with id {$basketProduct->getProduct()->getId()} don`t exist " .
-                            " at basket with id {$basketProduct->getBasket()->getId()}.");
-                }
-            } else {
-                $this->basketProductRepository->save($basketProduct);
+                $basketProductFromDataBase = $this->basketProductRepository->findByProductIdAndBasketId(
+                        $basketProduct->getProduct()->getId(),
+                        $basketProduct->getBasket()->getId()
+                );
+
+                $basketProduct->setCount($basketProduct->getCount() + $basketProductFromDataBase->getCount());
+                $this->basketProductRepository->update($basketProduct);
+            } catch (BasketProductNotExistExtension $e) {
+                $logger = Dispatcher::get(Log::class);
+                $logger->error("Product with id {$basketProduct->getProduct()->getId()} don`t exist " .
+                        " at basket with id {$basketProduct->getBasket()->getId()}.");
             }
+        } else {
+            $this->basketProductRepository->save($basketProduct);
         }
+
     }
 
     public function deleteProductFromBasket(BasketProduct $basketProduct): void

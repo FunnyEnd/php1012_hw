@@ -17,6 +17,7 @@
   "require": {
     "zaine/zaine": "^1.0",
     "clemon/clemon": "^1.0",
-    "ext-pdo": "*"
+    "ext-pdo": "*",
+    "ext-json": "*"
   }
 }

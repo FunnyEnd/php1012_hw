@@ -4,9 +4,13 @@ namespace App\Repository;
 
 use App\Extensions\BasketNotExistExtension;
 use App\Models\Basket;
+use App\Models\User;
 use DateTime;
 use Framework\BaseRepository;
 use Framework\Constants;
+use Framework\Dispatcher;
+use Exception;
+use Zaine\Log;
 
 class BasketRepository extends BaseRepository
 {
@@ -19,8 +23,20 @@ class BasketRepository extends BaseRepository
             "left join users on users.id = baskets.user_id " .
             "where id = :id";
 
+    private const SELECT_BY_USER_ID = /** @lang text */
+            "SELECT baskets.id, baskets.user_id, baskets.create_at, baskets.update_at, " .
+            "users.email as 'user_email', users.password as 'user_password', users.first_name as 'user_first_name', " .
+            "users.last_name as 'user_last_name', users.is_admin as 'user_is_admin', users.create_at as 'user_create_at', " .
+            "users.update_at as 'user_update_at' " .
+            "FROM baskets " .
+            "left join users on users.id = baskets.user_id " .
+            "where baskets.user_id = :user_id";
+
+    const INSERT_SQL = /** @lang text */
+            "insert into baskets (user_id, create_at, update_at) values (:user_id, :create_at, :update_at)";
+
     /**
-     * Find image by id
+     * Find basket by id
      * @param int $id
      * @return Basket
      * @throws BasketNotExistExtension
@@ -44,7 +60,49 @@ class BasketRepository extends BaseRepository
         $basket = new Basket();
         $row['create_at'] = DateTime::createFromFormat(Constants::DATETIME_FORMAT, $row['create_at']);
         $row['update_at'] = DateTime::createFromFormat(Constants::DATETIME_FORMAT, $row['update_at']);
+        $user = new User();
+        $user->setId($row['user_id']);
+        $row['user'] = $user;
         $basket->fromArray($row);
         return $basket;
+    }
+
+    /**
+     * Find basket by user_id
+     * @param string $userId
+     * @return Basket
+     * @throws BasketNotExistExtension
+     */
+    public function findByUserId(string $userId)
+    {
+        $result = $this->db->getOne(self::SELECT_BY_USER_ID, ['user_id' => $userId]);
+        if (empty($result))
+            throw new BasketNotExistExtension();
+
+        return $this->mapArrayToBasket($result);
+    }
+
+    public function save(Basket $basket)
+    {
+        try {
+            $currentDateTime = new DateTime();
+            $this->db->execute(self::INSERT_SQL, [
+                    'user_id' => $basket->getUser()->getId(),
+                    'create_at' => $currentDateTime->format(Constants::DATETIME_FORMAT),
+                    'update_at' => $currentDateTime->format(Constants::DATETIME_FORMAT),
+            ]);
+
+            $basket->setCreateAt($currentDateTime);
+            $basket->setUpdateAt($currentDateTime);
+            $basket->setId($this->db->insertId());
+            return $basket;
+
+        } catch (Exception $e) {
+            $logger = Dispatcher::get(Log::class);
+            $logger->error($e->getMessage());
+            $logger->error($e->getTraceAsString());
+        }
+
+        return new Basket();
     }
 }

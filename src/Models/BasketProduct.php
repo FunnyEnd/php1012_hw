@@ -51,6 +51,16 @@ class BasketProduct extends BaseModel
         $this->count = $count;
     }
 
+    public function getPriceAtBills(): float
+    {
+        return ($this->getProduct()->getPriceAtCoins() * $this->getCount()) / 100;
+    }
+
+    public function getPriceAtCoins(): float
+    {
+        return $this->getProduct()->getPriceAtCoins() * $this->getCount();
+    }
+
     /**
      * Convert array to BasketProduct
      * @param array $data
