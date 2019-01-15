@@ -18,9 +18,10 @@ class User extends BaseModel
         return $this->id;
     }
 
-    public function setId(int $id): void
+    public function setId(int $id): User
     {
         $this->id = $id;
+        return $this;
     }
 
     public function getEmail(): string
@@ -28,9 +29,10 @@ class User extends BaseModel
         return $this->email;
     }
 
-    public function setEmail(string $email): void
+    public function setEmail(string $email): User
     {
         $this->email = $email;
+        return $this;
     }
 
     public function getPassword(): string
@@ -38,9 +40,10 @@ class User extends BaseModel
         return $this->password;
     }
 
-    public function setPassword(string $password): void
+    public function setPassword(string $password): User
     {
         $this->password = $password;
+        return $this;
     }
 
     public function getFirstName(): string
@@ -48,9 +51,10 @@ class User extends BaseModel
         return $this->firstName;
     }
 
-    public function setFirstName(string $firstName): void
+    public function setFirstName(string $firstName): User
     {
         $this->firstName = $firstName;
+        return $this;
     }
 
     public function getLastName(): string
@@ -58,9 +62,10 @@ class User extends BaseModel
         return $this->lastName;
     }
 
-    public function setLastName(string $lastName): void
+    public function setLastName(string $lastName): User
     {
         $this->lastName = $lastName;
+        return $this;
     }
 
     public function getIsAdmin(): int
@@ -68,9 +73,10 @@ class User extends BaseModel
         return $this->isAdmin;
     }
 
-    public function setIsAdmin(int $isAdmin): void
+    public function setIsAdmin(int $isAdmin): User
     {
         $this->isAdmin = $isAdmin;
+        return $this;
     }
 
     /**

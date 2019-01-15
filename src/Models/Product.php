@@ -19,9 +19,10 @@ class Product extends BaseModel
         return $this->id;
     }
 
-    public function setId(int $id): void
+    public function setId(int $id): Product
     {
-        $this->id = $id;
+       $this->id = $id;
+       return $this;
     }
 
     public function getTitle(): string
@@ -29,9 +30,10 @@ class Product extends BaseModel
         return $this->title;
     }
 
-    public function setTitle(string $title): void
+    public function setTitle(string $title): Product
     {
         $this->title = $title;
+        return $this;
     }
 
     public function getDescription(): string
@@ -39,9 +41,10 @@ class Product extends BaseModel
         return $this->description;
     }
 
-    public function setDescription(string $description): void
+    public function setDescription(string $description): Product
     {
         $this->description = $description;
+        return $this;
     }
 
     public function getAvailability(): int
@@ -49,9 +52,10 @@ class Product extends BaseModel
         return $this->availability;
     }
 
-    public function setAvailability(int $availability): void
+    public function setAvailability(int $availability): Product
     {
         $this->availability = $availability;
+        return $this;
     }
 
     public function getCategory(): Category
@@ -59,9 +63,10 @@ class Product extends BaseModel
         return $this->category;
     }
 
-    public function setCategory(Category $category): void
+    public function setCategory(Category $category): Product
     {
         $this->category = $category;
+        return $this;
     }
 
     public function getPriceAtCoins(): int
@@ -74,9 +79,10 @@ class Product extends BaseModel
         return $this->fromCoinsToBills($this->price);
     }
 
-    public function setPriceAtCoins(int $price): void
+    public function setPriceAtCoins(int $price): Product
     {
         $this->price = $price;
+        return $this;
     }
 
     public function getImage(): Image
@@ -84,9 +90,10 @@ class Product extends BaseModel
         return $this->image;
     }
 
-    public function setImage(Image $image): void
+    public function setImage(Image $image): Product
     {
         $this->image = $image;
+        return $this;
     }
 
     /**

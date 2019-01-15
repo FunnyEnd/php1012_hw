@@ -18,10 +18,12 @@ use Framework\HTTP\Request;
 class BasketController extends BaseController
 {
     private $authService;
+    private $basketService;
 
-    public function __construct(AuthService $authService)
+    public function __construct(AuthService $authService, BasketService $basketService)
     {
         $this->authService = $authService;
+        $this->basketService = $basketService;
     }
 
     public function index(BasketProductRepository $basketProductRepository)
@@ -30,41 +32,21 @@ class BasketController extends BaseController
             return 'no auth';
 
         $products = $basketProductRepository->findByUserId($this->authService->getUserId());
-        $totalPrice = 0;
-        foreach ($products as $product) {
-            $totalPrice += $product->getPriceAtCoins();
-        }
-        $totalPrice /= 100;
+        $totalPrice = $this->basketService->calculateTotalPrice($products);
 
         return UserView::render('basket', ['basketProducts' => $products, 'totalPrice' => $totalPrice]);
     }
 
-    public function store(Request $request, BasketService $basketService, BasketRepository $basketRepository)
+    public function store(Request $request)
     {
         if (!$this->authService->isAuth())
             json_encode(['success' => false, 'error' => 'no auth']);
 
-        $userId = $this->authService->getUserId();
         $basketProduct = new BasketProduct();
-        $product = new Product();
-        $product->setId(intval($request->post('id')));
-        $basketProduct->setProduct($product);
-
-        $basket = null;
-
-        try {
-            $basket = $basketRepository->findByUserId($userId);
-        } catch (BasketNotExistExtension $e) {
-            $basket = new Basket();
-            $user = new User();
-            $user->setId($userId);
-            $basket->setUser($user);
-            $basket = $basketRepository->save($basket);
-        }
-
-        $basketProduct->setBasket($basket);
-        $basketProduct->setCount(intval($request->post('count')));
-        $basketService->addProductToBasket($basketProduct);
+        $basketProduct->setProduct((new Product())->setId($request->post('id')));
+        $basketProduct->setBasket($this->basketService->getBasketByUserId($this->authService->getUserId()));
+        $basketProduct->setCount($request->post('count'));
+        $this->basketService->addProductToBasket($basketProduct);
 
         return json_encode(['success' => true]);
     }

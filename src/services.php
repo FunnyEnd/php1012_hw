@@ -9,6 +9,7 @@ return [
                 [\Framework\Session::getInstance(), new \App\Repository\UsersRepository(), new \App\Services\UserService()]],
         [\App\Services\UserService::class, []],
         [\App\Repository\BasketProductRepository::class, []],
-        [\App\Services\BasketService::class, [new \App\Repository\BasketProductRepository]],
+        [\App\Services\BasketService::class,
+                [new \App\Repository\BasketProductRepository, new \App\Repository\BasketRepository()]],
         [\App\Repository\BasketRepository::class, []]
 ];
