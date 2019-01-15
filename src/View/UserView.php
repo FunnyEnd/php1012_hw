@@ -5,6 +5,7 @@ namespace App\View;
 
 use App\Repository\CategoryRepository;
 use App\Services\AuthService;
+use App\Services\BasketService;
 use Framework\Dispatcher;
 use Exception;
 
@@ -21,9 +22,17 @@ class UserView extends \Framework\View
         $categoryRepository = Dispatcher::get(CategoryRepository::class);
         $category = $category = $categoryRepository->findAll();
 
+        if($auth) {
+            $basketService = Dispatcher::get(BasketService::class);
+            $countProductsAtUserBasket = $basketService->getCountProductsAtUserBasket($authService->getUserId());
+        } else {
+            $countProductsAtUserBasket = 0;
+        }
+
         $additionData = [
                 'auth' => $auth,
-                'category' => $category
+                'category' => $category,
+                'countProductsAtUserBasket' => $countProductsAtUserBasket
         ];
 
         try {

@@ -15,7 +15,7 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-success" data-dismiss="modal">Continue shopping</button>
-        <a href="/basket" class="btn btn-primary" >Go to basket</a>
+        <a href="/basket" class="btn btn-primary">Go to basket</a>
       </div>
     </div>
   </div>
@@ -46,7 +46,7 @@
       <form class="form-group" action="/" id="add-product-to-basket-form">
         <div class="product-detailed-count">
           <input class="form-control w-50 ml-auto mr-auto" type="number" name="count" value="1">
-          <input type="hidden" name="id" value="<?= $product->getId();?>">
+          <input type="hidden" name="id" value="<?= $product->getId(); ?>">
         </div>
         <div class="product-detailed-buy mt-3">
           <button type="button" id="buy_button" class="btn btn-success w-50 ml-auto mr-auto">Buy</button>
@@ -78,7 +78,7 @@
 </div>
 <script>
     $("#buy_button").on('click', function () {
-        var formData = $('#add-product-to-basket-form').serializeArray().reduce(function(obj, item) {
+        var formData = $('#add-product-to-basket-form').serializeArray().reduce(function (obj, item) {
             obj[item.name] = item.value;
             return obj;
         }, {});
@@ -86,11 +86,18 @@
             url: "/basket",
             type: "POST",
             data: formData,
+            dataType: "json",
             success: function (result) {
-                console.log(result);
-                $('#basket-modal').modal('show');
+                if (result.success) {
+                    $('#basket-modal').modal('show');
+                    $("#countProductsAtUserBasket").html(result.countProductsAtUserBasket);
+                }
+
+                if (result.auth === false)
+                    $(location).attr('href', '/auth')
             }
-        });
+        })
+        ;
     })
 </script>
 <?php include 'footer.php'; ?>

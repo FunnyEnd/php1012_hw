@@ -46,7 +46,7 @@
     </ul>
     <ul class="nav navbar-nav">
       <li class="nav-item">
-        <a class="nav-link" href="/basket">Basket <span class="badge badge-light badge-pill">0</span></a>
+        <a class="nav-link" href="/basket">Basket <span id="countProductsAtUserBasket" class="badge badge-light badge-pill"><?= $countProductsAtUserBasket;?></span></a>
       </li>
         <?php if (!$auth): ?>
           <li class="nav-item">

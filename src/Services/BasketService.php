@@ -73,4 +73,9 @@ class BasketService
         }
         return $basket;
     }
+
+    public function getCountProductsAtUserBasket(int $userId): int
+    {
+        return $this->basketProductRepository->getCountProductsAtUserBasket((new User)->setId($userId));
+    }
 }

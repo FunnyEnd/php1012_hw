@@ -2,13 +2,9 @@
 
 namespace App\Controller;
 
-use App\Extensions\BasketNotExistExtension;
-use App\Models\Basket;
 use App\Models\BasketProduct;
 use App\Models\Product;
-use App\Models\User;
 use App\Repository\BasketProductRepository;
-use App\Repository\BasketRepository;
 use App\Services\AuthService;
 use App\Services\BasketService;
 use App\View\UserView;
@@ -40,15 +36,18 @@ class BasketController extends BaseController
     public function store(Request $request)
     {
         if (!$this->authService->isAuth())
-            json_encode(['success' => false, 'error' => 'no auth']);
+            return json_encode(['success' => false, 'auth' => false]);
 
+        $userId = $this->authService->getUserId();
         $basketProduct = new BasketProduct();
         $basketProduct->setProduct((new Product())->setId($request->post('id')));
-        $basketProduct->setBasket($this->basketService->getBasketByUserId($this->authService->getUserId()));
+        $basketProduct->setBasket($this->basketService->getBasketByUserId($userId));
         $basketProduct->setCount($request->post('count'));
         $this->basketService->addProductToBasket($basketProduct);
 
-        return json_encode(['success' => true]);
+        $countProductsAtUserBasket = $this->basketService->getCountProductsAtUserBasket($userId);
+
+        return json_encode(['success' => true, 'countProductsAtUserBasket' => $countProductsAtUserBasket]);
     }
 
 }

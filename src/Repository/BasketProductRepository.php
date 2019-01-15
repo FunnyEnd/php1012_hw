@@ -55,6 +55,11 @@ class BasketProductRepository extends BaseRepository
             "left join products on products.id = baskets_products.product_id " .
             "left join images on images.id = products.image_id " .
             "where baskets_products.basket_id = :basket_id AND baskets_products.product_id = :product_id";
+    private const SELECT_COUNT_BY_USER_ID = /** @lang text */
+            "select count(id) as 'count' " .
+            "from baskets_products " .
+            "where baskets_products.basket_id = (select id from baskets " .
+            "where user_id = :user_id)";
 
     private const INSERT_SQL = /** @lang text */
             "insert into baskets_products (basket_id, product_id, count, create_at, update_at) values (:basket_id, :product_id, :count, " .
@@ -67,6 +72,7 @@ class BasketProductRepository extends BaseRepository
 
     private const DELETE_BY_ID_SQL = /** @lang text */
             "delete from baskets_products where id = :id";
+
 
     /**
      * @param int $id
@@ -175,6 +181,15 @@ class BasketProductRepository extends BaseRepository
         ]);
 
         return (intval($result['count']) !== 0);
+    }
+
+    public function getCountProductsAtUserBasket(User $user): int
+    {
+        $result = $this->db->getOne(self::SELECT_COUNT_BY_USER_ID, [
+                'user_id' => $user->getId(),
+        ]);
+
+        return intval($result['count']);
     }
 
     /**
