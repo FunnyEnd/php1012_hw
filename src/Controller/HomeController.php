@@ -18,6 +18,7 @@ class HomeController extends BaseController
 
     public function showHome(): string
     {
+        // todo create function "get popular"
         return UserView::render('home', [
                 'categoryFirstProducts' => $this->productRepository->findByCategoryId(1)
         ]);
