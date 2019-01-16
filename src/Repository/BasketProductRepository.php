@@ -82,6 +82,7 @@ class BasketProductRepository extends BaseRepository
     public function findById(int $id): BasketProduct
     {
         $result = $this->db->getOne(self::SELECT_BY_ID, ['id' => $id]);
+
         if (empty($result))
             throw new BasketProductNotExistExtension();
 

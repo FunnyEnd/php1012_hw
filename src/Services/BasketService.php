@@ -9,6 +9,7 @@ use App\Models\BasketProduct;
 use App\Models\User;
 use App\Repository\BasketProductRepository;
 use App\Repository\BasketRepository;
+use App\Repository\ProductRepository;
 use Framework\Dispatcher;
 use Framework\Session;
 use Zaine\Log;
@@ -76,16 +77,17 @@ class BasketService
             return $this->basketProductRepository->findByUserId($this->authService->getUserId());
         } else {
             if ($this->session->sessionExist()) {
-                $basketProductsId = $this->session->get('basketProducts');
+                $basketProducts = $this->session->get('basketProducts');
                 $result = [];
-                foreach ($basketProductsId as $basketProductId) {
-                    try {
-                        $result[] = $this->basketProductRepository->findById($basketProductId);
-                    } catch (BasketProductNotExistExtension $e) {
-                        $logger = Dispatcher::get(Log::class);
-                        $logger->error('BasketProductNotExistExtension');
-                        $logger->error($e->getTraceAsString());
-                    }
+                // really, in this scope, $basketProductId this is product id
+                foreach ($basketProducts as $basketProductId => $count) {
+                    $productRepository = Dispatcher::get(ProductRepository::class);
+                    $basketProduct = (new BasketProduct())
+                            ->setProduct($productRepository->findById($basketProductId))
+                            ->setCount($count)
+                            ->setId($basketProductId);
+
+                    $result[] = $basketProduct;
                 }
                 return $result;
             } else {
@@ -123,19 +125,45 @@ class BasketService
 
     public function updateProductCountAtBasket(int $id, int $count): BasketProduct
     {
-        try {
-            $basketProduct = $this->basketProductRepository->findById($id);
-            $basketProduct->setCount($count);
-            return $this->basketProductRepository->update($basketProduct);
-        } catch (BasketProductNotExistExtension $e) {
-            // todo add exception
+        if ($this->authService->isAuth()) {
+            try {
+                $basketProduct = $this->basketProductRepository->findById($id);
+                $basketProduct->setCount($count);
+                return $this->basketProductRepository->update($basketProduct);
+            } catch (BasketProductNotExistExtension $e) {
+                $logger = Dispatcher::get(Log::class);
+                $logger->error("BasketProductNotExistExtension");
+                $logger->error($e->getTraceAsString());
+            }
+        } else if ($this->session->sessionExist()) {
+            $basketProducts = $this->session->get('basketProducts');
+            if (array_key_exists($id, $basketProducts)) {
+                $basketProducts[$id] = $count;
+                $this->session->set('basketProducts', $basketProducts);
+                $productRepository = Dispatcher::get(ProductRepository::class);
+                return (new BasketProduct())
+                        ->setId($id)
+                        ->setProduct($productRepository->findById($id))
+                        ->setCount($count);
+            } else {
+                $logger = Dispatcher::get(Log::class);
+                $logger->error("BasketProductNotExistExtension at updateProductCountAtBasket method.");
+            }
         }
         return new BasketProduct();
     }
 
     public function deleteProductAtBasket(int $id): void
     {
-        $basketProduct = (new BasketProduct())->setId($id);
-        $this->basketProductRepository->delete($basketProduct);
+        if ($this->authService->isAuth()) {
+            $basketProduct = (new BasketProduct())->setId($id);
+            $this->basketProductRepository->delete($basketProduct);
+        } else if ($this->session->sessionExist()) {
+            $basketProducts = $this->session->get('basketProducts');
+            if (array_key_exists($id, $basketProducts)) {
+                unset($basketProducts[$id]);
+                $this->session->set('basketProducts', $basketProducts);
+            }
+        }
     }
 }

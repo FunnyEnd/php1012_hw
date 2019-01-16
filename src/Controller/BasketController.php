@@ -24,23 +24,26 @@ class BasketController extends BaseController
         $this->basketService = $basketService;
     }
 
-    public function index(BasketProductRepository $basketProductRepository)
+    // show basket
+    public function index()
     {
-        // todo add to BasketService getBasketProducts
-        $products = $basketProductRepository->findByUserId($this->authService->getUserId());
+        $products = $this->basketService->getBasketProducts();
         $totalPrice = $this->basketService->calculateTotalPrice($products);
 
         return UserView::render('basket', ['basketProducts' => $products, 'totalPrice' => $totalPrice]);
     }
 
+    // add product to basket
     public function store(Request $request, Session $session)
     {
+        // todo move to service
         if ($this->authService->isAuth()) {
             $userId = $this->authService->getUserId();
             $basketProduct = new BasketProduct();
             $basketProduct->setProduct((new Product())->setId($request->post('id')));
             $basketProduct->setBasket($this->basketService->getBasketByUserId($userId));
             $basketProduct->setCount($request->post('count'));
+
             $this->basketService->addProductToBasket($basketProduct);
 
             $countProductsAtUserBasket = $this->basketService->getCountProductsAtUserBasket();
@@ -64,13 +67,9 @@ class BasketController extends BaseController
         return json_encode(['success' => true, 'countProductsAtUserBasket' => $countProductsAtUserBasket]);
     }
 
-    public function update(Request $request, BasketProductRepository $basketProductRepository)
+    public function update(Request $request)
     {
-        if (!$this->authService->isAuth())
-            return json_encode(['success' => false, 'auth' => false]);
-
         $count = $request->put('count');
-
         if (intval($count) <= 0)
             return json_encode(['success' => false, 'error' => 'Not available value.']);
 
@@ -81,25 +80,19 @@ class BasketController extends BaseController
 
         $productTotalPrice = $basketProduct->getPriceAtBills();
 
-        $products = $basketProductRepository->findByUserId($this->authService->getUserId());
+        $products = $this->basketService->getBasketProducts();
         $totalPrice = $this->basketService->calculateTotalPrice($products);
 
         return json_encode(['success' => true, 'productTotalPrice' => $productTotalPrice, 'totalPrice' => $totalPrice]);
     }
 
-    public function delete(Request $request, BasketProductRepository $basketProductRepository)
+    public function delete(Request $request)
     {
-        if (!$this->authService->isAuth())
-            return json_encode(['success' => false, 'auth' => false]);
-
         $this->basketService->deleteProductAtBasket($request->get('id'));
 
-        $userId = $this->authService->getUserId();
-
-        $products = $basketProductRepository->findByUserId($userId);
+        $products = $this->basketService->getBasketProducts();
         $totalPrice = $this->basketService->calculateTotalPrice($products);
-
-        $countProductsAtUserBasket = $this->basketService->getCountProductsAtUserBasket($userId);
+        $countProductsAtUserBasket = $this->basketService->getCountProductsAtUserBasket();
 
         return json_encode([
                 'success' => true,
