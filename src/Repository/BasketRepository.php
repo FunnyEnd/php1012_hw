@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Extensions\BasketNotExistExtension;
 use App\Models\Basket;
+use App\Models\ContactPerson;
 use App\Models\User;
 use DateTime;
 use Framework\BaseRepository;
@@ -16,8 +17,8 @@ class BasketRepository extends BaseRepository
 {
     private const SELECT_BY_ID = /** @lang text */
             "SELECT baskets.id, baskets.user_id, baskets.create_at, baskets.update_at, " .
-            "users.email as 'user_email', users.password as 'user_password', users.first_name as 'user_first_name', " .
-            "users.last_name as 'user_last_name', users.is_admin as 'user_is_admin', users.create_at as 'user_create_at', " .
+            "users.email as 'user_email', users.password as 'user_password', users.contact_person_id as 'user_contact_person_id', " .
+            "users.is_admin as 'user_is_admin', users.create_at as 'user_create_at', " .
             "users.update_at as 'user_update_at' " .
             "FROM baskets " .
             "left join users on users.id = baskets.user_id " .
@@ -25,8 +26,8 @@ class BasketRepository extends BaseRepository
 
     private const SELECT_BY_USER_ID = /** @lang text */
             "SELECT baskets.id, baskets.user_id, baskets.create_at, baskets.update_at, " .
-            "users.email as 'user_email', users.password as 'user_password', users.first_name as 'user_first_name', " .
-            "users.last_name as 'user_last_name', users.is_admin as 'user_is_admin', users.create_at as 'user_create_at', " .
+            "users.email as 'user_email', users.password as 'user_password', users.contact_person_id as 'user_contact_person_id', " .
+            "users.is_admin as 'user_is_admin', users.create_at as 'user_create_at', " .
             "users.update_at as 'user_update_at' " .
             "FROM baskets " .
             "left join users on users.id = baskets.user_id " .
@@ -60,8 +61,12 @@ class BasketRepository extends BaseRepository
         $basket = new Basket();
         $row['create_at'] = DateTime::createFromFormat(Constants::DATETIME_FORMAT, $row['create_at']);
         $row['update_at'] = DateTime::createFromFormat(Constants::DATETIME_FORMAT, $row['update_at']);
-        $user = new User();
-        $user->setId($row['user_id']);
+        $user = (new User())
+                ->setId($row['user_id'])
+                ->setContactPerson((new ContactPerson())
+                        ->setId($row['user_contact_person_id'])
+                );
+
         $row['user'] = $user;
         $basket->fromArray($row);
         return $basket;

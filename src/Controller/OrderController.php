@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use App\Models\ContactPerson;
+use App\Repository\ContactPersonRepository;
 use App\View\UserView;
 use Framework\BaseController;
 
@@ -11,8 +13,20 @@ class OrderController extends BaseController
     {
     }
 
-    public function index()
+    public function index(ContactPersonRepository $contactPersonRepository)
     {
-        return UserView::render('order');
+        $contactPerson = (new ContactPerson())
+                ->setFirstName('Alex')
+                ->setLastName('Kornienko')
+                ->setEmail('email')
+                ->setCity('city')
+                ->setStock('stock')
+                ->setPhone('0995402340');
+
+        $newContactPerson = $contactPersonRepository->save($contactPerson);
+        var_dump($newContactPerson);
+
+        return "";
+//        return UserView::render('order');
     }
 }

@@ -4,10 +4,13 @@ namespace App\Repository;
 
 use App\Extensions\UserAlreadyExistExtension;
 use App\Extensions\UserNotExistExtension;
+use App\Models\ContactPerson;
 use App\Models\User;
 use DateTime;
 use Framework\BaseRepository;
 use Framework\Constants;
+use Framework\Dispatcher;
+use Zaine\Log;
 
 class UsersRepository extends BaseRepository
 {
@@ -16,8 +19,8 @@ class UsersRepository extends BaseRepository
     private const SELECT_BY_EMAIL = /** @lang text */
             "select * from users where email = :email";
     private const INSERT_SQL = /** @lang text */
-            "insert into users (email, password, first_name, last_name, is_admin, create_at, update_at) " .
-            "values (:email, :password, :first_name, :last_name, :is_admin, :create_at, :update_at) ";
+            "insert into users (email, password, contact_person_id, is_admin, create_at, update_at) " .
+            "values (:email, :password, :contact_person_id, :is_admin, :create_at, :update_at) ";
 
     /**
      * Find user by id
@@ -55,27 +58,35 @@ class UsersRepository extends BaseRepository
      */
     public function save(User $user): User
     {
-        $currentDateTime = new DateTime();
-
         $result = $this->db->getOne(self::SELECT_BY_EMAIL, ['email' => $user->getEmail()]);
         if (!empty($result))
             throw new UserAlreadyExistExtension();
 
-        $this->db->execute(self::INSERT_SQL, [
-                'email' => $user->getEmail(),
-                'password' => $user->getPassword(),
-                'first_name' => $user->getFirstName(),
-                'last_name' => $user->getLastName(),
-                'is_admin' => $user->getIsAdmin(),
-                'create_at' => $currentDateTime->format(Constants::DATETIME_FORMAT),
-                'update_at' => $currentDateTime->format(Constants::DATETIME_FORMAT),
-        ]);
+        try {
+            $currentDateTime = new DateTime();
 
-        $user->setCreateAt($currentDateTime);
-        $user->setUpdateAt($currentDateTime);
-        $user->setId($this->db->insertId());
+            $this->db->execute(self::INSERT_SQL, [
+                    'email' => $user->getEmail(),
+                    'password' => $user->getPassword(),
+                    'contact_person_id' => $user->getContactPerson()->getId(),
+                    'is_admin' => $user->getIsAdmin(),
+                    'create_at' => $currentDateTime->format(Constants::DATETIME_FORMAT),
+                    'update_at' => $currentDateTime->format(Constants::DATETIME_FORMAT),
+            ]);
 
-        return $user;
+            $user->setCreateAt($currentDateTime);
+            $user->setUpdateAt($currentDateTime);
+            $user->setId($this->db->insertId());
+
+            return $user;
+
+        } catch (\Exception $e) {
+            $logger = Dispatcher::get(Log::class);
+            $logger->error($e->getMessage());
+            $logger->error($e->getTraceAsString());
+        }
+
+        return new User();
     }
 
     /**
@@ -88,6 +99,7 @@ class UsersRepository extends BaseRepository
         $user = new User();
         $row['create_at'] = DateTime::createFromFormat(Constants::DATETIME_FORMAT, $row['create_at']);
         $row['update_at'] = DateTime::createFromFormat(Constants::DATETIME_FORMAT, $row['update_at']);
+        $row['contact_person'] = (new ContactPerson())->setId($row['contact_person_id']);
         $user->fromArray($row);
         return $user;
     }

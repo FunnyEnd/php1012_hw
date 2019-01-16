@@ -41,6 +41,30 @@
                  required>
         </div>
       </div>
+      <div class="form-group row">
+        <label for="phone" class="col-sm-3 col-form-label">Phone</label>
+        <div class="col-sm-9">
+          <input type="text" class="form-control" id="phone" name="phone" placeholder="0995402340"
+                 value="<?= $phone ?>"
+                 required>
+        </div>
+      </div>
+      <div class="form-group row">
+        <label for="city" class="col-sm-3 col-form-label">City</label>
+        <div class="col-sm-9">
+          <input type="text" class="form-control" id="city" name="city" placeholder="Kharkov"
+                 value="<?= $city ?>"
+                 required>
+        </div>
+      </div>
+      <div class="form-group row">
+        <label for="stock" class="col-sm-3 col-form-label">Stock</label>
+        <div class="col-sm-9">
+          <input type="text" class="form-control" id="stock" name="stock" placeholder="Stock #1"
+                 value="<?= $stock ?>"
+                 required>
+        </div>
+      </div>
       <button class="btn btn-success w-100">Register</button>
     </form>
   </div>

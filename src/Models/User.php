@@ -9,9 +9,8 @@ class User extends BaseModel
     private $id;
     private $email;
     private $password;
-    private $firstName;
-    private $lastName;
     private $isAdmin;
+    private $contactPerson;
 
     public function getId(): int
     {
@@ -46,28 +45,6 @@ class User extends BaseModel
         return $this;
     }
 
-    public function getFirstName(): string
-    {
-        return $this->firstName;
-    }
-
-    public function setFirstName(string $firstName): User
-    {
-        $this->firstName = $firstName;
-        return $this;
-    }
-
-    public function getLastName(): string
-    {
-        return $this->lastName;
-    }
-
-    public function setLastName(string $lastName): User
-    {
-        $this->lastName = $lastName;
-        return $this;
-    }
-
     public function getIsAdmin(): int
     {
         return $this->isAdmin;
@@ -79,6 +56,18 @@ class User extends BaseModel
         return $this;
     }
 
+    public function getContactPerson(): ContactPerson
+    {
+        return $this->contactPerson;
+    }
+
+    public function setContactPerson(ContactPerson $contactPerson): User
+    {
+        $this->contactPerson = $contactPerson;
+        return $this;
+    }
+
+
     /**
      * Convert array to User
      * @param array $data
@@ -88,8 +77,7 @@ class User extends BaseModel
         $this->setId($data['id']);
         $this->setEmail($data['email']);
         $this->setPassword($data['password']);
-        $this->setFirstName($data['first_name']);
-        $this->setLastName($data['last_name']);
+        $this->setContactPerson($data['contact_person']);
         $this->setIsAdmin($data['is_admin']);
         $this->setCreateAt($data['create_at']);
         $this->setUpdateAt($data['update_at']);
