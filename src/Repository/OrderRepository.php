@@ -17,35 +17,19 @@ use Zaine\Log;
 class OrderRepository extends BaseRepository
 {
     private const SELECT_BY_ID = /** @lang text */
-            "SELECT baskets.id, baskets.user_id, baskets.create_at, baskets.update_at, " .
-            "users.email as 'user_email', users.password as 'user_password', users.first_name as 'user_first_name', " .
-            "users.last_name as 'user_last_name', users.is_admin as 'user_is_admin', users.create_at as 'user_create_at', " .
-            "users.update_at as 'user_update_at' " .
-            "FROM baskets " .
-            "left join users on users.id = baskets.user_id " .
-            "where id = :id";
+            "";
 
     private const INSERT_SQL = /** @lang text */
             "INSERT INTO `orders` " .
             "(`user_id`, `confirm`, `create_at`, `update_at`," .
-            "`comment`, `user_stock`, `user_city`, `user_phone`, " .
-            "`user_first_name`, `user_last_name`) " .
+            "`comment`, `contact_person_id` ) " .
             "VALUES (:user_id, :confirm, :create_at, :update_at, :comment, " .
-            ":user_stock, :user_city, :user_phone, :user_first_name, :user_last_name);";
+            ":contact_person_id);";
 
-    /**
-     * Find basket by id
-     * @param int $id
-     * @return Basket
-     * @throws BasketNotExistExtension
-     */
-    public function findById(int $id): BaseModel
+
+    public function findById(int $id): Order
     {
-        $result = $this->db->getOne(self::SELECT_BY_ID, ['id' => $id]);
-        if (empty($result))
-            throw new BasketNotExistExtension();
-
-        return $this->mapArrayToBasket($result);
+        return new Order();
     }
 
     public function save(Order $order): Order
@@ -56,11 +40,7 @@ class OrderRepository extends BaseRepository
                     'user_id' => $order->getUser()->getId(),
                     'confirm' => $order->getConfirm(),
                     'comment' => $order->getComment(),
-                    'user_stock' => $order->getUserStock(),
-                    'user_city' => $order->getUserCity(),
-                    'user_phone' => $order->getUserPhone(),
-                    'user_first_name' => $order->getUserFirstName(),
-                    'user_last_name' => $order->getUserLastName(),
+                    'contact_person_id' => $order->getContactPerson()->getId(),
                     'create_at' => $currentDateTime->format(Constants::DATETIME_FORMAT),
                     'update_at' => $currentDateTime->format(Constants::DATETIME_FORMAT),
             ]);
@@ -68,6 +48,7 @@ class OrderRepository extends BaseRepository
             $order->setCreateAt($currentDateTime);
             $order->setUpdateAt($currentDateTime);
             $order->setId($this->db->insertId());
+
             return $order;
 
         } catch (Exception $e) {
@@ -84,9 +65,9 @@ class OrderRepository extends BaseRepository
     /**
      * Convert array to Image object
      * @param array $row
-     * @return Basket
+     * @return Order
      */
-    private function mapArrayToBasket(array $row): BaseModel
+    private function mapArrayToOrder(array $row): Order
     {
         $order = new Order();
         $row['create_at'] = DateTime::createFromFormat(Constants::DATETIME_FORMAT, $row['create_at']);

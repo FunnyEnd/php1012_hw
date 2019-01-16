@@ -12,5 +12,6 @@ return [
         [\App\Services\BasketService::class,
                 [new \App\Repository\BasketProductRepository, new \App\Repository\BasketRepository()]],
         [\App\Repository\BasketRepository::class, []],
-        [\App\Repository\ContactPersonRepository::class, []]
+        [\App\Repository\ContactPersonRepository::class, []],
+        [\App\Repository\OrderRepository::class, []]
 ];

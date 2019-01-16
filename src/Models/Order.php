@@ -6,15 +6,12 @@ use Framework\BaseModel;
 
 class Order extends BaseModel
 {
-    protected $id;
-    protected $user;
-    protected $confirm;
-    protected $comment;
-    protected $userStock;
-    protected $userCity;
-    protected $userPhone;
-    protected $userFirstName;
-    protected $userLastName;
+    private $id;
+    private $user;
+    private $confirm;
+    private $comment;
+    private $contactPerson;
+
 
     public function getId(): int
     {
@@ -60,58 +57,14 @@ class Order extends BaseModel
         return $this;
     }
 
-    public function getUserStock(): string
+    public function getContactPerson(): ContactPerson
     {
-        return $this->userStock;
+        return $this->contactPerson;
     }
 
-    public function setUserStock(string $userStock): Order
+    public function setContactPerson(ContactPerson $contactPerson): Order
     {
-        $this->userStock = $userStock;
-        return $this;
-    }
-
-    public function getUserCity(): string
-    {
-        return $this->userCity;
-    }
-
-    public function setUserCity(string $userCity): Order
-    {
-        $this->userCity = $userCity;
-        return $this;
-    }
-
-    public function getUserPhone()
-    {
-        return $this->userPhone;
-    }
-
-    public function setUserPhone(string $userPhone): Order
-    {
-        $this->userPhone = $userPhone;
-        return $this;
-    }
-
-    public function getUserFirstName(): string
-    {
-        return $this->userFirstName;
-    }
-
-    public function setUserFirstName(string $userFirstName): Order
-    {
-        $this->userFirstName = $userFirstName;
-        return $this;
-    }
-
-    public function getUserLastName(): string
-    {
-        return $this->userLastName;
-    }
-
-    public function setUserLastName(string $userLastName): Order
-    {
-        $this->userLastName = $userLastName;
+        $this->contactPerson = $contactPerson;
         return $this;
     }
 
@@ -125,11 +78,7 @@ class Order extends BaseModel
         $this->setUser($data['user']);
         $this->setConfirm($data['confirm']);
         $this->setComment($data['comment']);
-        $this->setUserStock($data['user_stock']);
-        $this->setUserCity($data['user_city']);
-        $this->setUserPhone($data['user_phone']);
-        $this->setUserFirstName($data['user_first_name']);
-        $this->setUserLastName($data['user_last_name']);
+        $this->setContactPerson($data['contact_person']);
         $this->setCreateAt($data['create_at']);
         $this->setUpdateAt($data['update_at']);
     }
