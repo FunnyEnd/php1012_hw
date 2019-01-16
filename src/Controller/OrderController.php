@@ -19,7 +19,12 @@ class OrderController extends BaseController
     {
     }
 
-    public function index(Request $request, ContactPersonRepository $contactPersonRepository, AuthService $authService,
+    public function index()
+    {
+        return UserView::render('order');
+    }
+
+    public function store(Request $request, ContactPersonRepository $contactPersonRepository, AuthService $authService,
                           OrderRepository $orderRepository, BasketProductRepository $basketProductRepository)
     {
         $contactPerson = (new ContactPerson())
@@ -50,23 +55,14 @@ class OrderController extends BaseController
         else
             $basketsProducts = $basketProductRepository->findByUserId($authService->getUserId()); // todo
 
+        foreach ($basketsProducts as $basketsProduct) {
+            var_dump($basketsProduct);
+            // convert from basket products to order products
+        }
 
+        // delete all basket products for user
+        // delete basket
 
-        var_dump($newOrder);
-
-        return UserView::render('order');
-    }
-
-    public function store()
-    {
-
-
-//        $contactPerson = (new ContactPerson())
-//                ->setFirstName('Alex')
-//                ->setLastName('Kornienko')
-//                ->setEmail('email')
-//                ->setCity('city')
-//                ->setStock('stock')
-//                ->setPhone('0995402340');
+        // return order code
     }
 }
