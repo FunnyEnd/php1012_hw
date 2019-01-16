@@ -64,7 +64,8 @@ class Session
         if ($this->sessionExist()) {
             return $_SESSION[$key];
         } else {
-            throw new \Exception("Session does not exist");
+            $this->start();
+            return $_SESSION[$key];
         }
     }
 
@@ -73,7 +74,8 @@ class Session
         if ($this->sessionExist()) {
             return session_name();
         } else {
-            throw new \Exception("Session does not exist");
+            $this->start();
+            return session_name();
         }
     }
 

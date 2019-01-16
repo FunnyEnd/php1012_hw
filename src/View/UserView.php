@@ -22,12 +22,8 @@ class UserView extends \Framework\View
         $categoryRepository = Dispatcher::get(CategoryRepository::class);
         $category = $category = $categoryRepository->findAll();
 
-        if($auth) {
-            $basketService = Dispatcher::get(BasketService::class);
-            $countProductsAtUserBasket = $basketService->getCountProductsAtUserBasket($authService->getUserId());
-        } else {
-            $countProductsAtUserBasket = 0;
-        }
+        $basketService = Dispatcher::get(BasketService::class);
+        $countProductsAtUserBasket = $basketService->getCountProductsAtUserBasket();
 
         $additionData = [
                 'auth' => $auth,

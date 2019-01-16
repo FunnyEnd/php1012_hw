@@ -35,6 +35,7 @@ class OrderController extends BaseController
                 ->setStock('stock')
                 ->setPhone('0995402340');
 
+        // todo: create user ContactPerson
         $contactPerson = $contactPersonRepository->save($contactPerson);
 
         if ($authService->isAuth())
@@ -57,12 +58,11 @@ class OrderController extends BaseController
 
         foreach ($basketsProducts as $basketsProduct) {
             var_dump($basketsProduct);
-            // convert from basket products to order products
+            // todo: convert from basket products to order products
         }
+        // todo: delete all basket products for user
+        // todo: delete basket
 
-        // delete all basket products for user
-        // delete basket
-
-        // return order code
+        return "";
     }
 }

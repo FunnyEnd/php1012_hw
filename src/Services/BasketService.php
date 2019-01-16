@@ -10,17 +10,25 @@ use App\Models\User;
 use App\Repository\BasketProductRepository;
 use App\Repository\BasketRepository;
 use Framework\Dispatcher;
+use Framework\Session;
 use Zaine\Log;
 
 class BasketService
 {
     private $basketProductRepository;
     private $basketRepository;
+    private $session;
 
-    public function __construct(BasketProductRepository $basketProductRepository, BasketRepository $basketRepository)
+    private $authService;
+
+    public function __construct(BasketProductRepository $basketProductRepository, BasketRepository $basketRepository,
+                                Session $session)
     {
         $this->basketProductRepository = $basketProductRepository;
         $this->basketRepository = $basketRepository;
+        $this->session = $session;
+        // todo add AuthService to construct
+        $this->authService = Dispatcher::get(AuthService::class);
     }
 
     public function addProductToBasket(BasketProduct $basketProduct): void
@@ -62,6 +70,30 @@ class BasketService
         return $totalPrice;
     }
 
+    public function getBasketProducts()
+    {
+        if ($this->authService->isAuth()) {
+            return $this->basketProductRepository->findByUserId($this->authService->getUserId());
+        } else {
+            if ($this->session->sessionExist()) {
+                $basketProductsId = $this->session->get('basketProducts');
+                $result = [];
+                foreach ($basketProductsId as $basketProductId) {
+                    try {
+                        $result[] = $this->basketProductRepository->findById($basketProductId);
+                    } catch (BasketProductNotExistExtension $e) {
+                        $logger = Dispatcher::get(Log::class);
+                        $logger->error('BasketProductNotExistExtension');
+                        $logger->error($e->getTraceAsString());
+                    }
+                }
+                return $result;
+            } else {
+                return array();
+            }
+        }
+    }
+
     public function getBasketByUserId(int $userId): Basket
     {
         try {
@@ -74,9 +106,17 @@ class BasketService
         return $basket;
     }
 
-    public function getCountProductsAtUserBasket(int $userId): int
+    public function getCountProductsAtUserBasket(): int
     {
-        return $this->basketProductRepository->getCountProductsAtUserBasket((new User)->setId($userId));
+        if ($this->authService->isAuth()) {
+            return $this->basketProductRepository->getCountProductsAtUserBasket((new User)->setId($authService->getUserId()));
+        } else {
+            if ($this->session->sessionExist()) {
+                return count($this->session->get('basketProducts'));
+            } else {
+                return 0;
+            }
+        }
     }
 
     public function updateProductCountAtBasket(int $id, int $count): BasketProduct

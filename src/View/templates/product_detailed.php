@@ -88,13 +88,14 @@
             data: formData,
             dataType: "json",
             success: function (result) {
+                console.log(result);
                 if (result.success) {
                     $('#basket-modal').modal('show');
                     $("#countProductsAtUserBasket").html(result.countProductsAtUserBasket);
                 }
-
-                if (result.auth === false)
-                    $(location).attr('href', '/auth')
+            },
+            error: function (result) {
+                console.log(result);
             }
         });
     })

@@ -21,12 +21,13 @@ class Application
         $this->initExceptionHandler();
         Config::init();
         $this->initRoutes();
-        $this->initServices();
+
         $this->logger = new Log("APP");
 
         Dispatcher::addInstance(Session::class, Session::getInstance());
         Dispatcher::addInstance(Request::class, Request::getInstance());
         Dispatcher::addClass(Log::class,['Logger']);
+        $this->initServices();
     }
 
     private function initRoutes()
