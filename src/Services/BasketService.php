@@ -109,7 +109,9 @@ class BasketService
     public function getCountProductsAtUserBasket(): int
     {
         if ($this->authService->isAuth()) {
-            return $this->basketProductRepository->getCountProductsAtUserBasket((new User)->setId($authService->getUserId()));
+            return $this->basketProductRepository->getCountProductsAtUserBasket(
+                    (new User)->setId($this->authService->getUserId())
+            );
         } else {
             if ($this->session->sessionExist()) {
                 return count($this->session->get('basketProducts'));
