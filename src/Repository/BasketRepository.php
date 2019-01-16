@@ -36,6 +36,9 @@ class BasketRepository extends BaseRepository
     const INSERT_SQL = /** @lang text */
             "insert into baskets (user_id, create_at, update_at) values (:user_id, :create_at, :update_at)";
 
+    private const DELETE_BY_ID_SQL = /** @lang text */
+            "delete from baskets where id = :id";
+
     /**
      * Find basket by id
      * @param int $id
@@ -109,5 +112,12 @@ class BasketRepository extends BaseRepository
         }
 
         return new Basket();
+    }
+
+    public function delete(Basket $basket)
+    {
+        $this->db->execute(self::DELETE_BY_ID_SQL, [
+                "id" => $basket->getId()
+        ]);
     }
 }

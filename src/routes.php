@@ -79,3 +79,8 @@ Router::addRout(new Route(
         '/order',
         'App\Controller\OrderController::index'
 ));
+Router::addRout(new Route(
+        Router::POST_METHOD,
+        '/order',
+        'App\Controller\OrderController::store'
+));

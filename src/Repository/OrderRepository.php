@@ -37,7 +37,7 @@ class OrderRepository extends BaseRepository
         try {
             $currentDateTime = new DateTime();
             $this->db->execute(self::INSERT_SQL, [
-                    'user_id' => $order->getUser()->getId(),
+                    'user_id' => (($order->getUser()->getId()) === 0) ? NULL : $order->getUser()->getId(),
                     'confirm' => $order->getConfirm(),
                     'comment' => $order->getComment(),
                     'contact_person_id' => $order->getContactPerson()->getId(),

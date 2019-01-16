@@ -56,11 +56,6 @@ class BasketService
 
     }
 
-    public function deleteProductFromBasket(BasketProduct $basketProduct): void
-    {
-        $this->basketProductRepository->delete($basketProduct);
-    }
-
     public function calculateTotalPrice(array $products): float
     {
         $totalPrice = 0;
@@ -71,7 +66,7 @@ class BasketService
         return $totalPrice;
     }
 
-    public function getBasketProducts()
+    public function getBasketProducts(): array
     {
         if ($this->authService->isAuth()) {
             return $this->basketProductRepository->findByUserId($this->authService->getUserId());
@@ -164,6 +159,22 @@ class BasketService
                 unset($basketProducts[$id]);
                 $this->session->set('basketProducts', $basketProducts);
             }
+        }
+    }
+
+    public function deleteBasket()
+    {
+        if ($this->authService->isAuth()) {
+            try {
+                $this->basketRepository->delete(
+                        $this->basketRepository->findByUserId($this->authService->getUserId())
+                );
+            } catch (BasketNotExistExtension $e) {
+                $logger = Dispatcher::get(Log::class);
+                $logger->error("BasketProductNotExistExtension at deleteBasket method.");
+            }
+        } else if ($this->session->sessionExist()) {
+            $this->session->set('basketProducts', []);
         }
     }
 }

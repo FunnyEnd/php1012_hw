@@ -8,11 +8,11 @@
   </div>
   <div class="row w-75 ml-auto mr-auto">
     <div class="col-12">
-      <form>
+      <form action="/order" method="POST">
         <div class="form-group row">
           <label for="staticEmail" class="col-sm-2 col-form-label">Email</label>
           <div class="col-sm-10">
-            <input type="text" readonly class="form-control-plaintext" id="staticEmail" value="email@example.com">
+            <input type="text" readonly class="form-control-plaintext" id="staticEmail" name="email" value="email@example.com">
           </div>
         </div>
         <div class="form-group row">
@@ -54,10 +54,9 @@
         <div class="form-group row">
           <div class="col-sm-8"></div>
           <div class="col-sm-4">
-            <button type="button" class="btn w-100 btn-success">Confirm order</button>
+            <button type="submit" class="btn w-100 btn-success">Confirm order</button>
           </div>
         </div>
-
       </form>
     </div>
   </div>

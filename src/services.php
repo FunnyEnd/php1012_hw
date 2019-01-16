@@ -14,5 +14,6 @@ return [
                         \Framework\Dispatcher::get(\Framework\Session::class)]],
         [\App\Repository\BasketRepository::class, []],
         [\App\Repository\ContactPersonRepository::class, []],
-        [\App\Repository\OrderRepository::class, []]
+        [\App\Repository\OrderRepository::class, []],
+    [\App\Repository\OrderProductRepository::class, []]
 ];
