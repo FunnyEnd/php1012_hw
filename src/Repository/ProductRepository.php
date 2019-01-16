@@ -10,6 +10,7 @@ use DateTime;
 use Exception;
 use Framework\BaseRepository;
 use Framework\Constants;
+use Framework\Dispatcher;
 use Zaine\Log;
 
 class ProductRepository extends BaseRepository
@@ -58,18 +59,6 @@ class ProductRepository extends BaseRepository
 
     private const DELETE_BY_ID_SQL = /** @lang text */
             "delete from products where id = :id";
-
-    private $categoryRepository;
-    private $imageRepository;
-    private $logger;
-
-    public function __construct(CategoryRepository $categoryRepository, ImageRepository $imageRepository)
-    {
-        parent::__construct();
-        $this->categoryRepository = $categoryRepository;
-        $this->imageRepository = $imageRepository;
-        $this->logger = new Log("ProductRepository");
-    }
 
     /**
      * @param int $id
@@ -136,8 +125,9 @@ class ProductRepository extends BaseRepository
             return $product;
 
         } catch (Exception $e) {
-            $this->logger->error($e->getMessage());
-            $this->logger->error($e->getTraceAsString());
+            $logger = Dispatcher::get(Log::class);
+            $logger->error($e->getMessage());
+            $logger->error($e->getTraceAsString());
         }
 
         return new Product();
@@ -161,8 +151,9 @@ class ProductRepository extends BaseRepository
             return $product;
 
         } catch (Exception $e) {
-            $this->logger->error($e->getMessage());
-            $this->logger->error($e->getTraceAsString());
+            $logger = Dispatcher::get(Log::class);
+            $logger->error($e->getMessage());
+            $logger->error($e->getTraceAsString());
         }
 
         return new Product();
