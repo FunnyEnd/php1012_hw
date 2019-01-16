@@ -96,8 +96,7 @@
                 if (result.auth === false)
                     $(location).attr('href', '/auth')
             }
-        })
-        ;
+        });
     })
 </script>
 <?php include 'footer.php'; ?>

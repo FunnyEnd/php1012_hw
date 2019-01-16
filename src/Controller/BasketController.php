@@ -10,6 +10,7 @@ use App\Services\BasketService;
 use App\View\UserView;
 use Framework\BaseController;
 use Framework\HTTP\Request;
+use Framework\HTTP\Response;
 
 class BasketController extends BaseController
 {
@@ -25,7 +26,7 @@ class BasketController extends BaseController
     public function index(BasketProductRepository $basketProductRepository)
     {
         if (!$this->authService->isAuth())
-            return 'no auth';
+            Response::redirect('/auth');
 
         $products = $basketProductRepository->findByUserId($this->authService->getUserId());
         $totalPrice = $this->basketService->calculateTotalPrice($products);
@@ -48,6 +49,50 @@ class BasketController extends BaseController
         $countProductsAtUserBasket = $this->basketService->getCountProductsAtUserBasket($userId);
 
         return json_encode(['success' => true, 'countProductsAtUserBasket' => $countProductsAtUserBasket]);
+    }
+
+    public function update(Request $request, BasketProductRepository $basketProductRepository)
+    {
+        if (!$this->authService->isAuth())
+            return json_encode(['success' => false, 'auth' => false]);
+
+        $count = $request->put('count');
+
+        if (intval($count) <= 0)
+            return json_encode(['success' => false, 'error' => 'Not available value.']);
+
+        $basketProduct = $this->basketService->updateProductCountAtBasket(
+                $request->get('id'),
+                $count
+        );
+
+        $productTotalPrice = $basketProduct->getPriceAtBills();
+
+        $products = $basketProductRepository->findByUserId($this->authService->getUserId());
+        $totalPrice = $this->basketService->calculateTotalPrice($products);
+
+        return json_encode(['success' => true, 'productTotalPrice' => $productTotalPrice, 'totalPrice' => $totalPrice]);
+    }
+
+    public function delete(Request $request, BasketProductRepository $basketProductRepository)
+    {
+        if (!$this->authService->isAuth())
+            return json_encode(['success' => false, 'auth' => false]);
+
+        $this->basketService->deleteProductAtBasket($request->get('id'));
+
+        $userId = $this->authService->getUserId();
+
+        $products = $basketProductRepository->findByUserId($userId);
+        $totalPrice = $this->basketService->calculateTotalPrice($products);
+
+        $countProductsAtUserBasket = $this->basketService->getCountProductsAtUserBasket($userId);
+
+        return json_encode([
+                'success' => true,
+                'totalPrice' => $totalPrice,
+                'countProductsAtUserBasket' => $countProductsAtUserBasket
+        ]);
     }
 
 }

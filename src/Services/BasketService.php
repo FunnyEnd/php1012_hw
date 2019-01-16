@@ -78,4 +78,22 @@ class BasketService
     {
         return $this->basketProductRepository->getCountProductsAtUserBasket((new User)->setId($userId));
     }
+
+    public function updateProductCountAtBasket(int $id, int $count): BasketProduct
+    {
+        try {
+            $basketProduct = $this->basketProductRepository->findById($id);
+            $basketProduct->setCount($count);
+            return $this->basketProductRepository->update($basketProduct);
+        } catch (BasketProductNotExistExtension $e) {
+            // todo add exception
+        }
+        return new BasketProduct();
+    }
+
+    public function deleteProductAtBasket(int $id): void
+    {
+        $basketProduct = (new BasketProduct())->setId($id);
+        $this->basketProductRepository->delete($basketProduct);
+    }
 }

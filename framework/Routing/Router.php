@@ -11,7 +11,7 @@ class Router
 {
     public const GET_METHOD = "GET";
     public const POST_METHOD = "POST";
-    public const UPDATE_METHOD = "UPDATE";
+    public const PUT_METHOD = "PUT";
     public const DELETE_METHOD = "DELETE";
     private static $routArray;
 

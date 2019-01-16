@@ -8,28 +8,25 @@ class Request
 {
     protected $getData = array();
     protected $postData = array();
-    protected $updateData = array();
-    protected $deleteData = array();
+    protected $putData = array();
+//    protected $deleteData = array();
 
     private static $instance = null;
 
     private function __construct()
     {
-        if (isset($_POST['__method'])) {
-            switch ($_POST['__method']) {
-                case 'update':
-                    {
-                        $this->updateData = $_POST;
-                        break;
-                    }
-                case 'delete':
-                    {
-                        $this->deleteData = $_POST;
-                        break;
-                    }
-            }
-        } else {
-            $this->postData = $_POST;
+        switch ($_SERVER['REQUEST_METHOD']) {
+            case 'PUT':
+                {
+                    parse_str(file_get_contents("php://input"), $post_vars);
+                    $this->putData = $post_vars;
+                    break;
+                }
+            case 'POST':
+                {
+                    $this->postData = $_POST;
+                    break;
+                }
         }
     }
 
@@ -81,23 +78,23 @@ class Request
      * @param string $param
      * @return mixed
      */
-    public function delete(string $param)
-    {
-        if (isset($this->deleteData[$param]))
-            return $this->deleteData[$param];
-        else
-            throw new InvalidArgumentException("Invalid delete argument.");
-    }
+//    public function delete(string $param)
+//    {
+//        if (isset($this->deleteData[$param]))
+//            return $this->deleteData[$param];
+//        else
+//            throw new InvalidArgumentException("Invalid delete argument.");
+//    }
 
     /**
      * Update data.
      * @param string $param
      * @return mixed
      */
-    public function update(string $param)
+    public function put(string $param)
     {
-        if (isset($this->updateData[$param]))
-            return $this->updateData[$param];
+        if (isset($this->putData[$param]))
+            return $this->putData[$param];
         else
             throw new InvalidArgumentException("Invalid update argument.");
     }

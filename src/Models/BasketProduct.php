@@ -16,9 +16,10 @@ class BasketProduct extends BaseModel
         return $this->id;
     }
 
-    public function setId(int $id): void
+    public function setId(int $id): BasketProduct
     {
         $this->id = $id;
+        return $this;
     }
 
     public function getBasket(): Basket
@@ -26,9 +27,10 @@ class BasketProduct extends BaseModel
         return $this->basket;
     }
 
-    public function setBasket(Basket $basket): void
+    public function setBasket(Basket $basket): BasketProduct
     {
         $this->basket = $basket;
+        return $this;
     }
 
     public function getProduct(): Product
@@ -36,9 +38,10 @@ class BasketProduct extends BaseModel
         return $this->product;
     }
 
-    public function setProduct(Product $product): void
+    public function setProduct(Product $product): BasketProduct
     {
         $this->product = $product;
+        return $this;
     }
 
     public function getCount(): int
@@ -46,9 +49,10 @@ class BasketProduct extends BaseModel
         return $this->count;
     }
 
-    public function setCount(int $count): void
+    public function setCount(int $count): BasketProduct
     {
         $this->count = $count;
+        return $this;
     }
 
     public function getPriceAtBills(): float
