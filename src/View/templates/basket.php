@@ -53,7 +53,7 @@
           <h5 class="mt-2 mb-0"><b><span id="basket-total-price"><?= $totalPrice; ?></span> UAH</b></h5>
         </div>
         <div class="col-3">
-          <button class="btn btn-success w-100">Confirm order</button>
+          <a class="btn btn-success w-100" href="/order">Confirm order</a>
         </div>
       </div>
     </div>

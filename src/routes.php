@@ -72,3 +72,10 @@ Router::addRout(new Route(
         'App\Controller\BasketController::delete',
         ['id']
 ));
+
+// order
+Router::addRout(new Route(
+        Router::GET_METHOD,
+        '/order',
+        'App\Controller\OrderController::index'
+));
