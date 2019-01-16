@@ -64,7 +64,7 @@ class Session
         if ($this->sessionExist()) {
             return $_SESSION[$key];
         } else {
-            die('Session does not exist');
+            throw new \Exception("Session does not exist");
         }
     }
 
@@ -73,7 +73,7 @@ class Session
         if ($this->sessionExist()) {
             return session_name();
         } else {
-            die('Session does not exist');
+            throw new \Exception("Session does not exist");
         }
     }
 
@@ -103,7 +103,7 @@ class Session
         if ($this->sessionExist())
             return isset($_SESSION[$key]);
         else
-            die('Session does not exist');
+            return false;
     }
 
     public function destroy(): void

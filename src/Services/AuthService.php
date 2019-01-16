@@ -44,8 +44,9 @@ class AuthService
 
     public function isAuth(): bool
     {
-        if ($this->session->sessionExist() && $this->session->keyExist(self::ID_COOKIE_KEY))
-            return true;
+        if ($this->session->sessionExist())
+            if ($this->session->keyExist(self::ID_COOKIE_KEY))
+                return true;
 
         return false;
     }

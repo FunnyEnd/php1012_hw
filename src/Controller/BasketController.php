@@ -25,8 +25,10 @@ class BasketController extends BaseController
 
     public function index(BasketProductRepository $basketProductRepository)
     {
-        if (!$this->authService->isAuth())
+        if (!$this->authService->isAuth()) {
             Response::redirect('/auth');
+            return "";
+        }
 
         $products = $basketProductRepository->findByUserId($this->authService->getUserId());
         $totalPrice = $this->basketService->calculateTotalPrice($products);
