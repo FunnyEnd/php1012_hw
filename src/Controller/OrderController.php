@@ -59,7 +59,7 @@ class OrderController extends BaseController
 
         $order = $orderRepository->save($order);
 
-        $basketsProducts = $basketService->getBasketProducts();
+        $basketsProducts = $basketService->getProducts();
 
         foreach ($basketsProducts as $basketsProduct) {
             $orderProduct = (new OrderProduct())

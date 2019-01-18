@@ -3,11 +3,16 @@
 namespace App\View;
 
 
+use App\Repository\BasketProductRepository;
+use App\Repository\BasketRepository;
 use App\Repository\CategoryRepository;
+use App\Repository\ProductRepository;
 use App\Services\AuthService;
-use App\Services\BasketService;
+use App\Services\Basket\BasketDataBaseServiceFactory;
+use App\Services\Basket\BasketSessionServiceFactory;
 use Framework\Dispatcher;
 use Exception;
+use Framework\Session;
 
 class UserView extends \Framework\View
 {
@@ -22,8 +27,22 @@ class UserView extends \Framework\View
         $categoryRepository = Dispatcher::get(CategoryRepository::class);
         $category = $category = $categoryRepository->findAll();
 
-        $basketService = Dispatcher::get(BasketService::class);
-        $countProductsAtUserBasket = $basketService->getCountProductsAtUserBasket();
+        if ($authService->isAuth()) {
+            $basketServiceFactory = new BasketDataBaseServiceFactory(
+                    Dispatcher::get(BasketProductRepository::class),
+                    $authService,
+                    Dispatcher::get(BasketRepository::class)
+            );
+            $basketService = $basketServiceFactory->getBasketService();
+        } else {
+            $basketServiceFactory = new BasketSessionServiceFactory(
+                    Dispatcher::get(Session::class),
+                    Dispatcher::get(ProductRepository::class)
+            );
+            $basketService = $basketServiceFactory->getBasketService();
+        }
+
+        $countProductsAtUserBasket = $basketService->getCountProducts();
 
         $additionData = [
                 'auth' => $auth,

@@ -46,20 +46,6 @@ class RegisterController extends BaseController
     public function register(Request $request, AuthService $authService, ContactPersonRepository $contactPersonRepository)
     {
         try {
-
-            $dateTime = new DateTime();
-
-//            $user->fromArray([
-//                    'id' => 0,
-//                    'email' => $request->post('email'),
-//                    'password' => $this->userService->hashPassword($request->post('password')),
-//                    'first_name' => $request->post('first-name'),
-//                    'last_name' => $request->post('last-name'),
-//                    'is_admin' => 0,
-//                    'create_at' => $dateTime,
-//                    'update_at' => $dateTime
-//            ]);
-
             $contactPerson = (new ContactPerson())
                     ->setEmail($request->post('email'))
                     ->setPhone($request->post('phone'))

@@ -15,7 +15,9 @@
 \Framework\Dispatcher::addClass(\App\Services\BasketService::class, [
         \Framework\Dispatcher::get(\App\Repository\BasketProductRepository::class),
         \Framework\Dispatcher::get(\App\Repository\BasketRepository::class),
-        \Framework\Dispatcher::get(\Framework\Session::class)
+        \Framework\Dispatcher::get(\Framework\Session::class),
+        \Framework\Dispatcher::get(\App\Repository\ProductRepository::class),
+        \Framework\Dispatcher::get(\App\Services\AuthService::class)
 ]);
 \Framework\Dispatcher::addClass(\App\Repository\ContactPersonRepository::class, []);
 \Framework\Dispatcher::addClass(\App\Repository\OrderRepository::class, []);
