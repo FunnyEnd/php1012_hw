@@ -33,49 +33,49 @@ class OrderController extends BaseController
                           OrderRepository $orderRepository, BasketService $basketService,
                           OrderProductRepository $orderProductRepository, Session $session)
     {
-        // todo check empty basket
-        // todo valid fields
-        $contactPerson = (new ContactPerson())
-                ->setFirstName($request->post('first-name'))
-                ->setLastName($request->post('last-name'))
-                ->setEmail($request->post('email'))
-                ->setCity($request->post('city'))
-                ->setStock($request->post('stock'))
-                ->setPhone($request->post('phone'));
-
-        // todo: create user ContactPerson
-        $contactPerson = $contactPersonRepository->save($contactPerson);
-
-        if ($authService->isAuth())
-            $user = (new User())->setId($authService->getUserId());
-        else
-            $user = (new User())->setId(0);
-
-        $order = (new Order())
-                ->setUser($user)
-                ->setContactPerson($contactPerson)
-                ->setConfirm(0)
-                ->setComment($request->post('comment'));
-
-        $order = $orderRepository->save($order);
-
-        $basketsProducts = $basketService->getProducts();
-
-        foreach ($basketsProducts as $basketsProduct) {
-            $orderProduct = (new OrderProduct())
-                    ->setOrder($order)
-                    ->setProduct($basketsProduct->getProduct())
-                    ->setPrice($basketsProduct->getProduct()->getPriceAtCoins())
-                    ->setCount($basketsProduct->getCount());
-
-            $basketService->deleteProductAtBasket($basketsProduct->getId());
-            $orderProductRepository->save($orderProduct);
-        }
-
-        $basketService->deleteBasket();
-
-        if (!$authService->isAuth())
-            $session->destroy();
+//        // todo check empty basket
+//        // todo valid fields
+//        $contactPerson = (new ContactPerson())
+//                ->setFirstName($request->post('first-name'))
+//                ->setLastName($request->post('last-name'))
+//                ->setEmail($request->post('email'))
+//                ->setCity($request->post('city'))
+//                ->setStock($request->post('stock'))
+//                ->setPhone($request->post('phone'));
+//
+//        // todo: create user ContactPerson
+//        $contactPerson = $contactPersonRepository->save($contactPerson);
+//
+//        if ($authService->isAuth())
+//            $user = (new User())->setId($authService->getUserId());
+//        else
+//            $user = (new User())->setId(0);
+//
+//        $order = (new Order())
+//                ->setUser($user)
+//                ->setContactPerson($contactPerson)
+//                ->setConfirm(0)
+//                ->setComment($request->post('comment'));
+//
+//        $order = $orderRepository->save($order);
+//
+//        $basketsProducts = $basketService->getProducts();
+//
+//        foreach ($basketsProducts as $basketsProduct) {
+//            $orderProduct = (new OrderProduct())
+//                    ->setOrder($order)
+//                    ->setProduct($basketsProduct->getProduct())
+//                    ->setPrice($basketsProduct->getProduct()->getPriceAtCoins())
+//                    ->setCount($basketsProduct->getCount());
+//
+//            $basketService->deleteProductAtBasket($basketsProduct->getId());
+//            $orderProductRepository->save($orderProduct);
+//        }
+//
+//        $basketService->deleteBasket();
+//
+//        if (!$authService->isAuth())
+//            $session->destroy();
 
         return UserView::render('order_created', ['orderId' => $order->getId()]);
     }

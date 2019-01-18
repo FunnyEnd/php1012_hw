@@ -114,4 +114,14 @@ class BasketSessionService implements BasketService
             $this->session->set('basketProducts', $basketProducts);
         }
     }
+
+    public function deleteAllProducts(): void
+    {
+        // TODO: Implement deleteAllProducts() method.
+    }
+
+    public function deleteBasket(): void
+    {
+        // TODO: Implement deleteBasket() method.
+    }
 }

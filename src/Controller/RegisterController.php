@@ -3,30 +3,22 @@
 namespace App\Controller;
 
 use App\Extensions\UserAlreadyExistExtension;
-use App\Models\ContactPerson;
-use App\Models\User;
-use App\Repository\ContactPersonRepository;
-use App\Repository\UsersRepository;
 use App\Services\AuthService;
 use App\Services\UserService;
 use App\View\UserView;
-use DateTime;
-use Exception;
 use Framework\BaseController;
-use Framework\Dispatcher;
 use Framework\HTTP\Request;
 use Framework\HTTP\Response;
-use Zaine\Log;
 
 class RegisterController extends BaseController
 {
     private $userService;
-    private $usersRepository;
+    private $authService;
 
-    public function __construct(UserService $userService, UsersRepository $usersRepository)
+    public function __construct(UserService $userService, AuthService $authService)
     {
         $this->userService = $userService;
-        $this->usersRepository = $usersRepository;
+        $this->authService = $authService;
     }
 
     public function index()
@@ -43,27 +35,10 @@ class RegisterController extends BaseController
         ]);
     }
 
-    public function register(Request $request, AuthService $authService, ContactPersonRepository $contactPersonRepository)
+    public function register(Request $request)
     {
         try {
-            $contactPerson = (new ContactPerson())
-                    ->setEmail($request->post('email'))
-                    ->setPhone($request->post('phone'))
-                    ->setFirstName($request->post('first-name'))
-                    ->setLastName($request->post('last-name'))
-                    ->setStock($request->post('stock'))
-                    ->setCity($request->post('city'));
-
-            $contactPerson = $contactPersonRepository->save($contactPerson);
-
-            $user = (new User())
-                    ->setEmail($request->post('email'))
-                    ->setPassword($this->userService->hashPassword($request->post('password')))
-                    ->setIsAdmin(0)
-                    ->setContactPerson($contactPerson);
-
-            $this->usersRepository->save($user);
-
+            $this->userService->create($request);
         } catch (UserAlreadyExistExtension $e) {
             return UserView::render('register', [
                     'error' => 'User already exist',
@@ -75,15 +50,13 @@ class RegisterController extends BaseController
                     'city' => $request->post('city'),
                     'stock' => $request->post('stock')
             ]);
-        } catch (Exception $e) {
-            $logger = Dispatcher::get(Log::class);
-            $logger->error($e->getMessage());
-            return '';
         }
 
-        $authService->auth($request->post('email'), $request->post('password'));
+        $this->authService->auth(
+                $request->post('email'),
+                $request->post('password')
+        );
 
-        Response::redirect('/');
-        return '';
+        return Response::redirect('/');
     }
 }

@@ -110,4 +110,14 @@ class BasketDataBaseService implements BasketService
         $basketProduct = (new BasketProduct())->setId($request->get('id'));
         $this->basketProductRepository->delete($basketProduct);
     }
+
+    public function deleteAllProducts(): void
+    {
+        // TODO: Implement deleteAllProducts() method.
+    }
+
+    public function deleteBasket(): void
+    {
+        // TODO: Implement deleteBasket() method.
+    }
 }

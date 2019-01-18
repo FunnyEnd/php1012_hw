@@ -18,4 +18,8 @@ interface BasketService
     public function updateProduct(Request $request): BasketProduct;
 
     public function deleteProduct(Request $request): void;
+
+    public function deleteAllProducts(): void;
+
+    public function deleteBasket():void;
 }
