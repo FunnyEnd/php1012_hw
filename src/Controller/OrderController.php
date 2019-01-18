@@ -2,24 +2,18 @@
 
 namespace App\Controller;
 
-use App\Models\ContactPerson;
-use App\Models\Order;
-use App\Models\OrderProduct;
-use App\Models\User;
-use App\Repository\ContactPersonRepository;
-use App\Repository\OrderProductRepository;
-use App\Repository\OrderRepository;
-use App\Services\AuthService;
-use App\Services\BasketService;
+use App\Services\OrderService;
 use App\View\UserView;
 use Framework\BaseController;
 use Framework\HTTP\Request;
-use Framework\Session;
 
 class OrderController extends BaseController
 {
-    public function __construct()
+    private $orderService;
+
+    public function __construct(OrderService $orderService)
     {
+        $this->orderService = $orderService;
     }
 
     public function index()
@@ -28,11 +22,13 @@ class OrderController extends BaseController
         return UserView::render('order');
     }
 
-    // todo: move to service
-    public function store(Request $request, ContactPersonRepository $contactPersonRepository, AuthService $authService,
-                          OrderRepository $orderRepository, BasketService $basketService,
-                          OrderProductRepository $orderProductRepository, Session $session)
+    public function store(Request $request)
     {
+        $order = $this->orderService->createFromBasket($request);
+
+        return UserView::render('order_created', [
+                'orderId' => $order->getId()
+        ]);
 //        // todo check empty basket
 //        // todo valid fields
 //        $contactPerson = (new ContactPerson())
@@ -76,7 +72,5 @@ class OrderController extends BaseController
 //
 //        if (!$authService->isAuth())
 //            $session->destroy();
-
-        return UserView::render('order_created', ['orderId' => $order->getId()]);
     }
 }

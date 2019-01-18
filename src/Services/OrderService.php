@@ -53,7 +53,7 @@ class OrderService
         }
     }
 
-    public function createFromBasket(Request $request)
+    public function createFromBasket(Request $request): Order
     {
         // todo check empty basket
         // todo valid fields
@@ -93,10 +93,13 @@ class OrderService
             $this->orderProductRepository->save($orderProduct);
         }
 
+        // dropBasket
         $this->basketService->deleteAllProducts();
         $this->basketService->deleteBasket();
 
         if (!$this->authService->isAuth())
             $this->session->destroy();
+
+        return $order;
     }
 }
