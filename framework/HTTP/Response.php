@@ -18,9 +18,10 @@ class Response
         self::$responseCode = $responseCode;
     }
 
-    public static function redirect($location)
+    public static function redirect($location): string
     {
         array_push(self::$headers, "Location: {$location}");
+        return '';
     }
 
     public static function send(): void

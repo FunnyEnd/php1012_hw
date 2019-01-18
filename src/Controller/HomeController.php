@@ -2,25 +2,23 @@
 
 namespace App\Controller;
 
-use App\Repository\ProductRepository;
+use App\Services\ProductService;
 use App\View\UserView;
 use Framework\BaseController;
 
-
 class HomeController extends BaseController
 {
-    private $productRepository;
+    private $productService;
 
-    public function __construct(ProductRepository $productRepository)
+    public function __construct(ProductService $productService)
     {
-        $this->productRepository = $productRepository;
+        $this->productService = $productService;
     }
 
     public function showHome(): string
     {
-        // todo create function "get popular"
         return UserView::render('home', [
-                'categoryFirstProducts' => $this->productRepository->findByCategoryId(1)
+                'categoryFirstProducts' => $this->productService->getPopular()
         ]);
     }
 }

@@ -113,7 +113,7 @@ class ProductRepository extends BaseRepository
                     'description' => $product->getDescription(),
                     'availability' => $product->getAvailability(),
                     'category_id' => $product->getCategory()->getId(),
-                    'price' => $product->getPrice(),
+                    'price' => $product->getPriceAtCoins(),
                     'image_id' => $product->getImage()->getId(),
                     'create_at' => $currentDateTime->format(Constants::DATETIME_FORMAT),
                     'update_at' => $currentDateTime->format(Constants::DATETIME_FORMAT),
@@ -142,7 +142,7 @@ class ProductRepository extends BaseRepository
                     "description" => $product->getDescription(),
                     "availability" => $product->getAvailability(),
                     "category_id" => $product->getCategory()->getId(),
-                    "price" => $product->getPrice(),
+                    "price" => $product->getPriceAtCoins(),
                     "image_id" => $product->getImage()->getId(),
                     "update_at" => $currentDateTime->format(Constants::DATETIME_FORMAT),
                     "id" => $product->getId()

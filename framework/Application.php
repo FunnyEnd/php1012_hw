@@ -26,7 +26,8 @@ class Application
 
         Dispatcher::addInstance(Session::class, Session::getInstance());
         Dispatcher::addInstance(Request::class, Request::getInstance());
-        Dispatcher::addClass(Log::class,['Logger']);
+        Dispatcher::addClass(Log::class, ['Logger']);
+
         $this->initServices();
     }
 
@@ -37,10 +38,7 @@ class Application
 
     private function initServices()
     {
-        $services = require self::SRC_SERVICES_PHP;
-        foreach ($services as $service) {
-            Dispatcher::addClass($service[0], $service[1]);
-        }
+        require self::SRC_SERVICES_PHP;
     }
 
     private function intiErrorHandler(): void
