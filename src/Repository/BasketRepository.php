@@ -7,10 +7,10 @@ use App\Models\Basket;
 use App\Models\ContactPerson;
 use App\Models\User;
 use DateTime;
+use Exception;
 use Framework\BaseRepository;
 use Framework\Constants;
 use Framework\Dispatcher;
-use Exception;
 use Zaine\Log;
 
 class BasketRepository extends BaseRepository
@@ -79,13 +79,14 @@ class BasketRepository extends BaseRepository
      * Find basket by user_id
      * @param string $userId
      * @return Basket
-     * @throws BasketNotExistExtension
      */
     public function findByUserId(string $userId)
     {
         $result = $this->db->getOne(self::SELECT_BY_USER_ID, ['user_id' => $userId]);
-        if (empty($result))
-            throw new BasketNotExistExtension();
+
+        if (empty($result)) {
+            return null;
+        }
 
         return $this->mapArrayToBasket($result);
     }

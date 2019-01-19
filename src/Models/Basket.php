@@ -14,9 +14,10 @@ class Basket extends BaseModel
         return $this->id;
     }
 
-    public function setId(int $id): void
+    public function setId(int $id): Basket
     {
         $this->id = $id;
+        return $this;
     }
 
     public function getUser(): User
@@ -24,9 +25,10 @@ class Basket extends BaseModel
         return $this->user;
     }
 
-    public function setUser(User $user): void
+    public function setUser(User $user): Basket
     {
         $this->user = $user;
+        return $this;
     }
 
     /**

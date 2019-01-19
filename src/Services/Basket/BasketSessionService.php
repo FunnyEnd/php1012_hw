@@ -10,7 +10,7 @@ use Framework\HTTP\Request;
 use Framework\Session;
 use Zaine\Log;
 
-class BasketSessionService implements BasketService
+class BasketSessionService extends AbstractBasketService
 {
     private $session;
     private $productRepository;
@@ -40,18 +40,6 @@ class BasketSessionService implements BasketService
         }
 
         return $products;
-    }
-
-    public function getTotalPrice(): float
-    {
-        $products = $this->getProducts();
-        $totalPrice = 0;
-
-        foreach ($products as $product) {
-            $totalPrice += $product->getPriceAtCoins();
-        }
-
-        return $totalPrice / 100;
     }
 
     public function addProduct(Request $request): void
@@ -115,13 +103,14 @@ class BasketSessionService implements BasketService
         }
     }
 
-    public function deleteAllProducts(): void
+    public function drop()
     {
-        // TODO: Implement deleteAllProducts() method.
+        $this->session->set('basketProducts', []);
     }
 
-    public function deleteBasket(): void
+    public function isEmpty()
     {
-        // TODO: Implement deleteBasket() method.
+        $basketProducts = $this->session->get('basketProducts');
+        return empty($basketProducts);
     }
 }

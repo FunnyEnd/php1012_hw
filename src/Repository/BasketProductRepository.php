@@ -3,7 +3,6 @@
 namespace App\Repository;
 
 
-use App\Extensions\BasketProductNotExistExtension;
 use App\Models\Basket;
 use App\Models\BasketProduct;
 use App\Models\Image;
@@ -73,20 +72,55 @@ class BasketProductRepository extends BaseRepository
     private const DELETE_BY_ID_SQL = /** @lang text */
             "delete from baskets_products where id = :id";
 
+    private const DELETE_BY_BASKET_ID_SQL = /** @lang text */
+            "delete from baskets_products where basket_id = :basket_id";
 
-    /**
-     * @param int $id
-     * @return BasketProduct
-     * @throws BasketProductNotExistExtension
-     */
     public function findById(int $id): BasketProduct
     {
         $result = $this->db->getOne(self::SELECT_BY_ID, ['id' => $id]);
 
-        if (empty($result))
-            throw new BasketProductNotExistExtension();
+        if (empty($result)) {
+            return null;
+        }
 
         return $this->mapArrayToBasketProduct($result);
+    }
+
+    /**
+     * Convert array to Image object
+     * @param array $row
+     * @return BasketProduct
+     */
+    private function mapArrayToBasketProduct(array $row): BasketProduct
+    {
+        $basket = new Basket();
+        $basket->setId($row['basket_id']);
+
+        $user = new User();
+        $user->setId($row['user_id']);
+
+        $basket->setUser($user);
+        $row['basket'] = $basket;
+
+        $product = new Product();
+        $product->setId($row['product_id']);
+        $product->setTitle($row['product_title']);
+        $product->setPriceAtCoins($row['product_price']);
+
+        $image = new Image();
+        $image->setId($row['product_image_id']);
+        $image->setPath($row['product_image_path']);
+        $image->setAlt($row['product_image_alt']);
+
+        $product->setImage($image);
+        $row['product'] = $product;
+
+        $row['create_at'] = DateTime::createFromFormat(Constants::DATETIME_FORMAT, $row['create_at']);
+        $row['update_at'] = DateTime::createFromFormat(Constants::DATETIME_FORMAT, $row['update_at']);
+
+        $basketProduct = new BasketProduct();
+        $basketProduct->fromArray($row);
+        return $basketProduct;
     }
 
     public function findByUserId(int $userId): array
@@ -103,7 +137,6 @@ class BasketProductRepository extends BaseRepository
      * @param int $productId
      * @param int $basketId
      * @return BasketProduct
-     * @throws BasketProductNotExistExtension
      */
     public function findByProductIdAndBasketId(int $productId, int $basketId): BasketProduct
     {
@@ -112,8 +145,9 @@ class BasketProductRepository extends BaseRepository
                         'basket_id' => $basketId]
         );
 
-        if (empty($result))
-            throw new BasketProductNotExistExtension();
+        if (empty($result)) {
+            return null;
+        }
 
         return $this->mapArrayToBasketProduct($result);
     }
@@ -167,13 +201,6 @@ class BasketProductRepository extends BaseRepository
         return new BasketProduct();
     }
 
-    public function delete(BasketProduct $basketProduct)
-    {
-        $this->db->execute(self::DELETE_BY_ID_SQL, [
-                "id" => $basketProduct->getId()
-        ]);
-    }
-
     public function isProductExist(BasketProduct $basketProduct): bool
     {
         $result = $this->db->getOne(self::SELECT_COUNT_BY_PRODUCT_ID_AND_BASKET_ID, [
@@ -193,40 +220,17 @@ class BasketProductRepository extends BaseRepository
         return intval($result['count']);
     }
 
-    /**
-     * Convert array to Image object
-     * @param array $row
-     * @return BasketProduct
-     */
-    private function mapArrayToBasketProduct(array $row): BasketProduct
+    public function delete(BasketProduct $basketProduct)
     {
-        $basket = new Basket();
-        $basket->setId($row['basket_id']);
+        $this->db->execute(self::DELETE_BY_ID_SQL, [
+                "id" => $basketProduct->getId()
+        ]);
+    }
 
-        $user = new User();
-        $user->setId($row['user_id']);
-
-        $basket->setUser($user);
-        $row['basket'] = $basket;
-
-        $product = new Product();
-        $product->setId($row['product_id']);
-        $product->setTitle($row['product_title']);
-        $product->setPriceAtCoins($row['product_price']);
-
-        $image = new Image();
-        $image->setId($row['product_image_id']);
-        $image->setPath($row['product_image_path']);
-        $image->setAlt($row['product_image_alt']);
-
-        $product->setImage($image);
-        $row['product'] = $product;
-
-        $row['create_at'] = DateTime::createFromFormat(Constants::DATETIME_FORMAT, $row['create_at']);
-        $row['update_at'] = DateTime::createFromFormat(Constants::DATETIME_FORMAT, $row['update_at']);
-
-        $basketProduct = new BasketProduct();
-        $basketProduct->fromArray($row);
-        return $basketProduct;
+    public function deleteByBasketId(int $basketId)
+    {
+        $this->db->execute(self::DELETE_BY_BASKET_ID_SQL, [
+                "basket_id" => $basketId
+        ]);
     }
 }

@@ -2,7 +2,16 @@
 
 namespace App\Services\Basket;
 
-interface BasketServiceFactory
+use Framework\Dispatcher;
+
+class BasketServiceFactory
 {
-    public function getBasketService(): BasketService;
+    public function getBasketService(bool $auth): BasketService
+    {
+        if ($auth) {
+            return Dispatcher::get(BasketDataBaseService::class);
+        }
+
+        return Dispatcher::get(BasketSessionService::class);
+    }
 }

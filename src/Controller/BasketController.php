@@ -2,42 +2,21 @@
 
 namespace App\Controller;
 
-use App\Repository\BasketProductRepository;
-use App\Repository\BasketRepository;
-use App\Repository\ProductRepository;
 use App\Services\AuthService;
-use App\Services\Basket\BasketDataBaseServiceFactory;
-use App\Services\Basket\BasketSessionServiceFactory;
+use App\Services\Basket\BasketServiceFactory;
 use App\View\UserView;
 use Framework\BaseController;
 use Framework\HTTP\Request;
-use Framework\Session;
 
 class BasketController extends BaseController
 {
     private $authService;
     private $basketService;
 
-    public function __construct(AuthService $authService, BasketProductRepository $basketProductRepository,
-                                Session $session, ProductRepository $productRepository,
-                                BasketRepository $basketRepository)
+    public function __construct(AuthService $authService, BasketServiceFactory $basketServiceFactory)
     {
         $this->authService = $authService;
-
-        if ($this->authService->isAuth()) {
-            $basketServiceFactory = new BasketDataBaseServiceFactory(
-                    $basketProductRepository,
-                    $authService,
-                    $basketRepository
-            );
-            $this->basketService = $basketServiceFactory->getBasketService();
-        } else {
-            $basketServiceFactory = new BasketSessionServiceFactory(
-                    $session,
-                    $productRepository
-            );
-            $this->basketService = $basketServiceFactory->getBasketService();
-        }
+        $this->basketService = $basketServiceFactory->getBasketService($this->authService->isAuth());
     }
 
     public function index()

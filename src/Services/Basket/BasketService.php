@@ -9,17 +9,17 @@ interface BasketService
 {
     public function getProducts(): array;
 
+    public function getCountProducts(): int;
+
     public function getTotalPrice(): float;
 
     public function addProduct(Request $request): void;
-
-    public function getCountProducts(): int;
 
     public function updateProduct(Request $request): BasketProduct;
 
     public function deleteProduct(Request $request): void;
 
-    public function deleteAllProducts(): void;
+    public function drop();
 
-    public function deleteBasket():void;
+    public function isEmpty();
 }

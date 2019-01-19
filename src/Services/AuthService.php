@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Extensions\UserNotExistExtension;
+use App\Models\User;
 use App\Repository\UsersRepository;
 use Framework\Session;
 use Zaine\Log;
@@ -42,15 +43,6 @@ class AuthService
         return false;
     }
 
-    public function isAuth(): bool
-    {
-        if ($this->session->sessionExist())
-            if ($this->session->keyExist(self::ID_COOKIE_KEY))
-                return true;
-
-        return false;
-    }
-
     public function isAdmin(): bool
     {
         if (!$this->isAuth())
@@ -69,9 +61,27 @@ class AuthService
         return false;
     }
 
+    public function isAuth(): bool
+    {
+        if ($this->session->sessionExist())
+            if ($this->session->keyExist(self::ID_COOKIE_KEY))
+                return true;
+
+        return false;
+    }
+
     public function getUserId(): string
     {
         return $this->session->get(self::ID_COOKIE_KEY);
+    }
+
+    public function getCurrentUser(): User
+    {
+        if ($this->isAuth()) {
+            return (new User())->setId($this->getUserId());
+        } else {
+            return (new User())->setId(0);
+        }
     }
 
     public function logOut(): void

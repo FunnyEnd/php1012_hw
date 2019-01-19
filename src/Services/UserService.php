@@ -12,17 +12,11 @@ class UserService
 {
     private $contactPersonRepository;
     private $usersRepository;
-    private $userService;
 
     public function __construct(ContactPersonRepository $contactPersonRepository, UsersRepository $usersRepository)
     {
         $this->contactPersonRepository = $contactPersonRepository;
         $this->usersRepository = $usersRepository;
-    }
-
-    public function hashPassword(string $password): string
-    {
-        return hash("sha512", $password);
     }
 
     /**
@@ -42,12 +36,15 @@ class UserService
 
         $contactPerson = $this->contactPersonRepository->save($contactPerson);
 
-        $user = (new User())
+        return $this->usersRepository->save((new User())
                 ->setEmail($request->post('email'))
                 ->setPassword($this->hashPassword($request->post('password')))
                 ->setIsAdmin(0)
-                ->setContactPerson($contactPerson);
+                ->setContactPerson($contactPerson));
+    }
 
-        return $this->usersRepository->save($user);
+    public function hashPassword(string $password): string
+    {
+        return hash("sha512", $password);
     }
 }

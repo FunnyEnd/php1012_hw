@@ -2,8 +2,6 @@
 
 namespace App\Services\Basket;
 
-use App\Extensions\BasketNotExistExtension;
-use App\Extensions\BasketProductNotExistExtension;
 use App\Models\Basket;
 use App\Models\BasketProduct;
 use App\Models\Product;
@@ -11,11 +9,9 @@ use App\Models\User;
 use App\Repository\BasketProductRepository;
 use App\Repository\BasketRepository;
 use App\Services\AuthService;
-use Framework\Dispatcher;
 use Framework\HTTP\Request;
-use Zaine\Log;
 
-class BasketDataBaseService implements BasketService
+class BasketDataBaseService extends AbstractBasketService
 {
     private $basketProductRepository;
     private $authService;
@@ -34,52 +30,34 @@ class BasketDataBaseService implements BasketService
         return $this->basketProductRepository->findByUserId($this->authService->getUserId());
     }
 
-    public function getTotalPrice(): float
-    {
-        $products = $this->getProducts();
-        $totalPrice = 0;
-
-        foreach ($products as $product) {
-            $totalPrice += $product->getPriceAtCoins();
-        }
-
-        return $totalPrice / 100;
-    }
-
     public function addProduct(Request $request): void
     {
         $userId = $this->authService->getUserId();
-        $basketProduct = new BasketProduct();
-        $basketProduct->setProduct((new Product())->setId($request->post('id')));
+        $product = (new Product())->setId($request->post('id'));
+        $basket = $this->basketRepository->findByUserId($userId);
 
-        try {
-            $basket = $this->basketRepository->findByUserId($userId);
-        } catch (BasketNotExistExtension $e) {
-            $basket = new Basket();
-            $basket->setUser((new User())->setId($userId));
-            $basket = $this->basketRepository->save($basket);
+        if ($basket === null) {
+            $basket = $this->basketRepository->save((new Basket())
+                    ->setUser((new User())->setId($userId)));
         }
 
-        $basketProduct->setBasket($basket);
-        $basketProduct->setCount($request->post('count'));
+        $basketProductFromDataBase = $this->basketProductRepository->findByProductIdAndBasketId(
+                $product->getId(),
+                $basket->getId()
+        );
 
-        if ($this->basketProductRepository->isProductExist($basketProduct)) {
-            try {
-
-                $basketProductFromDataBase = $this->basketProductRepository->findByProductIdAndBasketId(
-                        $basketProduct->getProduct()->getId(),
-                        $basketProduct->getBasket()->getId()
-                );
-
-                $basketProduct->setCount($basketProduct->getCount() + $basketProductFromDataBase->getCount());
-                $this->basketProductRepository->update($basketProduct);
-            } catch (BasketProductNotExistExtension $e) {
-                $logger = Dispatcher::get(Log::class);
-                $logger->error("Product with id {$basketProduct->getProduct()->getId()} don`t exist " .
-                        " at basket with id {$basketProduct->getBasket()->getId()}.");
-            }
+        if ($basketProductFromDataBase === null) {
+            $this->basketProductRepository->save((new BasketProduct())
+                    ->setCount($request->post('count'))
+                    ->setProduct($product)
+                    ->setBasket($basket)
+            );
         } else {
-            $this->basketProductRepository->save($basketProduct);
+            $this->basketProductRepository->update((new BasketProduct())
+                    ->setCount($request->post('count') + $basketProductFromDataBase->getCount())
+                    ->setProduct($product)
+                    ->setBasket($basket)
+            );
         }
     }
 
@@ -92,17 +70,15 @@ class BasketDataBaseService implements BasketService
 
     public function updateProduct(Request $request): BasketProduct
     {
-        try {
-            $basketProduct = $this->basketProductRepository->findById($request->get('id'));
-            $basketProduct->setCount($request->put('count'));
-            return $this->basketProductRepository->update($basketProduct);
-        } catch (BasketProductNotExistExtension $e) {
-            $logger = Dispatcher::get(Log::class);
-            $logger->error("BasketProductNotExistExtension");
-            $logger->error($e->getTraceAsString());
+        $basketProduct = $this->basketProductRepository->findById($request->get('id'));
+
+        if ($basketProduct === null) {
+            return null;
         }
 
-        return null;
+        return $this->basketProductRepository->update(
+                $basketProduct->setCount($request->put('count'))
+        );
     }
 
     public function deleteProduct(Request $request): void
@@ -111,13 +87,26 @@ class BasketDataBaseService implements BasketService
         $this->basketProductRepository->delete($basketProduct);
     }
 
-    public function deleteAllProducts(): void
+    public function drop()
     {
-        // TODO: Implement deleteAllProducts() method.
+        $basket = $this->basketRepository->findByUserId($this->authService->getUserId());
+
+        if ($basket !== null) {
+            $this->basketProductRepository->deleteByBasketId($basket->getId());
+            $this->basketRepository->delete($basket);
+        }
     }
 
-    public function deleteBasket(): void
+    public function isEmpty()
     {
-        // TODO: Implement deleteBasket() method.
+        $userId = $this->authService->getUserId();
+        $basket = $this->basketRepository->findByUserId($userId);
+
+        if ($basket === null) {
+            return true;
+        }
+
+        $basketProducts = $this->basketProductRepository->findByUserId($userId);
+        return empty($basketProducts);
     }
 }
