@@ -38,14 +38,12 @@ class AuthController extends BaseController
             ]);
         }
 
-        Response::redirect('/');
-        return '';
+        return Response::redirect('/');
     }
 
     public function logout()
     {
         $this->authService->logOut();
-        Response::redirect('/');
-        return '';
+        return Response::redirect('/');
     }
 }
