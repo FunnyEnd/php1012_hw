@@ -2,19 +2,20 @@
 
 namespace App\Services;
 
-use App\Repository\ProductRepository;
+use Framework\Config;
 
 class ProductService
 {
-    private $productRepository;
+    private $categoryService;
 
-    public function __construct(ProductRepository $productRepository)
+    public function __construct(CategoryService $categoryService)
     {
-        $this->productRepository = $productRepository;
+        $this->categoryService = $categoryService;
     }
 
     public function getPopular()
     {
-        return $this->productRepository->findByCategoryId(1);
+        $count = Config::get('count_at_home_page');
+        return $this->categoryService->getProductsByPage(1, 1, $count);
     }
 }

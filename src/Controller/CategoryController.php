@@ -31,14 +31,12 @@ class CategoryController extends BaseController
         }
 
         $pagesCount = $this->categoryService->calcPagesCount($categoryId);
-        $currentPage = 1;
 
-        if ($request->issetGet('page')) {
-            $currentPage = $request->get('page');
-            if ($currentPage > $pagesCount || $currentPage < 1) {
-                return Response::redirect('/category/' . $categoryId);
-            }
+        if (!$this->categoryService->validPage($request, $pagesCount)) {
+            return Response::redirect('/category/' . $categoryId);
         }
+
+        $currentPage = ($request->issetGet('page')) ? $request->get('page') : 1;
 
         return UserView::render('category', array(
                 'categoryCurrent' => $currentCategory,

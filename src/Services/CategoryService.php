@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Repository\ProductRepository;
 use Framework\Config;
+use Framework\HTTP\Request;
 
 class CategoryService
 {
@@ -26,11 +27,26 @@ class CategoryService
         return ceil($count / $countAtPage);
     }
 
-    public function getProductsByPage(int $categoryId, int $currentPage): array
+    public function getProductsByPage(int $categoryId, int $currentPage, int $countAtPage = null): array
     {
-        $countAtPage = Config::get('count_at_page');
+        if ($countAtPage === null) {
+            $countAtPage = Config::get('count_at_page');
+        }
+
         $from = ($currentPage - 1) * $countAtPage;
         return $this->productRepository->findByCategoryIdWithLimit($categoryId, $from, $countAtPage);
+    }
+
+    public function validPage(Request $request, int $pagesCount): bool
+    {
+        if ($request->issetGet('page')) {
+            $currentPage = intval($request->get('page'));
+            if ($currentPage > $pagesCount || $currentPage < 1) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
 }

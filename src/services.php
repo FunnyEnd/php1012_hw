@@ -18,9 +18,7 @@
 ]);
 \Framework\Dispatcher::addClass(\App\Repository\OrderRepository::class, []);
 \Framework\Dispatcher::addClass(\App\Repository\OrderProductRepository::class, []);
-\Framework\Dispatcher::addClass(\App\Services\ProductService::class, [
-        \Framework\Dispatcher::get(\App\Repository\ProductRepository::class)
-]);
+
 \Framework\Dispatcher::addClass(\App\Services\Basket\BasketDataBaseService::class, [
         \Framework\Dispatcher::get(\App\Repository\BasketProductRepository::class),
         \Framework\Dispatcher::get(\App\Services\AuthService::class),
@@ -40,4 +38,7 @@
 ]);
 \Framework\Dispatcher::addClass(\App\Services\CategoryService::class, [
         \Framework\Dispatcher::get(\App\Repository\ProductRepository::class)
+]);
+\Framework\Dispatcher::addClass(\App\Services\ProductService::class, [
+        \Framework\Dispatcher::get(\App\Services\CategoryService::class)
 ]);
