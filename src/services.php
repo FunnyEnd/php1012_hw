@@ -38,3 +38,6 @@
         \Framework\Dispatcher::get(\App\Services\Basket\BasketServiceFactory::class),
         \Framework\Dispatcher::get(\App\Repository\OrderProductRepository::class),
 ]);
+\Framework\Dispatcher::addClass(\App\Services\CategoryService::class, [
+        \Framework\Dispatcher::get(\App\Repository\ProductRepository::class)
+]);

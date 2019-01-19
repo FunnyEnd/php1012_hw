@@ -20,8 +20,14 @@ Router::addRout(new Route(
 Router::addRout(new Route(
         Router::GET_METHOD,
         "/category/:d",
-        "App\Controller\CategoryController::showCategory",
+        "App\Controller\CategoryController::index",
         ['id']
+));
+Router::addRout(new Route(
+        Router::GET_METHOD,
+        "/category/:d/page/:d",
+        "App\Controller\CategoryController::index",
+        ['id', 'page']
 ));
 Router::addRout(new Route(
         Router::GET_METHOD,

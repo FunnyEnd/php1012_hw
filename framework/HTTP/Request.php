@@ -6,12 +6,11 @@ use InvalidArgumentException;
 
 class Request
 {
+    private static $instance = null;
     protected $getData = array();
     protected $postData = array();
-    protected $putData = array();
 //    protected $deleteData = array();
-
-    private static $instance = null;
+    protected $putData = array();
 
     private function __construct()
     {
@@ -28,10 +27,6 @@ class Request
                     break;
                 }
         }
-    }
-
-    private function __clone()
-    {
     }
 
     public static function getInstance()
@@ -60,6 +55,11 @@ class Request
             throw new InvalidArgumentException("Invalid get argument.");
     }
 
+    public function issetGet(string $param): bool
+    {
+        return isset($this->getData[$param]);
+    }
+
     /**
      * Insert data.
      * @param string $param
@@ -71,6 +71,19 @@ class Request
             return $this->postData[$param];
         else
             throw new InvalidArgumentException("Invalid post argument.");
+    }
+
+    /**
+     * Update data.
+     * @param string $param
+     * @return mixed
+     */
+    public function put(string $param)
+    {
+        if (isset($this->putData[$param]))
+            return $this->putData[$param];
+        else
+            throw new InvalidArgumentException("Invalid update argument.");
     }
 
     /**
@@ -86,16 +99,7 @@ class Request
 //            throw new InvalidArgumentException("Invalid delete argument.");
 //    }
 
-    /**
-     * Update data.
-     * @param string $param
-     * @return mixed
-     */
-    public function put(string $param)
+    private function __clone()
     {
-        if (isset($this->putData[$param]))
-            return $this->putData[$param];
-        else
-            throw new InvalidArgumentException("Invalid update argument.");
     }
 }
