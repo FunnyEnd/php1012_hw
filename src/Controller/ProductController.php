@@ -2,7 +2,6 @@
 
 namespace App\Controller;
 
-use App\Extensions\ProductNotExistExtension;
 use App\Repository\ProductRepository;
 use App\View\UserView;
 use Framework\BaseController;
@@ -19,17 +18,11 @@ class ProductController extends BaseController
         $this->productRepository = $productRepository;
     }
 
-    /**
-     * @todo redirect to page product don`t exist
-     * @param Request $request
-     * @return string
-     */
     public function showProduct(Request $request): string
     {
-        $productId = $request->get('id');
-        try {
-            $product = $this->productRepository->findById($productId);
-        } catch (ProductNotExistExtension $e) {
+        $product = $this->productRepository->findById($request->get('id'));
+
+        if ($product->isEmpty()) {
             Response::setResponseCode(404);
             return UserView::render('404');
         }

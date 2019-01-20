@@ -2,7 +2,6 @@
 
 namespace App\Services\Basket;
 
-use App\Extensions\ProductNotExistExtension;
 use App\Models\BasketProduct;
 use App\Repository\ProductRepository;
 use Framework\Dispatcher;
@@ -24,19 +23,15 @@ class BasketSessionService extends AbstractBasketService
     public function getProducts(): array
     {
         $products = array();
-        try {
-            if ($this->session->sessionExist()) {
-                $basketProducts = $this->session->get('basketProducts');
-                // really, in this scope, $id this is product id
-                foreach ($basketProducts as $id => $count) {
-                    $products[] = (new BasketProduct())
-                            ->setProduct($this->productRepository->findById($id))
-                            ->setCount($count)
-                            ->setId($id);
-                }
+        if ($this->session->sessionExist()) {
+            $basketProducts = $this->session->get('basketProducts');
+            // really, in this scope, $id this is product id
+            foreach ($basketProducts as $id => $count) {
+                $products[] = (new BasketProduct())
+                        ->setProduct($this->productRepository->findById($id))
+                        ->setCount($count)
+                        ->setId($id);
             }
-        } catch (ProductNotExistExtension $e) {
-            return array();
         }
 
         return $products;

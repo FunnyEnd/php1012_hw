@@ -113,7 +113,7 @@ class Route
             $request->setGetData($this->getRequestParam());
 
             // create controller instance
-            $controller = (new ReflectionClass($controllerInfo['class']))->newInstanceArgs($constructParams);
+            $controller = $class->newInstanceArgs($constructParams);
 
             // returned result of the method invoked by the controller
             return $controller->callMethod($controllerInfo['method'], $methodParam);

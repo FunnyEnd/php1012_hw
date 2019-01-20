@@ -28,4 +28,12 @@ abstract class BaseModel
     {
         $this->update_at = $update_at;
     }
+
+    public function isEmpty(): bool
+    {
+        $class = get_class($this);
+        $obj = new $class();
+
+        return $obj == $this;
+    }
 }

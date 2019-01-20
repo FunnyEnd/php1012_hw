@@ -2,7 +2,6 @@
 
 namespace App\Repository;
 
-use App\Extensions\ProductNotExistExtension;
 use App\Models\Category;
 use App\Models\Image;
 use App\Models\Product;
@@ -94,17 +93,13 @@ class ProductRepository extends BaseRepository
     private const DELETE_BY_ID_SQL = /** @lang text */
             "delete from products where id = :id";
 
-    /**
-     * @param int $id
-     * @return Product
-     * @throws ProductNotExistExtension
-     */
     public function findById(int $id): Product
     {
         $result = $this->db->getOne(self::SELECT_BY_ID_SQL, ["id" => $id]);
 
-        if (empty($result))
-            throw new ProductNotExistExtension("Ohhh, product with id {$id} don`t exist.");
+        if (empty($result)) {
+            return new Product();
+        }
 
         return $this->mapArrayToProduct($result);
     }
@@ -143,8 +138,10 @@ class ProductRepository extends BaseRepository
         ]);
 
         $products = [];
-        foreach ($result as $r)
+
+        foreach ($result as $r) {
             array_push($products, $this->mapArrayToProduct($r));
+        }
 
         return $products;
     }
@@ -153,6 +150,7 @@ class ProductRepository extends BaseRepository
     {
         $result = $this->db->getAll(self::SELECT_ALL_SQL, []);
         $products = [];
+
         foreach ($result as $r) {
             array_push($products, $this->mapArrayToProduct($r));
         }
@@ -168,6 +166,7 @@ class ProductRepository extends BaseRepository
                 'from' => $from,
                 'countProductsAtPage' => $countProductsAtPage
         ]);
+
         $products = [];
 
         foreach ($result as $r) {

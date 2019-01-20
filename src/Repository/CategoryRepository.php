@@ -20,7 +20,7 @@ class CategoryRepository extends BaseRepository
         $result = $this->db->getOne(self::SELECT_BY_ID, ['id' => $id]);
 
         if (empty($result)) {
-            return null;
+            return new Category();
         }
 
         return $this->mapArrayToCategory($result);

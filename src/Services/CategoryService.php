@@ -37,16 +37,17 @@ class CategoryService
         return $this->productRepository->findByCategoryIdWithLimit($categoryId, $from, $countAtPage);
     }
 
-    public function validPage(Request $request, int $pagesCount): bool
+    public function getCurrentPage(Request $request, int $pagesCount): int
     {
+        $currentPage = 1;
+
         if ($request->issetGet('page')) {
             $currentPage = intval($request->get('page'));
             if ($currentPage > $pagesCount || $currentPage < 1) {
-                return false;
+                return null;
             }
         }
 
-        return true;
+        return $currentPage;
     }
-
 }

@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Models\Category;
 use App\Repository\CategoryRepository;
 use App\Services\CategoryService;
 use App\View\UserView;
@@ -25,18 +26,17 @@ class CategoryController extends BaseController
         $categoryId = $request->get('id');
         $currentCategory = $this->categoryRepository->findById($categoryId);
 
-        if ($currentCategory === null) {
+        if ($currentCategory->isEmpty()) {
             Response::setResponseCode(404);
             return UserView::render('404');
         }
 
         $pagesCount = $this->categoryService->calcPagesCount($categoryId);
+        $currentPage = $this->categoryService->getCurrentPage($request, $pagesCount);
 
-        if (!$this->categoryService->validPage($request, $pagesCount)) {
+        if ($currentPage === null) {
             return Response::redirect('/category/' . $categoryId);
         }
-
-        $currentPage = ($request->issetGet('page')) ? $request->get('page') : 1;
 
         return UserView::render('category', array(
                 'categoryCurrent' => $currentCategory,
