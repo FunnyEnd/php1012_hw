@@ -9,6 +9,7 @@
   <link rel="stylesheet" href="/public/styles/main.css">
 
   <script src="/public/js/jquery-3.3.1.min.js"></script>
+  <script src="/public/js/searchAction.js"></script>
 </head>
 <body>
 <nav class="navbar navbar-expand-md fixed-top navbar-dark bg-dark main-nav">
@@ -32,13 +33,14 @@
     </ul>
     <ul class="nav navbar-nav mx-auto">
       <li>
-        <form>
+        <form action="/" id="search-form">
           <div class="form-row">
             <div class="col-10">
-              <input type="text" class="form-control" placeholder="Product">
+              <input type="text" id="search-string" class="form-control" placeholder="Product"
+                     value="<?php if (isset($searchString)) echo $searchString; ?>">
             </div>
             <div class="col-2">
-              <button type="submit" class="btn btn-light">Search</button>
+              <button type="button" id="search-button" class="btn btn-light">Search</button>
             </div>
           </div>
         </form>
@@ -46,7 +48,8 @@
     </ul>
     <ul class="nav navbar-nav">
       <li class="nav-item">
-        <a class="nav-link" href="/basket">Basket <span id="countProductsAtUserBasket" class="badge badge-light badge-pill"><?= $countProductsAtUserBasket;?></span></a>
+        <a class="nav-link" href="/basket">Basket <span id="countProductsAtUserBasket"
+                                                        class="badge badge-light badge-pill"><?= $countProductsAtUserBasket; ?></span></a>
       </li>
         <?php if (!$auth): ?>
           <li class="nav-item">

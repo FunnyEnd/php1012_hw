@@ -2,10 +2,12 @@
 
 namespace App;
 
-use Framework\Routing\Router;
 use Framework\Routing\Route;
+use Framework\Routing\Router;
 
 // :d - digit
+// :any - any chars
+
 Router::addRout(new Route(
         Router::GET_METHOD,
         "/",
@@ -90,3 +92,20 @@ Router::addRout(new Route(
         '/order',
         'App\Controller\OrderController::store'
 ));
+
+Router::addRout(new Route(
+        Router::GET_METHOD,
+        '/search/:any/page/:d',
+        'App\Controller\SearchController::index',
+        ['search-string', 'page']
+));
+
+Router::addRout(new Route(
+        Router::GET_METHOD,
+        '/search/:any',
+        'App\Controller\SearchController::index',
+        ['search-string']
+));
+
+
+

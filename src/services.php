@@ -42,3 +42,6 @@
 \Framework\Dispatcher::addClass(\App\Services\ProductService::class, [
         \Framework\Dispatcher::get(\App\Services\CategoryService::class)
 ]);
+\Framework\Dispatcher::addClass(\App\Services\SearchService::class, [
+        \Framework\Dispatcher::get(\App\Repository\ProductRepository::class)
+]);

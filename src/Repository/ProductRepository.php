@@ -36,6 +36,23 @@ class ProductRepository extends BaseRepository
             "left join images on images.id = products.image_id " .
             "left join category on category.id = products.category_id";
 
+    private const SELECT_BY_SEARCH_STRING_SQL = /** @lang text */
+            "select products.id, products.title, products.description, products.availability, products.create_at, " .
+            "products.update_at, products.price, products.category_id, category.title as 'category_title', " .
+            "category.create_at as 'category_create_at', category.update_at as 'category_update_at', " .
+            "products.image_id, images.path as 'image_path', images.alt as 'image_alt', images.create_at as 'image_create_at', " .
+            "images.update_at as 'image_update_at' " .
+            "from products " .
+            "left join images on images.id = products.image_id " .
+            "left join category on category.id = products.category_id " .
+            "where (products.title like :search_string_title) OR (products.description like :search_string_description) " .
+            "limit :from, :countProductsAtPage";
+
+    private const SELECT_COUNT_BY_SEARCH_STRING_ID_SQL = /** @lang text */
+            "select count(products.id) as 'count' " .
+            "from products " .
+            "where (products.title like :search_string_title) OR (products.description like :search_string_description)";
+
     private const SELECT_BY_CATEGORY_ID_SQL = /** @lang text */
             "select products.id, products.title, products.description, products.availability, products.create_at, " .
             "products.update_at, products.price, products.category_id, category.title as 'category_title', " .
@@ -132,18 +149,42 @@ class ProductRepository extends BaseRepository
         return $products;
     }
 
-    /**
-     * Find all products
-     * @return array
-     */
     public function findAll(): array
     {
         $result = $this->db->getAll(self::SELECT_ALL_SQL, []);
         $products = [];
-        foreach ($result as $r)
+        foreach ($result as $r) {
             array_push($products, $this->mapArrayToProduct($r));
+        }
 
         return $products;
+    }
+
+    public function findBySearchStringWithLimit(string $searchString, int $from, int $countProductsAtPage)
+    {
+        $result = $this->db->getAll(self::SELECT_BY_SEARCH_STRING_SQL, [
+                'search_string_title' => "%$searchString%",
+                'search_string_description' => "%$searchString%",
+                'from' => $from,
+                'countProductsAtPage' => $countProductsAtPage
+        ]);
+        $products = [];
+
+        foreach ($result as $r) {
+            array_push($products, $this->mapArrayToProduct($r));
+        }
+
+        return $products;
+    }
+
+    public function findCountBySearchString(string $searchString)
+    {
+        $result = $this->db->getOne(self::SELECT_COUNT_BY_SEARCH_STRING_ID_SQL, [
+                'search_string_title' => "%$searchString%",
+                'search_string_description' => "%$searchString%"
+        ]);
+
+        return $result['count'];
     }
 
     public function findByCategoryId(int $categoryId): array
