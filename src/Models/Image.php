@@ -2,9 +2,9 @@
 
 namespace App\Models;
 
-use Framework\BaseModel;
+use Framework\AbstractModel;
 
-class Image extends BaseModel
+class Image extends AbstractModel
 {
     private $id;
     private $path;
@@ -15,9 +15,10 @@ class Image extends BaseModel
         return $this->id;
     }
 
-    public function setId(int $id): void
+    public function setId(int $id): Image
     {
         $this->id = $id;
+        return $this;
     }
 
     public function getPath(): string
@@ -25,9 +26,10 @@ class Image extends BaseModel
         return $this->path;
     }
 
-    public function setPath(string $path): void
+    public function setPath(string $path): Image
     {
         $this->path = $path;
+        return $this;
     }
 
     public function getAlt(): string
@@ -35,18 +37,19 @@ class Image extends BaseModel
         return $this->alt;
     }
 
-    public function setAlt(string $alt): void
+    public function setAlt(string $alt): Image
     {
         $this->alt = $alt;
+        return $this;
     }
 
-    public function formArray(array $data): void
+    public function fromArray(array $data): AbstractModel
     {
         $this->setId($data['id']);
         $this->setPath($data['path']);
         $this->setAlt($data['alt']);
-        $this->setCreateAt($data['create_at']);
-        $this->setUpdateAt($data['update_at']);
+
+        return parent::fromArray($data);
     }
 
 }

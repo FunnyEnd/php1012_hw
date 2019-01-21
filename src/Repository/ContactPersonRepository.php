@@ -2,18 +2,20 @@
 
 namespace App\Repository;
 
-use App\Extensions\UserNotExistExtension;
 use App\Models\ContactPerson;
 use DateTime;
 use Exception;
-use Framework\BaseRepository;
+use Framework\AbstractModel;
+use Framework\AbstractRepository;
 use Framework\Constants;
 use Framework\Dispatcher;
 use Zaine\Log;
 
-class ContactPersonRepository extends BaseRepository
+class ContactPersonRepository extends AbstractRepository
 {
-    private const SELECT_BY_ID = /** @lang text */
+    protected const MODEL_CLASS = ContactPerson::class;
+
+    protected const SELECT_BY_ID_SQL = /** @lang text */
             "select * from users where id = :id";
 
     const INSERT_SQL = /** @lang text */
@@ -21,22 +23,22 @@ class ContactPersonRepository extends BaseRepository
             "(`first_name`, `last_name`, `phone`, `city`, `stock`, `email`, `create_at`, `update_at`) " .
             "VALUES (:first_name, :last_name, :phone, :city, :stock, :email, :create_at, :update_at);";
 
-    /**
-     * Find user by id
-     * @param int $id
-     * @return ContactPerson
-     * @throws UserNotExistExtension
-     */
-    public function findById(int $id): ContactPerson
-    {
-        $result = $this->db->getOne(self::SELECT_BY_ID, ["id" => $id]);
-        if (empty($result))
-            throw new UserNotExistExtension();
+//    /**
+//     * Find user by id
+//     * @param int $id
+//     * @return ContactPerson
+//     * @throws UserNotExistExtension
+//     */
+//    public function findById(int $id): ContactPerson
+//    {
+//        $result = $this->db->getOne(self::SELECT_BY_ID, ["id" => $id]);
+//        if (empty($result))
+//            throw new UserNotExistExtension();
+//
+//        return $this->mapArrayToContactPerson($result);
+//    }
 
-        return $this->mapArrayToContactPerson($result);
-    }
-
-    public function save(ContactPerson $contactPerson): ContactPerson
+    public function save(AbstractModel $contactPerson): AbstractModel
     {
         try {
             $currentDateTime = new DateTime();
@@ -70,7 +72,7 @@ class ContactPersonRepository extends BaseRepository
      * @param array $row
      * @return ContactPerson
      */
-    private function mapArrayToContactPerson(array $row): ContactPerson
+    protected function mapFromArray(array $row): AbstractModel
     {
         $contactPerson = new ContactPerson();
         $row['create_at'] = DateTime::createFromFormat(Constants::DATETIME_FORMAT, $row['create_at']);

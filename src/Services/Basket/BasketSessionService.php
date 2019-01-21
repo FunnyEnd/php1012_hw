@@ -98,12 +98,12 @@ class BasketSessionService extends AbstractBasketService
         }
     }
 
-    public function drop()
+    public function drop(): void
     {
         $this->session->set('basketProducts', []);
     }
 
-    public function isEmpty()
+    public function isEmpty(): bool
     {
         $basketProducts = $this->session->get('basketProducts');
         return empty($basketProducts);

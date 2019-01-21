@@ -7,25 +7,15 @@ use App\Models\Image;
 use App\Models\Product;
 use DateTime;
 use Exception;
-use Framework\BaseRepository;
+use Framework\AbstractModel;
+use Framework\AbstractRepository;
 use Framework\Constants;
-use Framework\Dispatcher;
-use Zaine\Log;
 
-class ProductRepository extends BaseRepository
+class ProductRepository extends AbstractRepository
 {
-    private const SELECT_BY_ID_SQL = /** @lang text */
-            "select products.id, products.title, products.description, products.availability, products.create_at, " .
-            "products.update_at, products.price, products.category_id, category.title as 'category_title', " .
-            "category.create_at as 'category_create_at', category.update_at as 'category_update_at', " .
-            "products.image_id, images.path as 'image_path', images.alt as 'image_alt', images.create_at as 'image_create_at', " .
-            "images.update_at as 'image_update_at' " .
-            "from products " .
-            "left join images on images.id = products.image_id " .
-            "left join category on category.id = products.category_id " .
-            "where products.id = :id";
-
-    private const SELECT_ALL_SQL = /** @lang text */
+    protected const MODEL_CLASS = Product::class;
+    
+    protected const SELECT_ALL_SQL = /** @lang text */
             "select products.id, products.title, products.description, products.availability, products.create_at, " .
             "products.update_at, products.price, products.category_id, category.title as 'category_title', " .
             "category.create_at as 'category_create_at', category.update_at as 'category_update_at', " .
@@ -35,50 +25,9 @@ class ProductRepository extends BaseRepository
             "left join images on images.id = products.image_id " .
             "left join category on category.id = products.category_id";
 
-    private const SELECT_BY_SEARCH_STRING_SQL = /** @lang text */
-            "select products.id, products.title, products.description, products.availability, products.create_at, " .
-            "products.update_at, products.price, products.category_id, category.title as 'category_title', " .
-            "category.create_at as 'category_create_at', category.update_at as 'category_update_at', " .
-            "products.image_id, images.path as 'image_path', images.alt as 'image_alt', images.create_at as 'image_create_at', " .
-            "images.update_at as 'image_update_at' " .
-            "from products " .
-            "left join images on images.id = products.image_id " .
-            "left join category on category.id = products.category_id " .
-            "where (products.title like :search_string_title) OR (products.description like :search_string_description) " .
-            "limit :from, :countProductsAtPage";
-
-    private const SELECT_COUNT_BY_SEARCH_STRING_ID_SQL = /** @lang text */
+    protected const SELECT_COUNT_SQL = /** @lang text */
             "select count(products.id) as 'count' " .
-            "from products " .
-            "where (products.title like :search_string_title) OR (products.description like :search_string_description)";
-
-    private const SELECT_BY_CATEGORY_ID_SQL = /** @lang text */
-            "select products.id, products.title, products.description, products.availability, products.create_at, " .
-            "products.update_at, products.price, products.category_id, category.title as 'category_title', " .
-            "category.create_at as 'category_create_at', category.update_at as 'category_update_at', " .
-            "products.image_id, images.path as 'image_path', images.alt as 'image_alt', images.create_at as 'image_create_at', " .
-            "images.update_at as 'image_update_at' " .
-            "from products " .
-            "left join images on images.id = products.image_id " .
-            "left join category on category.id = products.category_id " .
-            "where products.category_id = :category_id";
-
-    private const SELECT_COUNT_BY_CATEGORY_ID_SQL = /** @lang text */
-            "select count(products.id) as 'count' " .
-            "from products " .
-            "where products.category_id = :category_id";
-
-    private const SELECT_BY_CATEGORY_ID_WITH_LIMIT_SQL = /** @lang text */
-            "select products.id, products.title, products.description, products.availability, products.create_at, " .
-            "products.update_at, products.price, products.category_id, category.title as 'category_title', " .
-            "category.create_at as 'category_create_at', category.update_at as 'category_update_at', " .
-            "products.image_id, images.path as 'image_path', images.alt as 'image_alt', images.create_at as 'image_create_at', " .
-            "images.update_at as 'image_update_at' " .
-            "from products " .
-            "left join images on images.id = products.image_id " .
-            "left join category on category.id = products.category_id " .
-            "where products.category_id = :category_id " .
-            "limit :from, :pageCount";
+            "from products";
 
     private const UPDATE_BY_ID_SQL = /** @lang text */
             "update products set title = :title, description = :description, availability = :availability, " .
@@ -93,116 +42,48 @@ class ProductRepository extends BaseRepository
     private const DELETE_BY_ID_SQL = /** @lang text */
             "delete from products where id = :id";
 
-    public function findById(int $id): Product
+    public function findById(int $id): AbstractModel
     {
-        $result = $this->db->getOne(self::SELECT_BY_ID_SQL, ["id" => $id]);
-
-        if (empty($result)) {
-            return new Product();
-        }
-
-        return $this->mapArrayToProduct($result);
-    }
-
-    private function mapArrayToProduct(array $row): Product
-    {
-        $category = new Category();
-        $category->setId($row['category_id']);
-        $category->setTitle($row['category_title']);
-        $category->setCreateAt(DateTime::createFromFormat(Constants::DATETIME_FORMAT, $row['category_create_at']));
-        $category->setUpdateAt(DateTime::createFromFormat(Constants::DATETIME_FORMAT, $row['category_update_at']));
-        $row['category'] = $category;
-
-        $image = new Image();
-        $image->setId($row['image_id']);
-        $image->setPath($row['image_path']);
-        $image->setAlt($row['image_alt']);
-        $image->setCreateAt(DateTime::createFromFormat(Constants::DATETIME_FORMAT, $row['image_create_at']));
-        $image->setUpdateAt(DateTime::createFromFormat(Constants::DATETIME_FORMAT, $row['image_create_at']));
-        $row['image'] = $image;
-
-        $row['create_at'] = DateTime::createFromFormat(Constants::DATETIME_FORMAT, $row['create_at']);
-        $row['update_at'] = DateTime::createFromFormat(Constants::DATETIME_FORMAT, $row['update_at']);
-
-        $product = new Product();
-        $product->fromArray($row);
-        return $product;
-    }
-
-    public function findByCategoryIdWithLimit(int $categoryId, int $from, int $pageCount)
-    {
-        $result = $this->db->getAll(self::SELECT_BY_CATEGORY_ID_WITH_LIMIT_SQL, [
-                "category_id" => $categoryId,
-                'from' => $from,
-                'pageCount' => $pageCount
+        return parent::findOne('products.id = :id', [
+                'id' => $id
         ]);
-
-        $products = [];
-
-        foreach ($result as $r) {
-            array_push($products, $this->mapArrayToProduct($r));
-        }
-
-        return $products;
     }
 
-    public function findAll(): array
+    public function findByCategoryIdWithLimit(int $categoryId, int $from, int $count): array
     {
-        $result = $this->db->getAll(self::SELECT_ALL_SQL, []);
-        $products = [];
-
-        foreach ($result as $r) {
-            array_push($products, $this->mapArrayToProduct($r));
-        }
-
-        return $products;
+        return parent::findAll(' products.category_id = :category_id', [
+                'category_id' => $categoryId,
+                'from' => $from,
+                'count' => $count
+        ]);
     }
 
-    public function findBySearchStringWithLimit(string $searchString, int $from, int $countProductsAtPage)
+    public function findBySearchStringWithLimit(string $searchString, int $from, int $count): array
     {
-        $result = $this->db->getAll(self::SELECT_BY_SEARCH_STRING_SQL, [
+        $where = '(products.title like :search_string_title) OR ' .
+                ' (products.description like :search_string_description)';
+
+        return parent::findAll($where, [
                 'search_string_title' => "%$searchString%",
                 'search_string_description' => "%$searchString%",
                 'from' => $from,
-                'countProductsAtPage' => $countProductsAtPage
+                'count' => $count
         ]);
-
-        $products = [];
-
-        foreach ($result as $r) {
-            array_push($products, $this->mapArrayToProduct($r));
-        }
-
-        return $products;
     }
 
-    public function findCountBySearchString(string $searchString)
+    public function findCountBySearchString(string $searchString): int
     {
-        $result = $this->db->getOne(self::SELECT_COUNT_BY_SEARCH_STRING_ID_SQL, [
-                'search_string_title' => "%$searchString%",
-                'search_string_description' => "%$searchString%"
+        return parent::findCount('(title like ?) OR (description like ?)', [
+                "%$searchString%",
+                "%$searchString%"
         ]);
-
-        return $result['count'];
     }
 
-    public function findByCategoryId(int $categoryId): array
+    public function findCountByCategoryId(int $categoryId): int
     {
-        $result = $this->db->getAll(self::SELECT_BY_CATEGORY_ID_SQL, ["category_id" => $categoryId]);
-        $products = [];
-        foreach ($result as $r)
-            array_push($products, $this->mapArrayToProduct($r));
-
-        return $products;
-    }
-
-    public function findCountByCategoryId(int $categoryId)
-    {
-        $result = $this->db->getOne(self::SELECT_COUNT_BY_CATEGORY_ID_SQL, [
-                "category_id" => $categoryId
+        return parent::findCount('category_id = :category_id', [
+                'category_id' => $categoryId
         ]);
-
-        return $result['count'];
     }
 
     public function save(Product $product): Product
@@ -226,9 +107,7 @@ class ProductRepository extends BaseRepository
             return $product;
 
         } catch (Exception $e) {
-            $logger = Dispatcher::get(Log::class);
-            $logger->error($e->getMessage());
-            $logger->error($e->getTraceAsString());
+            $this->logException($e);
         }
 
         return new Product();
@@ -252,9 +131,7 @@ class ProductRepository extends BaseRepository
             return $product;
 
         } catch (Exception $e) {
-            $logger = Dispatcher::get(Log::class);
-            $logger->error($e->getMessage());
-            $logger->error($e->getTraceAsString());
+            $this->logException($e);
         }
 
         return new Product();
@@ -265,5 +142,19 @@ class ProductRepository extends BaseRepository
         $this->db->execute(self::DELETE_BY_ID_SQL, [
                 "id" => $product->getId()
         ]);
+    }
+
+    protected function mapFromArray(array $row): AbstractModel
+    {
+        $row['category'] = (new Category())
+                ->setId($row['category_id'])
+                ->setTitle($row['category_title']);
+
+        $row['image'] = (new Image())
+                ->setId($row['image_id'])
+                ->setPath($row['image_path'])
+                ->setAlt($row['image_alt']);
+
+        return parent::mapFromArray($row);
     }
 }

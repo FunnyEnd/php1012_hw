@@ -1,17 +1,10 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: FoFF
- * Date: 16.01.2019
- * Time: 23:55
- */
 
 namespace App\Models;
 
+use Framework\AbstractModel;
 
-use Framework\BaseModel;
-
-class OrderProduct extends BaseModel
+class OrderProduct extends AbstractModel
 {
     private $id;
     private $order;
@@ -74,18 +67,14 @@ class OrderProduct extends BaseModel
         return $this;
     }
 
-    /**
-     * Convert array to OrderProduct
-     * @param array $data
-     */
-    public function fromArray(array $data): void
+    public function fromArray(array $data): AbstractModel
     {
         $this->setId($data['id']);
         $this->setOrder($data['order']);
         $this->setProduct($data['product']);
         $this->setCount($data['count']);
         $this->setPrice($data['price']);
-        $this->setCreateAt($data['create_at']);
-        $this->setUpdateAt($data['update_at']);
+
+        return parent::fromArray($data);
     }
 }

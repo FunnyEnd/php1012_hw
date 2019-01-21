@@ -2,9 +2,9 @@
 
 namespace App\Models;
 
-use Framework\BaseModel;
+use Framework\AbstractModel;
 
-class Order extends BaseModel
+class Order extends AbstractModel
 {
     private $id;
     private $user;
@@ -68,18 +68,14 @@ class Order extends BaseModel
         return $this;
     }
 
-    /**
-     * Convert array to Order
-     * @param array $data
-     */
-    public function fromArray(array $data): void
+    public function fromArray(array $data): AbstractModel
     {
         $this->setId($data['id']);
         $this->setUser($data['user']);
         $this->setConfirm($data['confirm']);
         $this->setComment($data['comment']);
         $this->setContactPerson($data['contact_person']);
-        $this->setCreateAt($data['create_at']);
-        $this->setUpdateAt($data['update_at']);
+
+        return parent::fromArray($data);
     }
 }

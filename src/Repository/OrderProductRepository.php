@@ -5,24 +5,27 @@ namespace App\Repository;
 use App\Models\OrderProduct;
 use DateTime;
 use Exception;
-use Framework\BaseRepository;
+use Framework\AbstractModel;
+use Framework\AbstractRepository;
 use Framework\Constants;
 use Framework\Dispatcher;
 use Zaine\Log;
 
-class OrderProductRepository extends BaseRepository
+class OrderProductRepository extends AbstractRepository
 {
-    private const INSERT_SQL = /** @lang text */
+    protected const MODEL_CLASS = OrderProduct::class;
+
+    protected const INSERT_SQL = /** @lang text */
             "insert into orders_products (order_id, product_id, price, count, create_at, update_at) values " .
             "(:order_id, :product_id, :price, :count, :create_at, :update_at)";
 
-    public function findById(int $id): OrderProduct
-    {
-        return new OrderProduct();
-    }
+//    public function findById(int $id): OrderProduct
+//    {
+//        return new OrderProduct();
+//    }
 
 
-    public function save(OrderProduct $orderProduct): OrderProduct
+    public function save(AbstractModel $orderProduct): AbstractModel
     {
         try {
             $currentDateTime = new DateTime();

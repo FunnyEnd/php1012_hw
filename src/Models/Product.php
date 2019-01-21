@@ -2,9 +2,9 @@
 
 namespace App\Models;
 
-use Framework\BaseModel;
+use Framework\AbstractModel;
 
-class Product extends BaseModel
+class Product extends AbstractModel
 {
     private $id;
     private $title;
@@ -96,11 +96,7 @@ class Product extends BaseModel
         return $this;
     }
 
-    /**
-     * Convert array to Product
-     * @param array $data
-     */
-    public function fromArray(array $data): void
+    public function fromArray(array $data): AbstractModel
     {
         $this->setId($data['id']);
         $this->setTitle($data['title']);
@@ -109,8 +105,8 @@ class Product extends BaseModel
         $this->setAvailability($data['availability']);
         $this->setPriceAtCoins($data['price']);
         $this->setImage($data['image']);
-        $this->setCreateAt($data['create_at']);
-        $this->setUpdateAt($data['update_at']);
+
+        return parent::fromArray($data);
     }
 
     private function fromCoinsToBills(int $coins): float

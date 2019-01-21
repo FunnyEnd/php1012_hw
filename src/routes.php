@@ -11,12 +11,12 @@ use Framework\Routing\Router;
 Router::addRout(new Route(
         Router::GET_METHOD,
         "/",
-        'App\Controller\HomeController::showHome'
+        'App\Controller\HomeController::index'
 ));
 Router::addRout(new Route(
         Router::GET_METHOD,
         "/product/:d",
-        "App\Controller\ProductController::showProduct",
+        "App\Controller\ProductController::index",
         ['id']
 ));
 Router::addRout(new Route(

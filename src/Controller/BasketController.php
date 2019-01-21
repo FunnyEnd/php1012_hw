@@ -45,22 +45,26 @@ class BasketController extends BaseController
     public function update(Request $request)
     {
         $success = true;
-
         if (intval($request->put('count')) <= 0) {
             $success = false;
         }
 
         $basketProduct = $this->basketService->updateProduct($request);
-
-        if ($basketProduct === null) {
+        if ($basketProduct->isEmpty()) {
             $success = false;
         }
 
-        return json_encode([
-                'success' => $success,
-                'productTotalPrice' => $basketProduct->getPriceAtBills(),
-                'totalPrice' => $this->basketService->getTotalPrice()
-        ]);
+        if ($success) {
+            return json_encode([
+                    'success' => $success,
+                    'productTotalPrice' => $basketProduct->getPriceAtBills(),
+                    'totalPrice' => $this->basketService->getTotalPrice()
+            ]);
+        } else {
+            return json_encode([
+                    'success' => $success
+            ]);
+        }
     }
 
     // todo check id request param

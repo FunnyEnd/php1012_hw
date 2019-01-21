@@ -45,3 +45,5 @@
 \Framework\Dispatcher::addClass(\App\Services\SearchService::class, [
         \Framework\Dispatcher::get(\App\Repository\ProductRepository::class)
 ]);
+\Framework\Dispatcher::addClass(\App\Repository\CharacteristicRepository::class, []);
+\Framework\Dispatcher::addClass(\App\Repository\ProductCharacteristicsRepository::class, []);

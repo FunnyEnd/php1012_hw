@@ -37,7 +37,6 @@ class UserView extends \Framework\View
                 }
             }
         } catch (Exception $e) {
-            // todo log
             die($e->getMessage());
         }
 

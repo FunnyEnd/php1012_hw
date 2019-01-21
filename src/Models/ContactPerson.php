@@ -2,9 +2,9 @@
 
 namespace App\Models;
 
-use Framework\BaseModel;
+use Framework\AbstractModel;
 
-class ContactPerson extends BaseModel
+class ContactPerson extends AbstractModel
 {
     private $id;
     private $first_name;
@@ -91,11 +91,7 @@ class ContactPerson extends BaseModel
         return $this;
     }
 
-    /**
-     * Convert array to ContactPerson
-     * @param array $data
-     */
-    public function fromArray(array $data): void
+    public function fromArray(array $data): AbstractModel
     {
         $this->setId($data['id']);
         $this->setFirstName($data['first_name']);
@@ -104,7 +100,7 @@ class ContactPerson extends BaseModel
         $this->setCity($data['city']);
         $this->setStock($data['stock']);
         $this->setEmail($data['email']);
-        $this->setCreateAt($data['create_at']);
-        $this->setUpdateAt($data['update_at']);
+
+        return parent::fromArray($data);
     }
 }

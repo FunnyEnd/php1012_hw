@@ -7,56 +7,61 @@ use App\Extensions\UserNotExistExtension;
 use App\Models\ContactPerson;
 use App\Models\User;
 use DateTime;
-use Framework\BaseRepository;
+use Framework\AbstractModel;
+use Framework\AbstractRepository;
 use Framework\Constants;
 use Framework\Dispatcher;
 use Zaine\Log;
 
-class UsersRepository extends BaseRepository
+class UsersRepository extends AbstractRepository
 {
-    private const SELECT_BY_ID = /** @lang text */
+    protected const MODEL_CLASS = User::class;
+
+    protected const SELECT_BY_ID_SQL = /** @lang text */
             "select * from users where id = :id";
+
     private const SELECT_BY_EMAIL = /** @lang text */
             "select * from users where email = :email";
+
     private const INSERT_SQL = /** @lang text */
             "insert into users (email, password, contact_person_id, is_admin, create_at, update_at) " .
             "values (:email, :password, :contact_person_id, :is_admin, :create_at, :update_at) ";
 
-    /**
-     * Find user by id
-     * @param int $id
-     * @return User
-     * @throws UserNotExistExtension
-     */
-    public function findById(int $id): User
-    {
-        $result = $this->db->getOne(self::SELECT_BY_ID, ["id" => $id]);
-        if (empty($result))
-            throw new UserNotExistExtension();
-
-        return $this->mapArrayToUser($result);
-    }
+//    /**
+//     * Find user by id
+//     * @param int $id
+//     * @return User
+//     * @throws UserNotExistExtension
+//     */
+//    public function findById(int $id): AbstractModel
+//    {
+//        $result = $this->db->getOne(self::SELECT_BY_ID, ["id" => $id]);
+//        if (empty($result))
+//            throw new UserNotExistExtension();
+//
+//        return $this->mapArrayToUser($result);
+//    }
 
     /**
      * @param string $email
      * @return User
      * @throws UserNotExistExtension
      */
-    public function findByEmail(string $email): User
+    public function findByEmail(string $email): AbstractModel
     {
         $result = $this->db->getOne(self::SELECT_BY_EMAIL, ["email" => $email]);
         if (empty($result))
             throw new UserNotExistExtension();
 
-        return $this->mapArrayToUser($result);
+        return $this->mapFromArray($result);
     }
 
     /**
-     * @param User $user
+     * @param AbstractModel $user
      * @return User
      * @throws UserAlreadyExistExtension
      */
-    public function save(User $user): User
+    public function save(AbstractModel $user): AbstractModel
     {
         $result = $this->db->getOne(self::SELECT_BY_EMAIL, ['email' => $user->getEmail()]);
         if (!empty($result))
@@ -89,12 +94,7 @@ class UsersRepository extends BaseRepository
         return new User();
     }
 
-    /**
-     * Convert array to user object
-     * @param array $row
-     * @return User
-     */
-    private function mapArrayToUser(array $row): User
+    protected function mapFromArray(array $row): AbstractModel
     {
         $user = new User();
         $row['create_at'] = DateTime::createFromFormat(Constants::DATETIME_FORMAT, $row['create_at']);

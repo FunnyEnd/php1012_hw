@@ -2,21 +2,21 @@
 
 namespace App\Repository;
 
-use App\Extensions\BasketNotExistExtension;
-use App\Models\Basket;
 use App\Models\Order;
 use App\Models\User;
 use DateTime;
-use Framework\BaseModel;
-use Framework\BaseRepository;
+use Exception;
+use Framework\AbstractModel;
+use Framework\AbstractRepository;
 use Framework\Constants;
 use Framework\Dispatcher;
-use Exception;
 use Zaine\Log;
 
-class OrderRepository extends BaseRepository
+class OrderRepository extends AbstractRepository
 {
-    private const SELECT_BY_ID = /** @lang text */
+    protected const MODEL_CLASS = Order::class;
+
+    protected const SELECT_BY_ID_SQL = /** @lang text */
             "";
 
     private const INSERT_SQL = /** @lang text */
@@ -27,12 +27,12 @@ class OrderRepository extends BaseRepository
             ":contact_person_id);";
 
 
-    public function findById(int $id): Order
-    {
-        return new Order();
-    }
+//    public function findById(int $id): Order
+//    {
+//        return new Order();
+//    }
 
-    public function save(Order $order): Order
+    public function save(AbstractModel $order): AbstractModel
     {
         try {
             $currentDateTime = new DateTime();
@@ -60,14 +60,7 @@ class OrderRepository extends BaseRepository
         return new Order();
     }
 
-    // findByUserId
-
-    /**
-     * Convert array to Image object
-     * @param array $row
-     * @return Order
-     */
-    private function mapArrayToOrder(array $row): Order
+    protected function mapFromArray(array $row): AbstractModel
     {
         $order = new Order();
         $row['create_at'] = DateTime::createFromFormat(Constants::DATETIME_FORMAT, $row['create_at']);

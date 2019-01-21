@@ -2,9 +2,9 @@
 
 namespace App\Models;
 
-use Framework\BaseModel;
+use Framework\AbstractModel;
 
-class Category extends BaseModel
+class Category extends AbstractModel
 {
     private $id;
     private $title;
@@ -14,9 +14,10 @@ class Category extends BaseModel
         return $this->id;
     }
 
-    public function setId(int $id): void
+    public function setId(int $id): Category
     {
         $this->id = $id;
+        return $this;
     }
 
     public function getTitle(): string
@@ -24,17 +25,18 @@ class Category extends BaseModel
         return $this->title;
     }
 
-    public function setTitle(string $title): void
+    public function setTitle(string $title): Category
     {
         $this->title = $title;
+        return $this;
     }
 
-    public function formArray(array $data): void
+    public function fromArray(array $data): AbstractModel
     {
         $this->setId($data['id']);
         $this->setTitle($data['title']);
-        $this->setCreateAt($data['create_at']);
-        $this->setUpdateAt($data['update_at']);
+
+        return parent::fromArray($data);
     }
 
 }

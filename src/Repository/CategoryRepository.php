@@ -3,47 +3,15 @@
 namespace App\Repository;
 
 use App\Models\Category;
-use DateTime;
-use Framework\BaseRepository;
-use Framework\Constants;
+use Framework\AbstractRepository;
 
-class CategoryRepository extends BaseRepository
+class CategoryRepository extends AbstractRepository
 {
-    private const SELECT_BY_ID = /** @lang text */
+    protected const MODEL_CLASS = Category::class;
+
+    protected const SELECT_BY_ID_SQL = /** @lang text */
             "select id, title, create_at, update_at from category where id = :id";
 
-    private const SELECT_ALL = /** @lang text */
+    protected const SELECT_ALL_SQL = /** @lang text */
             "select id, title, create_at, update_at from category";
-
-    public function findById(int $id): Category
-    {
-        $result = $this->db->getOne(self::SELECT_BY_ID, ['id' => $id]);
-
-        if (empty($result)) {
-            return new Category();
-        }
-
-        return $this->mapArrayToCategory($result);
-    }
-    
-    public function findAll(): array
-    {
-        $result = $this->db->getAll(self::SELECT_ALL, []);
-        $products = [];
-
-        foreach ($result as $r) {
-            array_push($products, $this->mapArrayToCategory($r));
-        }
-
-        return $products;
-    }
-
-    private function mapArrayToCategory(array $row): Category
-    {
-        $category = new Category();
-        $row['create_at'] = DateTime::createFromFormat(Constants::DATETIME_FORMAT, $row['create_at']);
-        $row['update_at'] = DateTime::createFromFormat(Constants::DATETIME_FORMAT, $row['update_at']);
-        $category->formArray($row);
-        return $category;
-    }
 }

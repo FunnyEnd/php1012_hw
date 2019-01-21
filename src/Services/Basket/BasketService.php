@@ -19,7 +19,7 @@ interface BasketService
 
     public function deleteProduct(Request $request): void;
 
-    public function drop();
+    public function drop(): void;
 
-    public function isEmpty();
+    public function isEmpty(): bool;
 }

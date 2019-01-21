@@ -15,7 +15,7 @@ class HomeController extends BaseController
         $this->productService = $productService;
     }
 
-    public function showHome(): string
+    public function index(): string
     {
         return UserView::render('home', [
                 'categoryFirstProducts' => $this->productService->getPopular()

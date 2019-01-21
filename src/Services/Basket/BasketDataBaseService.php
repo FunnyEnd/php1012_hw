@@ -46,7 +46,7 @@ class BasketDataBaseService extends AbstractBasketService
                 $basket->getId()
         );
 
-        if ($basketProductFromDataBase === null) {
+        if ($basketProductFromDataBase->isEmpty()) {
             $this->basketProductRepository->save((new BasketProduct())
                     ->setCount($request->post('count'))
                     ->setProduct($product)
@@ -72,13 +72,13 @@ class BasketDataBaseService extends AbstractBasketService
     {
         $basketProduct = $this->basketProductRepository->findById($request->get('id'));
 
-        if ($basketProduct === null) {
+        if ($basketProduct->isEmpty()) {
             return null;
         }
 
-        return $this->basketProductRepository->update(
+        return new BasketProduct($this->basketProductRepository->update(
                 $basketProduct->setCount($request->put('count'))
-        );
+        ));
     }
 
     public function deleteProduct(Request $request): void
@@ -87,7 +87,7 @@ class BasketDataBaseService extends AbstractBasketService
         $this->basketProductRepository->delete($basketProduct);
     }
 
-    public function drop()
+    public function drop(): void
     {
         $basket = $this->basketRepository->findByUserId($this->authService->getUserId());
 
@@ -97,7 +97,7 @@ class BasketDataBaseService extends AbstractBasketService
         }
     }
 
-    public function isEmpty()
+    public function isEmpty(): bool
     {
         $userId = $this->authService->getUserId();
         $basket = $this->basketRepository->findByUserId($userId);

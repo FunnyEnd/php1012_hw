@@ -71,7 +71,12 @@
     </div>
     <div class="tab-pane fade" id="characteristic">
       <div class="product-detailed-characteristic w-50 ml-auto mr-auto mt-3">
-        <!--                -->
+          <?php foreach ($characteristics as $c): ?>
+            <div class="row ch-row">
+              <div class="col-6 ch-name"><?= $c->getCharacteristic()->getTitle();?></div>
+              <div class="col-6 ch-data"><?= $c->getValue();?></div>
+            </div>
+          <?php endforeach; ?>
       </div>
     </div>
   </div>

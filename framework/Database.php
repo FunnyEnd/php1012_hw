@@ -60,6 +60,7 @@ class Database
             return $res;
         } catch (PDOException $e) {
             $this->logger->error($e->getMessage());
+            $this->logger->error($query);
             $this->logger->error($e->getTraceAsString());
         }
         return [];
@@ -74,6 +75,7 @@ class Database
             return ($row !== false) ? $row : [];
         } catch (PDOException $e) {
             $this->logger->error($e->getMessage());
+            $this->logger->error($query);
             $this->logger->error($e->getTraceAsString());
         }
 
@@ -87,6 +89,7 @@ class Database
             $stmt->execute($param);
         } catch (PDOException $e) {
             $this->logger->error($e->getMessage());
+            $this->logger->error($query);
             $this->logger->error($e->getTraceAsString());
         }
     }

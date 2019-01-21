@@ -2,14 +2,14 @@
 
 namespace App\Models;
 
-use Framework\BaseModel;
+use Framework\AbstractModel;
 
-class BasketProduct extends BaseModel
+class BasketProduct extends AbstractModel
 {
-    private $id;
-    private $basket;
-    private $product;
-    private $count;
+    protected $id;
+    protected $basket;
+    protected $product;
+    protected $count;
 
     public function getId(): int
     {
@@ -65,18 +65,14 @@ class BasketProduct extends BaseModel
         return $this->getProduct()->getPriceAtCoins() * $this->getCount();
     }
 
-    /**
-     * Convert array to BasketProduct
-     * @param array $data
-     */
-    public function fromArray(array $data): void
+    public function fromArray(array $data): AbstractModel
     {
         $this->setId($data['id']);
         $this->setBasket($data['basket']);
         $this->setProduct($data['product']);
         $this->setCount($data['count']);
-        $this->setCreateAt($data['create_at']);
-        $this->setUpdateAt($data['update_at']);
+
+        return parent::fromArray($data);
     }
 
 }
