@@ -18,6 +18,30 @@ class CharacteristicRepository extends AbstractRepository
     protected const INSERT_SQL = /** @lang MySQL */
             'INSERT INTO characteristics(title, create_at, update_at) VALUE (:title, :create_at, :update_at)';
 
+    protected const SELECT_CHARACTERISTICS_BY_CATEGORY_ID = /** @lang MySQL */
+            'select products_characteristics.characteristic_id as \'id\',  characteristics.title, characteristics.create_at, characteristics.update_at ' .
+            'FROM products_characteristics ' .
+            'left join characteristics on characteristics.id = products_characteristics.characteristic_id ' .
+            'where products_characteristics.product_id in ( ' .
+            'select id ' .
+            'from products ' .
+            'where products.category_id = :category_id) ' .
+            'group by products_characteristics.characteristic_id, characteristics.title';
+
+    public function findByCategoryId(int $id): array
+    {
+        $result = $this->db->getAll(self::SELECT_CHARACTERISTICS_BY_CATEGORY_ID, [
+                'category_id' => $id
+        ]);
+
+        $res = [];
+        foreach ($result as $r) {
+            array_push($res, $this->mapFromArray($r));
+        }
+
+        return $res;
+    }
+
     public function save(Characteristic $characteristic): Characteristic
     {
         try {

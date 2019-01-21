@@ -72,118 +72,54 @@
       <p>Filter</p>
     </div>
     <div class="filter">
-      <form>
-        <div class="filter-header">
-          <p>Filter 1</p>
-        </div>
-        <div class="form-check">
-          <input class="form-check-input" type="checkbox" value="">
-          <label class="form-check-label">
-            Default checkbox
-          </label>
-        </div>
-        <div class="form-check">
-          <input class="form-check-input" type="checkbox" value="">
-          <label class="form-check-label">
-            Default checkbox
-          </label>
-        </div>
-        <div class="form-check">
-          <input class="form-check-input" type="checkbox" value="">
-          <label class="form-check-label">
-            Default checkbox
-          </label>
-        </div>
-        <div class="form-check">
-          <input class="form-check-input" type="checkbox" value="">
-          <label class="form-check-label">
-            Default checkbox
-          </label>
-        </div>
-        <div class="filter-header">
-          <p>Filter 2</p>
-        </div>
-        <div class="form-check">
-          <input class="form-check-input" type="checkbox" value="">
-          <label class="form-check-label">
-            Default checkbox
-          </label>
-        </div>
-        <div class="form-check">
-          <input class="form-check-input" type="checkbox" value="">
-          <label class="form-check-label">
-            Default checkbox
-          </label>
-        </div>
-        <div class="form-check">
-          <input class="form-check-input" type="checkbox" value="">
-          <label class="form-check-label">
-            Default checkbox
-          </label>
-        </div>
-        <div class="form-check">
-          <input class="form-check-input" type="checkbox" value="">
-          <label class="form-check-label">
-            Default checkbox
-          </label>
-        </div>
-        <div class="filter-header">
-          <p>Filter 3</p>
-        </div>
-        <div class="form-check">
-          <input class="form-check-input" type="checkbox" value="">
-          <label class="form-check-label">
-            Default checkbox
-          </label>
-        </div>
-        <div class="form-check">
-          <input class="form-check-input" type="checkbox" value="">
-          <label class="form-check-label">
-            Default checkbox
-          </label>
-        </div>
-        <div class="form-check">
-          <input class="form-check-input" type="checkbox" value="">
-          <label class="form-check-label">
-            Default checkbox
-          </label>
-        </div>
-        <div class="form-check">
-          <input class="form-check-input" type="checkbox" value="">
-          <label class="form-check-label">
-            Default checkbox
-          </label>
-        </div>
-        <div class="filter-header">
-          <p>Filter 4</p>
-        </div>
-        <div class="form-check">
-          <input class="form-check-input" type="checkbox" value="">
-          <label class="form-check-label">
-            Default checkbox
-          </label>
-        </div>
-        <div class="form-check">
-          <input class="form-check-input" type="checkbox" value="">
-          <label class="form-check-label">
-            Default checkbox
-          </label>
-        </div>
-        <div class="form-check">
-          <input class="form-check-input" type="checkbox" value="">
-          <label class="form-check-label">
-            Default checkbox
-          </label>
-        </div>
-        <div class="form-check">
-          <input class="form-check-input" type="checkbox" value="">
-          <label class="form-check-label">
-            Default checkbox
-          </label>
-        </div>
-        <button type="submit" class="mt-2 d-block w-100 btn ">Show</button>
+      <form action="/" method="get">
+          <?php foreach ($characteristics as $characteristic): ?>
+            <div class="filter-header">
+              <p><?= $characteristic['info']->getTitle(); ?></p>
+            </div>
+              <?php foreach ($characteristic['values'] as $value): ?>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="filter<?= $characteristic['info']->getId(); ?>"
+                       value="<?= $value; ?>">
+                <label class="form-check-label"><?= $value; ?></label>
+              </div>
+              <? endforeach; ?>
+          <?php endforeach; ?>
+        <button type="submit" class="mt-2 d-block w-100 btn" id="filter-button">Show</button>
       </form>
     </div>
   </aside>
 </div>
+<script>
+    window.categoryId = <?= $categoryCurrent->getId(); ?>;
+    $(document).ready(function () {
+        $('#filter-button').click(function (event) {
+            event.preventDefault();
+            var arr = [];
+
+            $('input[name^="filter"]').each(function (index, el) {
+                if (($(el).prop('checked'))) {
+                    var cat = $(el).attr('name').substr(6);
+                    var val = $(el).val();
+                    if (!Array.isArray(arr[cat])) {
+                        arr[cat] = [];
+                    }
+                    arr[cat].push(val);
+                }
+            });
+
+            var filterString = '';
+            var index = 0;
+            arr.forEach(function (item, i, arr) {
+                if (index > 0) {
+                    filterString += ';'
+                }
+                filterString += i + "=" + item;
+                index++;
+            });
+
+            window.location.href = "/category/" + window.categoryId + "/filter/" + filterString;
+        });
+    });
+</script>
 <?php include 'footer.php'; ?>

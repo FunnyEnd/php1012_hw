@@ -70,7 +70,7 @@ class Route
         $replacements[] = '([[:digit:]]+)';
 
         $search[] = '/:any/';
-        $replacements[] = '(.+)';
+        $replacements[] = '(.[^/]+)';
 
         $search[] = '/\\//';
         $replacements[] = '\\/';
