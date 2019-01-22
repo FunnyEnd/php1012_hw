@@ -36,14 +36,23 @@
         \Framework\Dispatcher::get(\App\Services\Basket\BasketServiceFactory::class),
         \Framework\Dispatcher::get(\App\Repository\OrderProductRepository::class),
 ]);
-\Framework\Dispatcher::addClass(\App\Services\CategoryService::class, [
-        \Framework\Dispatcher::get(\App\Repository\ProductRepository::class)
-]);
 \Framework\Dispatcher::addClass(\App\Services\ProductService::class, [
-        \Framework\Dispatcher::get(\App\Services\CategoryService::class)
+        \Framework\Dispatcher::get(\App\Repository\ProductRepository::class)
 ]);
 \Framework\Dispatcher::addClass(\App\Services\SearchService::class, [
         \Framework\Dispatcher::get(\App\Repository\ProductRepository::class)
 ]);
 \Framework\Dispatcher::addClass(\App\Repository\CharacteristicRepository::class, []);
 \Framework\Dispatcher::addClass(\App\Repository\ProductCharacteristicsRepository::class, []);
+\Framework\Dispatcher::addClass(\App\Services\FilterService::class, [
+        \Framework\Dispatcher::get(\App\Repository\CharacteristicRepository::class),
+        \Framework\Dispatcher::get(\App\Repository\ProductCharacteristicsRepository::class)
+]);
+\Framework\Dispatcher::addClass(\App\Services\Category\CategoryDefaultService::class, [
+        \Framework\Dispatcher::get(\App\Repository\ProductRepository::class)
+]);
+\Framework\Dispatcher::addClass(\App\Services\Category\CategoryFilterService::class, [
+        \Framework\Dispatcher::get(\App\Repository\ProductCharacteristicsRepository::class),
+        \Framework\Dispatcher::get(\App\Repository\ProductRepository::class),
+        \Framework\Dispatcher::get(\App\Services\FilterService::class)
+]);

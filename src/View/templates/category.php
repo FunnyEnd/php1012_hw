@@ -11,17 +11,17 @@
       <ul class="pagination pagination-sm">
         <li class="page-item <?php if ($currentPage == 1) echo 'disabled'; ?>">
           <a class="page-link"
-             href="/category/<?= $categoryCurrent->getId(); ?>/page/<?= $currentPage - 1; ?>">&laquo;</a>
+             href="<?= $pagination['part1'] . ($currentPage - 1) . $pagination['part2']; ?>">&laquo;</a>
         </li>
           <?php for ($i = 0; $i < $pagesCount; $i++): ?>
             <li class="page-item <?php if ($currentPage == $i + 1) echo 'active'; ?>">
               <a class="page-link"
-                 href="/category/<?= $categoryCurrent->getId(); ?>/page/<?= $i + 1; ?>"><?= $i + 1; ?></a>
+                 href="<?= $pagination['part1'] . ($i + 1) . $pagination['part2']; ?>"><?= $i + 1; ?></a>
             </li>
           <?php endfor; ?>
         <li class="page-item <?php if ($currentPage == $pagesCount) echo 'disabled'; ?>">
           <a class="page-link"
-             href="/category/<?= $categoryCurrent->getId(); ?>/page/<?= $currentPage + 1; ?>">&raquo;</a>
+             href="<?= $pagination['part1'] . ($currentPage + 1) . $pagination['part2']; ?>">&raquo;</a>
         </li>
       </ul>
     </div>
@@ -48,24 +48,7 @@
         <?php endforeach; ?>
 
     </div>
-    <div class="mt-4 d-flex justify-content-center">
-      <ul class="pagination pagination-sm">
-        <li class="page-item <?php if ($currentPage == 1) echo 'disabled'; ?>">
-          <a class="page-link"
-             href="/category/<?= $categoryCurrent->getId(); ?>/page/<?= $currentPage - 1; ?>">&laquo;</a>
-        </li>
-          <?php for ($i = 0; $i < $pagesCount; $i++): ?>
-            <li class="page-item <?php if ($currentPage == $i + 1) echo 'active'; ?>">
-              <a class="page-link"
-                 href="/category/<?= $categoryCurrent->getId(); ?>/page/<?= $i + 1; ?>"><?= $i + 1; ?></a>
-            </li>
-          <?php endfor; ?>
-        <li class="page-item <?php if ($currentPage == $pagesCount) echo 'disabled'; ?>">
-          <a class="page-link"
-             href="/category/<?= $categoryCurrent->getId(); ?>/page/<?= $currentPage + 1; ?>">&raquo;</a>
-        </li>
-      </ul>
-    </div>
+    <!-- paginatin-->
   </div>
   <aside class="col-3">
     <div class="aside-header">
@@ -79,9 +62,11 @@
             </div>
               <?php foreach ($characteristic['values'] as $value): ?>
               <div class="form-check">
-                <input class="form-check-input" type="checkbox" name="filter<?= $characteristic['info']->getId(); ?>"
-                       value="<?= $value; ?>">
-                <label class="form-check-label"><?= $value; ?></label>
+                <input class="form-check-input"
+                       type="checkbox" <?php if ($value['selected'] !== 0) echo "checked=\"checked\""; ?>
+                       name="filter<?= $characteristic['info']->getId(); ?>"
+                       value="<?= $value['value']; ?>">
+                <label class="form-check-label"><?= $value['value']; ?></label>
               </div>
               <? endforeach; ?>
           <?php endforeach; ?>
@@ -118,7 +103,7 @@
                 index++;
             });
 
-            window.location.href = "/category/" + window.categoryId + "/filter/" + filterString;
+            window.location.href = "/category/" + window.categoryId + "/page/1/filter/" + filterString;
         });
     });
 </script>

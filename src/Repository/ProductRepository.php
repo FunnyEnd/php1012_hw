@@ -14,7 +14,7 @@ use Framework\Constants;
 class ProductRepository extends AbstractRepository
 {
     protected const MODEL_CLASS = Product::class;
-    
+
     protected const SELECT_ALL_SQL = /** @lang text */
             "select products.id, products.title, products.description, products.availability, products.create_at, " .
             "products.update_at, products.price, products.category_id, category.title as 'category_title', " .
@@ -55,6 +55,13 @@ class ProductRepository extends AbstractRepository
                 'category_id' => $categoryId,
                 'from' => $from,
                 'count' => $count
+        ]);
+    }
+
+    public function findByCategoryId(int $categoryId): array
+    {
+        return parent::findAll(' products.category_id = :category_id', [
+                'category_id' => $categoryId,
         ]);
     }
 

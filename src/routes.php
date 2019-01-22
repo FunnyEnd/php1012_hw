@@ -25,19 +25,17 @@ Router::addRout(new Route(
         "App\Controller\CategoryController::index",
         ['id']
 ));
-
-Router::addRout(new Route(
-        Router::GET_METHOD,
-        "/category/:d/filter/:any",
-        "App\Controller\CategoryController::index",
-        ['id', 'filter']
-));
-
 Router::addRout(new Route(
         Router::GET_METHOD,
         "/category/:d/page/:d",
         "App\Controller\CategoryController::index",
         ['id', 'page']
+));
+Router::addRout(new Route(
+        Router::GET_METHOD,
+        "/category/:d/page/:d/filter/:any",
+        "App\Controller\CategoryController::index",
+        ['id', 'page', 'filter']
 ));
 Router::addRout(new Route(
         Router::GET_METHOD,
