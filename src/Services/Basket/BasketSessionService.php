@@ -40,7 +40,11 @@ class BasketSessionService extends AbstractBasketService
     public function addProduct(Request $request): void
     {
         $this->session->start();
-        $basketProducts = $this->session->get('basketProducts');
+        if ($this->session->keyExist('basketProducts')) {
+            $basketProducts = $this->session->get('basketProducts');
+        } else {
+            $basketProducts = null;
+        }
 
         if (!is_array($basketProducts))
             $basketProducts = [];
@@ -58,7 +62,13 @@ class BasketSessionService extends AbstractBasketService
         $count = 0;
 
         if ($this->session->sessionExist()) {
-            $count = count($this->session->get('basketProducts'));
+            if ($this->session->keyExist('basketProducts')) {
+                $basketProducts = $this->session->get('basketProducts');
+            } else {
+                $basketProducts = [];
+            }
+
+            $count = count($basketProducts);
         }
 
         return $count;

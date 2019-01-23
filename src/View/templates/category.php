@@ -25,29 +25,29 @@
         </li>
       </ul>
     </div>
-    <div class="row">
-        <?php foreach ($products as $product): ?>
-          <div class="col-4">
-            <div class="product-card">
-              <a href="/product/<?= $product->getId(); ?>"><img class="d-block w-100"
-                                                                src="/<?= $product->getImage()->getPath(); ?>"
-                                                                alt=""></a>
-              <div class="product-card-name">
-                <h3><a href="/product/<?= $product->getId(); ?>"><?= $product->getTitle(); ?></a></h3>
-              </div>
-              <div class="product-card-price text-danger">
-                <span><?= $product->getPriceAtBills(); ?> UAH</span>
-              </div>
-              <div class="product-card-description">
-                <p>asdasd: asdasda</p>
-                <p>asdasd: asdasda</p>
-                <p>asdasd: asdasda</p>
-              </div>
+  <div class="row">
+      <?php foreach ($products as $product): ?>
+        <div class="col-4">
+          <div class="product-card">
+            <a href="/product/<?= $product->getId(); ?>"><img class="d-block w-100"
+                                                              src="/<?= $product->getImage()->getPath(); ?>"
+                                                              alt=""></a>
+            <div class="product-card-name">
+              <h3><a href="/product/<?= $product->getId(); ?>"><?= $product->getTitle(); ?></a></h3>
+            </div>
+            <div class="product-card-price text-danger">
+              <span><?= $product->getPriceAtBills(); ?> UAH</span>
+            </div>
+            <div class="product-card-description">
+              <p>asdasd: asdasda</p>
+              <p>asdasd: asdasda</p>
+              <p>asdasd: asdasda</p>
             </div>
           </div>
-        <?php endforeach; ?>
+        </div>
+      <?php endforeach; ?>
 
-    </div>
+  </div>
     <!-- paginatin-->
   </div>
   <aside class="col-3">
@@ -60,51 +60,52 @@
             <div class="filter-header">
               <p><?= $characteristic['info']->getTitle(); ?></p>
             </div>
-              <?php foreach ($characteristic['values'] as $value): ?>
-              <div class="form-check">
-                <input class="form-check-input"
-                       type="checkbox" <?php if ($value['selected'] !== 0) echo "checked=\"checked\""; ?>
-                       name="filter<?= $characteristic['info']->getId(); ?>"
-                       value="<?= $value['value']; ?>">
-                <label class="form-check-label"><?= $value['value']; ?></label>
-              </div>
-              <? endforeach; ?>
+          <?php foreach ($characteristic['values'] as $value): ?>
+        <div class="form-check">
+          <input class="form-check-input"
+                 type="checkbox" <?php if ($value['selected'] !== 0) echo "checked=\"checked\""; ?>
+                 name="filter<?= $characteristic['info']->getId(); ?>"
+                 value="<?= $value['value']; ?>">
+          <label class="form-check-label"><?= $value['value']; ?></label>
+        </div>
           <?php endforeach; ?>
+        <?php endforeach; ?>
         <button type="submit" class="mt-2 d-block w-100 btn" id="filter-button">Show</button>
       </form>
     </div>
   </aside>
 </div>
-<script>
-    window.categoryId = <?= $categoryCurrent->getId(); ?>;
-    $(document).ready(function () {
-        $('#filter-button').click(function (event) {
-            event.preventDefault();
-            var arr = [];
 
-            $('input[name^="filter"]').each(function (index, el) {
-                if (($(el).prop('checked'))) {
-                    var cat = $(el).attr('name').substr(6);
-                    var val = $(el).val();
-                    if (!Array.isArray(arr[cat])) {
-                        arr[cat] = [];
-                    }
-                    arr[cat].push(val);
-                }
-            });
+  <script>
+      window.categoryId = <?= $categoryCurrent->getId(); ?>;
+      $(document).ready(function () {
+          $('#filter-button').click(function (event) {
+              event.preventDefault();
+              var arr = [];
 
-            var filterString = '';
-            var index = 0;
-            arr.forEach(function (item, i, arr) {
-                if (index > 0) {
-                    filterString += ';'
-                }
-                filterString += i + "=" + item;
-                index++;
-            });
+              $('input[name^="filter"]').each(function (index, el) {
+                  if (($(el).prop('checked'))) {
+                      var cat = $(el).attr('name').substr(6);
+                      var val = $(el).val();
+                      if (!Array.isArray(arr[cat])) {
+                          arr[cat] = [];
+                      }
+                      arr[cat].push(val);
+                  }
+              });
 
-            window.location.href = "/category/" + window.categoryId + "/page/1/filter/" + filterString;
-        });
-    });
-</script>
+              var filterString = '';
+              var index = 0;
+              arr.forEach(function (item, i, arr) {
+                  if (index > 0) {
+                      filterString += ';'
+                  }
+                  filterString += i + "=" + item;
+                  index++;
+              });
+
+              window.location.href = "/category/" + window.categoryId + "/page/1/filter/" + filterString;
+          });
+      });
+  </script>
 <?php include 'footer.php'; ?>

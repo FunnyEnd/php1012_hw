@@ -7,8 +7,9 @@ use App\Services\AuthService;
 use App\Services\Basket\BasketServiceFactory;
 use Exception;
 use Framework\Dispatcher;
+use Framework\View;
 
-class UserView extends \Framework\View
+class UserView extends View
 {
     protected const PATH = "src/View/templates/";
 
@@ -41,6 +42,7 @@ class UserView extends \Framework\View
         }
 
         $data = array_merge($data, $additionData);
+
         return parent::render($template, $data, $templatePath);
     }
 }

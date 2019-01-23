@@ -12,8 +12,10 @@ class View
     {
         try {
             $path = $templatePath . $template . ".php";
-            if (!file_exists($path))
+            if (!file_exists($path)) {
                 throw new ViewExtension("Templates file {$path} dont exist.");
+            }
+
 
             ob_start();
             extract($data, EXTR_OVERWRITE);

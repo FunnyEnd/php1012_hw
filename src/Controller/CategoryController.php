@@ -33,13 +33,18 @@ class CategoryController extends BaseController
         $categoryService = (new CategoryServiceFactory())->getCategoryService($request);
         $currentPage = $categoryService->getCurrentPage($request);
 
-        return UserView::render('category', array(
+        $products = $categoryService->getProducts($request, $currentPage);
+        $pagesCount = $categoryService->getPagesCount($request);
+        $characteristics = $this->filterService->getCharacteristics($request);
+        $pagination = $categoryService->getPagination($request);
+
+        return UserView::render('category', [
                 'categoryCurrent' => $currentCategory,
-                'products' => $categoryService->getProducts($request, $currentPage),
-                'pagesCount' => $categoryService->getPagesCount($request),
+                'products' => $products,
+                'pagesCount' => $pagesCount,
                 'currentPage' => $currentPage,
-                'characteristics' => $this->filterService->getCharacteristics($request),
-                'pagination' => $categoryService->getPagination($request)
-        ));
+                'characteristics' => $characteristics,
+                'pagination' => $pagination
+        ]);
     }
 }
