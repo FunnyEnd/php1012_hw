@@ -11,7 +11,7 @@ use Framework\View;
 
 class UserView extends View
 {
-    protected const PATH = "src/View/templates/";
+    protected const PATH = "src/View/user/";
 
     public static function render(string $template, array $data = array(), $templatePath = self::PATH): string
     {

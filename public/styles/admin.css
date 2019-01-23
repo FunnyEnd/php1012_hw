@@ -1,0 +1,72 @@
+html {
+    position: relative;
+    min-height: 100%;
+}
+
+body {
+    padding-top: 4.5rem;
+    margin-bottom: 84px;
+    font-family: monospace;
+}
+
+footer {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 64px;
+    background-color: #343a40;
+    margin-top: 20px;
+    padding: 20px;
+}
+
+.footer-text {
+    color: #888;
+    font-size: 14px;
+}
+
+.footer-link {
+    color: #888;
+}
+
+.footer-link:hover {
+    color: #fff;
+}
+
+.admin-menu {
+    border-right: 2px solid #777;
+    height: calc(100vh - 84px - 84px);
+}
+
+.menu-item {
+
+    padding: 2px;
+}
+
+.menu-item a {
+    padding-left: 5px;
+    color: #343a40;
+    text-decoration: none;
+}
+
+.menu-item:hover {
+    cursor: pointer;
+    background-color: #343a40;
+}
+
+.menu-item:hover a {
+    color: white;
+}
+
+.menu-item:hover a::before {
+    content: "(";
+}
+
+.menu-item:hover a::after {
+    content: ")";
+}
+
+.admin-content-box {
+    overflow: auto;
+    max-height: calc(100vh - 84px - 84px);
+}

@@ -3,7 +3,7 @@
 namespace App\Repository;
 
 use App\Extensions\UserAlreadyExistExtension;
-use App\Extensions\UserNotExistExtension;
+
 use App\Models\ContactPerson;
 use App\Models\User;
 use DateTime;
@@ -17,43 +17,18 @@ class UsersRepository extends AbstractRepository
 {
     protected const MODEL_CLASS = User::class;
 
-    protected const SELECT_BY_ID_SQL = /** @lang text */
-            "select * from users where id = :id";
-
-    private const SELECT_BY_EMAIL = /** @lang text */
-            "select * from users where email = :email";
+    protected const SELECT_ALL_SQL = /** @lang text */
+        "select * from users";
 
     private const INSERT_SQL = /** @lang text */
-            "insert into users (email, password, contact_person_id, is_admin, create_at, update_at) " .
-            "values (:email, :password, :contact_person_id, :is_admin, :create_at, :update_at) ";
+        "insert into users (email, password, contact_person_id, is_admin, create_at, update_at) " .
+        "values (:email, :password, :contact_person_id, :is_admin, :create_at, :update_at) ";
 
-//    /**
-//     * Find user by id
-//     * @param int $id
-//     * @return User
-//     * @throws UserNotExistExtension
-//     */
-//    public function findById(int $id): AbstractModel
-//    {
-//        $result = $this->db->getOne(self::SELECT_BY_ID, ["id" => $id]);
-//        if (empty($result))
-//            throw new UserNotExistExtension();
-//
-//        return $this->mapArrayToUser($result);
-//    }
-
-    /**
-     * @param string $email
-     * @return User
-     * @throws UserNotExistExtension
-     */
     public function findByEmail(string $email): AbstractModel
     {
-        $result = $this->db->getOne(self::SELECT_BY_EMAIL, ["email" => $email]);
-        if (empty($result))
-            throw new UserNotExistExtension();
-
-        return $this->mapFromArray($result);
+        return $this->findOne('email = :email', [
+            "email" => $email
+        ]);
     }
 
     /**
@@ -63,20 +38,24 @@ class UsersRepository extends AbstractRepository
      */
     public function save(AbstractModel $user): AbstractModel
     {
-        $result = $this->db->getOne(self::SELECT_BY_EMAIL, ['email' => $user->getEmail()]);
-        if (!empty($result))
-            throw new UserAlreadyExistExtension();
+        $result = $this->findOne('email = :email', [
+            "email" => $user->getEmail()
+        ]);
+
+        if (!$result->isEmpty()) {
+            throw new UserAlreadyExistExtension("User with email `{$user->getEmail()} already exist.`");
+        }
 
         try {
             $currentDateTime = new DateTime();
 
             $this->db->execute(self::INSERT_SQL, [
-                    'email' => $user->getEmail(),
-                    'password' => $user->getPassword(),
-                    'contact_person_id' => $user->getContactPerson()->getId(),
-                    'is_admin' => $user->getIsAdmin(),
-                    'create_at' => $currentDateTime->format(Constants::DATETIME_FORMAT),
-                    'update_at' => $currentDateTime->format(Constants::DATETIME_FORMAT),
+                'email' => $user->getEmail(),
+                'password' => $user->getPassword(),
+                'contact_person_id' => $user->getContactPerson()->getId(),
+                'is_admin' => $user->getIsAdmin(),
+                'create_at' => $currentDateTime->format(Constants::DATETIME_FORMAT),
+                'update_at' => $currentDateTime->format(Constants::DATETIME_FORMAT),
             ]);
 
             $user->setCreateAt($currentDateTime);
@@ -96,11 +75,8 @@ class UsersRepository extends AbstractRepository
 
     protected function mapFromArray(array $row): AbstractModel
     {
-        $user = new User();
-        $row['create_at'] = DateTime::createFromFormat(Constants::DATETIME_FORMAT, $row['create_at']);
-        $row['update_at'] = DateTime::createFromFormat(Constants::DATETIME_FORMAT, $row['update_at']);
         $row['contact_person'] = (new ContactPerson())->setId($row['contact_person_id']);
-        $user->fromArray($row);
-        return $user;
+
+        return parent::mapFromArray($row);
     }
 }

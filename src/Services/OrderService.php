@@ -9,6 +9,7 @@ use App\Repository\ContactPersonRepository;
 use App\Repository\OrderProductRepository;
 use App\Repository\OrderRepository;
 use App\Services\Basket\BasketServiceFactory;
+use Framework\Config;
 use Framework\HTTP\Request;
 
 class OrderService
@@ -19,10 +20,13 @@ class OrderService
     private $basketService;
     private $orderProductRepository;
 
-    public function __construct(ContactPersonRepository $contactPersonRepository, AuthService $authService,
-                                OrderRepository $orderRepository, BasketServiceFactory $basketServiceFactory,
-                                OrderProductRepository $orderProductRepository)
-    {
+    public function __construct(
+        ContactPersonRepository $contactPersonRepository,
+        AuthService $authService,
+        OrderRepository $orderRepository,
+        BasketServiceFactory $basketServiceFactory,
+        OrderProductRepository $orderProductRepository
+    ) {
         $this->contactPersonRepository = $contactPersonRepository;
         $this->authService = $authService;
         $this->orderRepository = $orderRepository;
@@ -33,29 +37,47 @@ class OrderService
     public function createFromBasket(Request $request): Order
     {
         $contactPerson = $this->contactPersonRepository->save((new ContactPerson())
-                ->setFirstName($request->post('first-name'))
-                ->setLastName($request->post('last-name'))
-                ->setEmail($request->post('email'))
-                ->setCity($request->post('city'))
-                ->setStock($request->post('stock'))
-                ->setPhone($request->post('phone')));
+            ->setFirstName($request->post('first-name'))
+            ->setLastName($request->post('last-name'))
+            ->setEmail($request->post('email'))
+            ->setCity($request->post('city'))
+            ->setStock($request->post('stock'))
+            ->setPhone($request->post('phone')));
 
         $order = $this->orderRepository->save((new Order())
-                ->setUser($this->authService->getCurrentUser())
-                ->setContactPerson($contactPerson)
-                ->setConfirm(0)
-                ->setComment($request->post('comment')));
+            ->setUser($this->authService->getCurrentUser())
+            ->setContactPerson($contactPerson)
+            ->setConfirm(0)
+            ->setComment($request->post('comment')));
 
         $basketsProducts = $this->basketService->getProducts();
 
         foreach ($basketsProducts as $basketsProduct) {
             $this->orderProductRepository->save((new OrderProduct())
-                    ->setOrder($order)
-                    ->setProduct($basketsProduct->getProduct())
-                    ->setPrice($basketsProduct->getProduct()->getPriceAtCoins())
-                    ->setCount($basketsProduct->getCount()));
+                ->setOrder(new Order($order))
+                ->setProduct($basketsProduct->getProduct())
+                ->setPrice($basketsProduct->getProduct()->getPriceAtCoins())
+                ->setCount($basketsProduct->getCount()));
         }
 
-        return $order;
+        return new Order($order);
+    }
+
+    public function getCountPages()
+    {
+        return 0;
+    }
+
+    public function getOrders(Request $request, int $page): array
+    {
+        $count = Config::get('count_orders_at_page');
+        $from = ($page - 1) * $count;
+
+        $this->orderRepository->findAll('', [
+           'from' => $from,
+           'count' => $count
+        ]);
+
+        return [];
     }
 }

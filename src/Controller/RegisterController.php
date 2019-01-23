@@ -6,11 +6,11 @@ use App\Extensions\UserAlreadyExistExtension;
 use App\Services\AuthService;
 use App\Services\UserService;
 use App\View\UserView;
-use Framework\BaseController;
+use Framework\Controller;
 use Framework\HTTP\Request;
 use Framework\HTTP\Response;
 
-class RegisterController extends BaseController
+class RegisterController extends Controller
 {
     private $userService;
     private $authService;

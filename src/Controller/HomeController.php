@@ -4,9 +4,9 @@ namespace App\Controller;
 
 use App\Services\ProductService;
 use App\View\UserView;
-use Framework\BaseController;
+use Framework\Controller;
 
-class HomeController extends BaseController
+class HomeController extends Controller
 {
     private $productService;
 

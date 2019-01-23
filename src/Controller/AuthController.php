@@ -4,11 +4,11 @@ namespace App\Controller;
 
 use App\Services\AuthService;
 use App\View\UserView;
-use Framework\BaseController;
+use Framework\Controller;
 use Framework\HTTP\Request;
 use Framework\HTTP\Response;
 
-class AuthController extends BaseController
+class AuthController extends Controller
 {
     private $authService;
 

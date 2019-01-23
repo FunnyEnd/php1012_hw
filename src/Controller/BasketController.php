@@ -5,10 +5,10 @@ namespace App\Controller;
 use App\Services\AuthService;
 use App\Services\Basket\BasketServiceFactory;
 use App\View\UserView;
-use Framework\BaseController;
+use Framework\Controller;
 use Framework\HTTP\Request;
 
-class BasketController extends BaseController
+class BasketController extends Controller
 {
     private $authService;
     private $basketService;

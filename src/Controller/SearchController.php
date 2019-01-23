@@ -4,11 +4,11 @@ namespace App\Controller;
 
 use App\Services\SearchService;
 use App\View\UserView;
-use Framework\BaseController;
+use Framework\Controller;
 use Framework\HTTP\Request;
 use Framework\HTTP\Response;
 
-class SearchController extends BaseController
+class SearchController extends Controller
 {
     private $searchService;
 

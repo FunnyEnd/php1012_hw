@@ -6,11 +6,11 @@ use App\Repository\CategoryRepository;
 use App\Services\Category\CategoryServiceFactory;
 use App\Services\FilterService;
 use App\View\UserView;
-use Framework\BaseController;
+use Framework\Controller;
 use Framework\HTTP\Request;
 use Framework\HTTP\Response;
 
-class CategoryController extends BaseController
+class CategoryController extends Controller
 {
     private $categoryRepository;
     private $filterService;

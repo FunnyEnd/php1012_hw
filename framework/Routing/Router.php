@@ -4,6 +4,7 @@ namespace Framework\Routing;
 
 use Framework\Dispatcher;
 use Framework\HTTP\Request;
+use Framework\HTTP\Response;
 use UnderflowException;
 use Zaine\Log;
 
@@ -24,8 +25,9 @@ class Router
 
     public static function addRout(Route $rout): void
     {
-        if (self::$routArray == null)
+        if (self::$routArray == null) {
             self::init();
+        }
 
         array_push(self::$routArray, $rout);
     }
@@ -42,6 +44,6 @@ class Router
             }
         }
 
-        throw new UnderflowException("Rout don`t found for request {$_SERVER['REQUEST_URI']}");
+        return Response::redirect('/');
     }
 }

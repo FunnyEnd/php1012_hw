@@ -6,11 +6,11 @@ use App\Services\AuthService;
 use App\Services\Basket\BasketServiceFactory;
 use App\Services\OrderService;
 use App\View\UserView;
-use Framework\BaseController;
+use Framework\Controller;
 use Framework\HTTP\Request;
 use Framework\HTTP\Response;
 
-class OrderController extends BaseController
+class OrderController extends Controller
 {
     private $orderService;
     private $basketService;

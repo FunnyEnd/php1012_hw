@@ -30,7 +30,7 @@
 <div class="row">
   <div class="col-12">
     <div class="row">
-        <?php foreach ($products as $product): ?>
+        <?php foreach ($products as $product) : ?>
           <div class="col-3 mb-4">
             <div class="product-card">
               <a href="/product/<?= $product->getId(); ?>"><img class="d-block w-100"

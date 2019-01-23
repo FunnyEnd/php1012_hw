@@ -2,11 +2,9 @@
 
 namespace Framework;
 
-use ReflectionClass;
-use ReflectionException;
 use UnexpectedValueException;
 
-abstract class BaseController
+abstract class Controller
 {
     public function hasMethod(string $method): bool
     {
@@ -17,8 +15,7 @@ abstract class BaseController
     {
         if (!$this->hasMethod($method)) {
             $className = get_class($this);
-            throw new UnexpectedValueException(
-                    "Oh, method {$method} don`t exit at {$className}.");
+            throw new UnexpectedValueException("Oh, method {$method} don`t exit at {$className}.");
         }
         return call_user_func_array(array($this, $method), $param);
     }

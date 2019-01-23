@@ -45,19 +45,20 @@ class AuthService
 
     public function isAdmin(): bool
     {
-        if (!$this->isAuth())
+        if (!$this->isAuth()) {
             return false;
+        }
 
-        try {
-            $user = $this->usersRepository->findById($this->getUserId());
-            if ($user->getIsAdmin())
-                return true;
+        $user = $this->usersRepository->findById($this->getUserId());
 
-        } catch (UserNotExistExtension $e) {
+        if ($user->isEmpty()) {
             $this->logger->warning("Can not found current user.");
             return false;
         }
 
+        if ($user->getIsAdmin()) {
+            return true;
+        }
         return false;
     }
 

@@ -5,11 +5,11 @@ namespace App\Controller;
 use App\Repository\ProductCharacteristicsRepository;
 use App\Repository\ProductRepository;
 use App\View\UserView;
-use Framework\BaseController;
+use Framework\Controller;
 use Framework\HTTP\Request;
 use Framework\HTTP\Response;
 
-class ProductController extends BaseController
+class ProductController extends Controller
 {
     private $productRepository;
     protected $prodCharRep;
