@@ -26,7 +26,8 @@ class OrderService
         OrderRepository $orderRepository,
         BasketServiceFactory $basketServiceFactory,
         OrderProductRepository $orderProductRepository
-    ) {
+    )
+    {
         $this->contactPersonRepository = $contactPersonRepository;
         $this->authService = $authService;
         $this->orderRepository = $orderRepository;
@@ -65,19 +66,26 @@ class OrderService
 
     public function getCountPages()
     {
-        return 0;
+        $count = Config::get('count_orders_at_page');
+        $countOrders = (int)$this->orderRepository->findCount('', []);
+
+        if ($countOrders < $count) {
+            return 1;
+        }
+
+        return ceil($countOrders / $count);
     }
 
-    public function getOrders(Request $request, int $page): array
+    public function getOrders(int $page): array
     {
         $count = Config::get('count_orders_at_page');
         $from = ($page - 1) * $count;
 
-        $this->orderRepository->findAll('', [
-           'from' => $from,
-           'count' => $count
+        $orders = $this->orderRepository->findAll('', [
+            'from' => $from,
+            'count' => $count
         ]);
 
-        return [];
+        return $orders;
     }
 }

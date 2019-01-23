@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Models\ContactPerson;
 use App\Models\Order;
 use App\Models\User;
 use DateTime;
@@ -17,8 +18,16 @@ class OrderRepository extends AbstractRepository
     protected const MODEL_CLASS = Order::class;
 
     protected const SELECT_ALL_SQL = /** @lang text */
-        'SELECT orders.id, orders.contact_person_id, confirm, comment, user_id, users.email, orders.create_at, ' .
-        'orders.update_at FROM orders left join users on users.id = orders.user_id';
+        'SELECT orders.id, orders.contact_person_id, confirm, comment, IFNULL(op.order_price, 0) as \'price\', ' .
+        'IFNULL(user_id, 0) as \'user_id\', orders.create_at, orders.update_at, cp.email ' .
+        'FROM orders  ' .
+        'left join contacts_persons as cp on cp.id = orders.contact_person_id ' .
+        'left join ( select order_id, sum((price * count) / 100) as \'order_price\' ' .
+        'from orders_products ' .
+        'group by orders_products.order_id) as op on op.order_id = orders.id ';
+
+    protected const SELECT_COUNT_SQL = /** @lang text */
+        'SELECT count(orders.id) as \'count\' FROM orders';
 
     private const INSERT_SQL = /** @lang text */
         "INSERT INTO `orders` " .
@@ -60,6 +69,10 @@ class OrderRepository extends AbstractRepository
     {
         $row['user'] = (new User())
             ->setId($row['user_id']);
+
+        $row['contact_person'] = (new ContactPerson())
+            ->setId($row['contact_person_id'])
+            ->setEmail($row['email']);
 
         return parent::mapFromArray($row);
     }

@@ -23,18 +23,21 @@ class OrderController extends BaseController
             return Response::redirect('/auth');
         }
 
-        $page = 1;
+        $currentPage = 1;
         if ($request->issetGet('page')) {
-            $page = $request->get('page');
+            $currentPage = $request->get('page');
         }
 
         $countPages = $this->orderService->getCountPages();
-        $orders = $this->orderService->getOrders($request, $page);
+        $orders = $this->orderService->getOrders($currentPage);
 
-        var_dump($orders);
-        var_dump($countPages);
+//        var_dump($orders);
 
-        return AdminView::render('home');
+        return AdminView::render('orders', [
+            'orders' => $orders,
+            'countPages' => $countPages,
+            'currentPage' => $currentPage
+        ]);
     }
 
 

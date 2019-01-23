@@ -11,7 +11,7 @@ class Order extends AbstractModel
     private $confirm;
     private $comment;
     private $contactPerson;
-
+    private $price;
 
     public function getId(): int
     {
@@ -38,6 +38,15 @@ class Order extends AbstractModel
     public function getConfirm(): int
     {
         return $this->confirm;
+    }
+
+    public function getConfirmAsString(): string
+    {
+        if ($this->confirm == 0) {
+            return 'Not confirmed';
+        } else {
+            return 'Confirm';
+        }
     }
 
     public function setConfirm(int $confirm): Order
@@ -68,6 +77,18 @@ class Order extends AbstractModel
         return $this;
     }
 
+    public function getPrice(): float
+    {
+        return $this->price;
+    }
+
+    public function setPrice(float $price): Order
+    {
+        $this->price = $price;
+        return $this;
+    }
+
+
     public function fromArray(array $data): AbstractModel
     {
         $this->setId($data['id']);
@@ -75,6 +96,7 @@ class Order extends AbstractModel
         $this->setConfirm($data['confirm']);
         $this->setComment($data['comment']);
         $this->setContactPerson($data['contact_person']);
+        $this->setPrice($data['price']);
 
         return parent::fromArray($data);
     }
