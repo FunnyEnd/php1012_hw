@@ -18,6 +18,7 @@
     "zaine/zaine": "^1.0",
     "clemon/clemon": "^1.0",
     "ext-pdo": "*",
-    "ext-json": "*"
+    "ext-json": "*",
+    "squizlabs/php_codesniffer": "^3.4"
   }
 }

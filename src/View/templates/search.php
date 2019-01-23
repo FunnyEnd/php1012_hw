@@ -31,7 +31,7 @@
   <div class="col-12">
     <div class="row">
         <?php foreach ($products as $product): ?>
-          <div class="col-3">
+          <div class="col-3 mb-4">
             <div class="product-card">
               <a href="/product/<?= $product->getId(); ?>"><img class="d-block w-100"
                                                                 src="/<?= $product->getImage()->getPath(); ?>"
@@ -41,11 +41,6 @@
               </div>
               <div class="product-card-price text-danger">
                 <span><?= $product->getPriceAtBills(); ?> UAH</span>
-              </div>
-              <div class="product-card-description">
-                <p>asdasd: asdasda</p>
-                <p>asdasd: asdasda</p>
-                <p>asdasd: asdasda</p>
               </div>
             </div>
           </div>

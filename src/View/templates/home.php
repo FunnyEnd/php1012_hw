@@ -31,8 +31,8 @@
     <h2>Popular</h2>
   </div>
   <div class="row">
-      <?php foreach ($categoryFirstProducts as $product): ?>
-        <div class="col-3">
+        <?php foreach ($categoryFirstProducts as $product) :?>
+        <div class="col-3 mb-4">
           <div class="product-card">
             <a href="product/<?= $product->getId(); ?>"><img class="d-block w-100"
                                                              src="<?= $product->getImage()->getPath(); ?>" alt=""></a>
@@ -42,14 +42,9 @@
             <div class="product-card-price text-danger">
               <span><?= $product->getPriceAtBills(); ?> UAH</span>
             </div>
-            <div class="product-card-description">
-              <p>asasda: adasdasd</p>
-              <p>asasda: adasdasd</p>
-              <p>asasda: adasdasd</p>
-            </div>
           </div>
         </div>
-      <?php endforeach; ?>
+        <?php endforeach; ?>
   </div>
   </div>
 

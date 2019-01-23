@@ -26,7 +26,7 @@ class ProductCharacteristic extends AbstractModel
         return $this->characteristic;
     }
 
-    function setCharacteristic(Characteristic $characteristic): ProductCharacteristic
+    public function setCharacteristic(Characteristic $characteristic): ProductCharacteristic
     {
         $this->characteristic = $characteristic;
         return $this;

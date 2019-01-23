@@ -27,8 +27,9 @@ class Response
     public static function send(): void
     {
         http_response_code(self::$responseCode);
-        foreach (self::$headers as $h)
+        foreach (self::$headers as $h) {
             header($h);
+        }
 
         echo self::$content;
     }

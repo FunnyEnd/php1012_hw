@@ -89,9 +89,7 @@ abstract class AbstractRepository
 
     protected function makeDateTime(string $dateTime): DateTime
     {
-        return DateTime::createFromFormat(
-                Constants::DATETIME_FORMAT, $dateTime
-        );
+        return DateTime::createFromFormat(Constants::DATETIME_FORMAT, $dateTime);
     }
 
     protected function logException(Exception $e): void

@@ -17,8 +17,9 @@ class HomeController extends BaseController
 
     public function index(): string
     {
+        $products = $this->productService->getPopular();
         return UserView::render('home', [
-                'categoryFirstProducts' => $this->productService->getPopular()
+                'categoryFirstProducts' => $products
         ]);
     }
 }
