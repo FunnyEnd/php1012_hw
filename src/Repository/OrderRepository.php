@@ -36,6 +36,15 @@ class OrderRepository extends AbstractRepository
         "VALUES (:user_id, :confirm, :create_at, :update_at, :comment, " .
         ":contact_person_id);";
 
+    private const UPDATE_BY_ID_SQL = /** @lang text */
+        "update orders set confirm = :confirm, update_at = :update_at where id = :id;";
+
+    public function findById(int $id): AbstractModel
+    {
+        return $this->findOne('orders.id = :id', [
+            'id' => $id
+        ]);
+    }
 
     public function save(AbstractModel $order): AbstractModel
     {
@@ -65,8 +74,29 @@ class OrderRepository extends AbstractRepository
         return new Order();
     }
 
+    public function update(Order $order): Order
+    {
+        try {
+            $currentDateTime = new DateTime();
+            $this->db->execute(self::UPDATE_BY_ID_SQL, [
+                'id' => $order->getId(),
+                "confirm" => $order->getConfirm(),
+                'update_at' => $currentDateTime->format(Constants::DATETIME_FORMAT),
+            ]);
+            
+            $order->setUpdateAt($currentDateTime);
+            return $order;
+
+        } catch (Exception $e) {
+            $this->logException($e);
+        }
+
+        return new Order();
+    }
+
     protected function mapFromArray(array $row): AbstractModel
     {
+
         $row['user'] = (new User())
             ->setId($row['user_id']);
 

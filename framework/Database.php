@@ -41,6 +41,8 @@ class Database
 
         try {
             $this->pdo = new PDO($dsn, $user, $pass, $opt);
+            $stmt = $this->pdo->prepare('SET CHARSET \'utf8\';');
+            $stmt->execute([]);
         } catch (PDOException  $e) {
             die('Подключение не удалось: ' . $e->getMessage());
         }

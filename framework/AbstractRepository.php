@@ -80,6 +80,7 @@ abstract class AbstractRepository
             $data['create_at'] = $this->makeDateTime($data['create_at']);
             $data['update_at'] = $this->makeDateTime($data['update_at']);
             $class = new ReflectionClass(static::MODEL_CLASS);
+
             return AbstractModel::fromObject($class->newInstance())->fromArray($data);
         } catch (\ReflectionException $e) {
             $this->logException($e);

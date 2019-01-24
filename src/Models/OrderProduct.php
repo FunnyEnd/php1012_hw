@@ -56,6 +56,11 @@ class OrderProduct extends AbstractModel
         return $this;
     }
 
+    public function getFullPrice(): float
+    {
+        return ($this->price * $this->count) / 100;
+    }
+
     public function getCount(): int
     {
         return $this->count;

@@ -6,8 +6,8 @@ use Framework\AbstractModel;
 
 class Category extends AbstractModel
 {
-    private $id;
-    private $title;
+    protected $id;
+    protected $title;
 
     public function getId(): int
     {

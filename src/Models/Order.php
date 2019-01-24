@@ -6,12 +6,12 @@ use Framework\AbstractModel;
 
 class Order extends AbstractModel
 {
-    private $id;
-    private $user;
-    private $confirm;
-    private $comment;
-    private $contactPerson;
-    private $price;
+    protected $id;
+    protected $user;
+    protected $confirm;
+    protected $comment;
+    protected $contactPerson;
+    protected $price;
 
     public function getId(): int
     {

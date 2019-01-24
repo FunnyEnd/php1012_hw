@@ -95,7 +95,7 @@ class Route
                 }
             } else {
                 throw new UnexpectedValueException(
-                        "Oh, method `__construct` don`t exit at {$controllerInfo['class']}.");
+                    "Oh, method `__construct` don`t exit at {$controllerInfo['class']}.");
             }
 
             // get call method method params
@@ -106,7 +106,7 @@ class Route
                 }
             } else {
                 throw new UnexpectedValueException(
-                        "Oh, method `{$controllerInfo['method']}` don`t exit at {$controllerInfo['class']}.");
+                    "Oh, method `{$controllerInfo['method']}` don`t exit at {$controllerInfo['class']}.");
             }
 
             // set get data to request object
@@ -132,8 +132,8 @@ class Route
         $data = explode('::', $this->controller);
 
         return array(
-                'class' => $data[0],
-                'method' => $data[1]
+            'class' => $data[0],
+            'method' => $data[1]
         );
     }
 

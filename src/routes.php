@@ -123,5 +123,58 @@ Router::addRout(new Route(
 Router::addRout(new Route(
     Router::GET_METHOD,
     '/admin/order',
-    'App\Controller\Admin\OrderController::index'
+    'App\Controller\Admin\OrderController::list'
+));
+
+
+Router::addRout(new Route(
+    Router::GET_METHOD,
+    '/admin/order/page/:d',
+    'App\Controller\Admin\OrderController::list',
+    ['page']
+));
+
+Router::addRout(new Route(
+    Router::GET_METHOD,
+    '/admin/order/:d',
+    'App\Controller\Admin\OrderController::index',
+    ['id']
+));
+
+Router::addRout(new Route(
+    Router::GET_METHOD,
+    '/admin/order/:d/confirm',
+    'App\Controller\Admin\OrderController::confirm',
+    ['id']
+));
+
+Router::addRout(new Route(
+    Router::GET_METHOD,
+    '/admin/category',
+    'App\Controller\Admin\CategoryController::index'
+));
+Router::addRout(new Route(
+    Router::GET_METHOD,
+    '/admin/category/page/:d',
+    'App\Controller\Admin\CategoryController::index',
+    ['page']
+));
+
+Router::addRout(new Route(
+    Router::POST_METHOD,
+    '/admin/category',
+    'App\Controller\Admin\CategoryController::store'
+));
+
+Router::addRout(new Route(
+    Router::PUT_METHOD,
+    '/admin/category/:d',
+    'App\Controller\Admin\CategoryController::update',
+    ['id']
+));
+Router::addRout(new Route(
+    Router::DELETE_METHOD,
+    '/admin/category/:d',
+    'App\Controller\Admin\CategoryController::delete',
+    ['id']
 ));

@@ -88,4 +88,26 @@ class OrderService
 
         return $orders;
     }
+
+    public function getOrder(Request $request): Order
+    {
+        $order = $this->orderRepository->findById($request->get('id'));
+        $order->setContactPerson($this->contactPersonRepository->findById($order->getContactPerson()->getId()));
+
+        return new Order($order);
+    }
+
+    public function getProducts(Request $request): array
+    {
+        return $this->orderProductRepository->findAll('order_id = :id', [
+            'id' => $request->get('id')
+        ]);
+    }
+
+    public function confirm(Request $request)
+    {
+        $order = $this->orderRepository->findById($request->get('id'));
+        $this->orderRepository->update($order->setConfirm(1));
+    }
+
 }
