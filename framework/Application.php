@@ -72,7 +72,8 @@ class Application
     {
         set_exception_handler(function (Throwable $e) {
             $errorTime = date("H:i:m");
-            $res = "[$errorTime] Uncaught exception. " . $e->getMessage() . ' ' . $e->getFile() . ' ' . $e->getLine() . "\n";
+            $res = "[$errorTime] Uncaught exception. " . $e->getMessage() . ' ' . $e->getFile() .
+                ' ' . $e->getLine() . "\n";
             $log = new Log("[Exception handler] ");
             $log->error($res);
         });

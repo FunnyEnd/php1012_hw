@@ -11,12 +11,13 @@ abstract class Controller
         return method_exists($this, $method);
     }
 
-    public function callMethod(string $method, array $param = array()): string
+    public function callMethod(string $method, array $param = [])
     {
         if (!$this->hasMethod($method)) {
             $className = get_class($this);
             throw new UnexpectedValueException("Oh, method {$method} don`t exit at {$className}.");
         }
-        return call_user_func_array(array($this, $method), $param);
+
+        return call_user_func_array([$this, $method], $param);
     }
 }

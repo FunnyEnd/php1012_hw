@@ -2,7 +2,7 @@
 
 namespace Framework;
 
-use Framework\Exception\ViewExtension;
+use Zaine\Log;
 
 class View
 {
@@ -10,21 +10,17 @@ class View
 
     public static function render(string $template, array $data = array(), $templatePath = self::PATH): string
     {
-        try {
-            $path = $templatePath . $template . ".php";
-            if (!file_exists($path)) {
-                throw new ViewExtension("Templates file {$path} dont exist.");
-            }
+        $path = $templatePath . $template . ".php";
 
-
-            ob_start();
-            extract($data, EXTR_OVERWRITE);
-            require $path;
-            return ob_get_clean();
-        } catch (ViewExtension $ve) {
-            $ve->log();
+        if (!file_exists($path)) {
+            $logger = new Log('View');
+            $logger->error("Templates file {$path} dont exist.");
+            return '';
         }
 
-        return '';
+        ob_start();
+        extract($data, EXTR_OVERWRITE);
+        require $path;
+        return ob_get_clean();
     }
 }
