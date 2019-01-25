@@ -86,6 +86,5 @@ class UserServiceTest extends TestCase
         $this->assertEquals(1, $user->getId());
         $this->assertEquals('test@email', $user->getEmail());
         $this->assertEquals(0, $user->getIsAdmin());
-        $this->assertEquals(0, $user->getIsAdmin());
     }
 }
