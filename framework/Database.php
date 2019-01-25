@@ -16,8 +16,9 @@ class Database
 
     public static function getInstance(): Database
     {
-        if (null === static::$instance)
+        if (null === static::$instance) {
             static::$instance = new static();
+        }
 
         return static::$instance;
     }
@@ -56,8 +57,9 @@ class Database
             $stmt->execute($param);
 
             $res = [];
-            while ($row = $stmt->fetch(PDO::FETCH_ASSOC))
+            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
                 array_push($res, ($row !== false) ? $row : []);
+            }
 
             return $res;
         } catch (PDOException $e) {
