@@ -7,9 +7,9 @@ use InvalidArgumentException;
 class Request
 {
     private static $instance = null;
-    protected $getData = array();
-    protected $postData = array();
-    protected $putData = array();
+    protected $getData = [];
+    protected $postData = [];
+    protected $putData = [];
 
     private function __construct()
     {
@@ -34,17 +34,12 @@ class Request
         $this->getData = $param;
     }
 
-    /**
-     * Read data.
-     * @param string $param
-     * @return string
-     */
     public function get(string $param): string
     {
         if (isset($this->getData[$param])) {
             return $this->getData[$param];
         } else {
-            throw new InvalidArgumentException("Invalid get argument.");
+            throw new InvalidArgumentException("Invalid get argument `{$param}`.");
         }
     }
 
@@ -53,25 +48,20 @@ class Request
         return isset($this->getData[$param]);
     }
 
-    /**
-     * Insert data.
-     * @param string $param
-     * @return mixed
-     */
+    public function setPostData(array $param): void
+    {
+        $this->postData = $param;
+    }
+
     public function post(string $param)
     {
         if (isset($this->postData[$param])) {
             return $this->postData[$param];
         } else {
-            throw new InvalidArgumentException("Invalid post argument.");
+            throw new InvalidArgumentException("Invalid post argument `{$param}`.");
         }
     }
 
-    /**
-     * Update data.
-     * @param string $param
-     * @return mixed
-     */
     public function put(string $param)
     {
         if (isset($this->putData[$param])) {

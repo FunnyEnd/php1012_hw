@@ -6,13 +6,13 @@ use Framework\AbstractModel;
 
 class ContactPerson extends AbstractModel
 {
-    private $id;
-    private $first_name;
-    private $last_name;
-    private $phone;
-    private $city;
-    private $stock;
-    private $email;
+    protected $id;
+    protected $first_name;
+    protected $last_name;
+    protected $phone;
+    protected $city;
+    protected $stock;
+    protected $email;
 
     public function getId(): int
     {

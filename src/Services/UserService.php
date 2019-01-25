@@ -13,8 +13,10 @@ class UserService
     private $contactPersonRepository;
     private $usersRepository;
 
-    public function __construct(ContactPersonRepository $contactPersonRepository, UsersRepository $usersRepository)
-    {
+    public function __construct(
+        ContactPersonRepository $contactPersonRepository,
+        UsersRepository $usersRepository
+    ) {
         $this->contactPersonRepository = $contactPersonRepository;
         $this->usersRepository = $usersRepository;
     }
@@ -27,20 +29,20 @@ class UserService
     public function create(Request $request): User
     {
         $contactPerson = (new ContactPerson())
-                ->setEmail($request->post('email'))
-                ->setPhone($request->post('phone'))
-                ->setFirstName($request->post('first-name'))
-                ->setLastName($request->post('last-name'))
-                ->setStock($request->post('stock'))
-                ->setCity($request->post('city'));
+            ->setEmail($request->post('email'))
+            ->setPhone($request->post('phone'))
+            ->setFirstName($request->post('first-name'))
+            ->setLastName($request->post('last-name'))
+            ->setStock($request->post('stock'))
+            ->setCity($request->post('city'));
 
         $contactPerson = $this->contactPersonRepository->save($contactPerson);
 
         return $this->usersRepository->save((new User())
-                ->setEmail($request->post('email'))
-                ->setPassword($this->hashPassword($request->post('password')))
-                ->setIsAdmin(0)
-                ->setContactPerson($contactPerson));
+            ->setEmail($request->post('email'))
+            ->setPassword($this->hashPassword($request->post('password')))
+            ->setIsAdmin(0)
+            ->setContactPerson(new ContactPerson($contactPerson)));
     }
 
     public function hashPassword(string $password): string
