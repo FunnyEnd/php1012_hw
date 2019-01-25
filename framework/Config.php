@@ -2,14 +2,13 @@
 
 namespace Framework;
 
-
 class Config
 {
-    private static $configArray;
+    protected static $configArray = null;
 
     public static function init()
     {
-        self::$configArray = array();
+        self::$configArray = [];
         foreach (glob("src/Config/*.config.php") as $filename) {
             $arr = include $filename;
             self::$configArray = array_merge(self::$configArray, $arr);
@@ -18,9 +17,28 @@ class Config
 
     public static function get(string $param): string
     {
-        if(array_key_exists($param, self::$configArray))
+        if (self::exist($param)) {
             return self::$configArray[$param];
-        else
-            throw new \InvalidArgumentException('invalid config argument');
+        } else {
+            throw new \InvalidArgumentException('Invalid config argument');
+        }
+    }
+
+    public static function set(string $param, string $value): void
+    {
+        if (self::$configArray === null) {
+            self::$configArray = [];
+        }
+
+        self::$configArray[$param] = $value;
+    }
+
+    public static function exist(string $param): bool
+    {
+        if (self::$configArray === null) {
+            return false;
+        }
+
+        return isset(self::$configArray[$param]);
     }
 }

@@ -11,7 +11,8 @@
   "autoload": {
     "psr-4": {
       "App\\": "src/",
-      "Framework\\": "framework/"
+      "Framework\\": "framework/",
+      "Test\\": "test/"
     }
   },
   "require": {
@@ -19,6 +20,7 @@
     "clemon/clemon": "^1.0",
     "ext-pdo": "*",
     "ext-json": "*",
-    "squizlabs/php_codesniffer": "^3.4"
+    "squizlabs/php_codesniffer": "^3.4",
+    "phpunit/phpunit": "^7.5"
   }
 }
