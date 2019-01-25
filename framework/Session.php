@@ -22,7 +22,7 @@ class Session
     }
 
 
-    public function __construct()
+    private function __construct()
     {
         if ($this->cookieExist()) {
             $this->start();
@@ -40,17 +40,17 @@ class Session
         }
 
         session_start();
+
         if (!isset($_SESSION[self::SESSION_HTTP_USER_AGENT_KEY])) {
             $_SESSION[self::SESSION_HTTP_USER_AGENT_KEY] = $_SERVER[self::SERVER_HTTP_USER_AGENT_KEY];
         } elseif ($_SESSION[self::SESSION_HTTP_USER_AGENT_KEY] != $_SERVER[self::SERVER_HTTP_USER_AGENT_KEY]) {
             $this->destroy();
-            header("location: /");
         }
+
         if (!isset($_SESSION[self::SESSION_REMOTE_ADDR_KEY])) {
             $_SESSION[self::SESSION_REMOTE_ADDR_KEY] = $_SERVER[self::SERVER_REMOTE_ADDR_KEY];
         } elseif ($_SESSION[self::SESSION_REMOTE_ADDR_KEY] != $_SERVER[self::SERVER_REMOTE_ADDR_KEY]) {
             $this->destroy();
-            header("location: /");
         }
     }
 
