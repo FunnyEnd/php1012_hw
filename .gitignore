@@ -6,3 +6,4 @@ vendor/*
 db_dump/*
 src/Config/*
 app.txt
+*.phar

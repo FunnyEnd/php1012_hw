@@ -11,9 +11,10 @@ class FilterService
     private $characteristicRepository;
     private $prodCharRep;
 
-    public function __construct(CharacteristicRepository $characteristicRepository,
-                                ProductCharacteristicsRepository $prodCharRep)
-    {
+    public function __construct(
+        CharacteristicRepository $characteristicRepository,
+        ProductCharacteristicsRepository $prodCharRep
+    ) {
         $this->characteristicRepository = $characteristicRepository;
         $this->prodCharRep = $prodCharRep;
     }
@@ -29,6 +30,7 @@ class FilterService
 
         $char = explode(';', $filter);
         $filterParams = [];
+
         foreach ($char as $c) {
             $data = explode('=', $c);
             $params = explode(',', $data[1]);
@@ -44,6 +46,7 @@ class FilterService
         $chars = $this->characteristicRepository->findByCategoryId($categoryId);
         $filterSelectedValues = $this->getSelectedValues($request);
         $characteristics = [];
+
         foreach ($chars as $key => $cha) {
             $characteristics[$key]['info'] = $cha;
             $arr = $this->prodCharRep->findValuesByCategoryIdAndCharId($categoryId, $cha->getId());
@@ -52,13 +55,13 @@ class FilterService
             foreach ($arr as $a) {
                 if (array_key_exists($charId, $filterSelectedValues) && in_array($a, $filterSelectedValues[$charId])) {
                     $newArr[] = [
-                            'value' => $a,
-                            'selected' => 1
+                        'value' => $a,
+                        'selected' => 1
                     ];
                 } else {
                     $newArr[] = [
-                            'value' => $a,
-                            'selected' => 0
+                        'value' => $a,
+                        'selected' => 0
                     ];
                 }
             }
