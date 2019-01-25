@@ -2,7 +2,6 @@
 
 namespace Framework;
 
-
 class Session
 {
     private const SESSION_HTTP_USER_AGENT_KEY = 'ua';
@@ -25,8 +24,9 @@ class Session
 
     public function __construct()
     {
-        if ($this->cookieExist())
+        if ($this->cookieExist()) {
             $this->start();
+        }
     }
 
     private function __clone()
@@ -35,18 +35,20 @@ class Session
 
     public function start(): void
     {
-        if ($this->sessionExist())
+        if ($this->sessionExist()) {
             return;
+        }
+
         session_start();
-        if (!isset($_SESSION[self::SESSION_HTTP_USER_AGENT_KEY]))
+        if (!isset($_SESSION[self::SESSION_HTTP_USER_AGENT_KEY])) {
             $_SESSION[self::SESSION_HTTP_USER_AGENT_KEY] = $_SERVER[self::SERVER_HTTP_USER_AGENT_KEY];
-        else if ($_SESSION[self::SESSION_HTTP_USER_AGENT_KEY] != $_SERVER[self::SERVER_HTTP_USER_AGENT_KEY]) {
+        } elseif ($_SESSION[self::SESSION_HTTP_USER_AGENT_KEY] != $_SERVER[self::SERVER_HTTP_USER_AGENT_KEY]) {
             $this->destroy();
             header("location: /");
         }
-        if (!isset($_SESSION[self::SESSION_REMOTE_ADDR_KEY]))
+        if (!isset($_SESSION[self::SESSION_REMOTE_ADDR_KEY])) {
             $_SESSION[self::SESSION_REMOTE_ADDR_KEY] = $_SERVER[self::SERVER_REMOTE_ADDR_KEY];
-        else if ($_SESSION[self::SESSION_REMOTE_ADDR_KEY] != $_SERVER[self::SERVER_REMOTE_ADDR_KEY]) {
+        } elseif ($_SESSION[self::SESSION_REMOTE_ADDR_KEY] != $_SERVER[self::SERVER_REMOTE_ADDR_KEY]) {
             $this->destroy();
             header("location: /");
         }
@@ -54,8 +56,10 @@ class Session
 
     public function set(string $key, $val): void
     {
-        if (!$this->sessionExist())
+        if (!$this->sessionExist()) {
             return;
+        }
+
         $_SESSION[$key] = $val;
     }
 
@@ -81,37 +85,46 @@ class Session
 
     public function setName(string $name): void
     {
-        if ($this->sessionExist())
+        if ($this->sessionExist()) {
             return;
+        }
+
         session_name($name);
     }
 
     public function cookieExist(): bool
     {
-        if (isset($_COOKIE[self::COOKIE_PHPSESSID_KEY]))
+        if (isset($_COOKIE[self::COOKIE_PHPSESSID_KEY])) {
             return true;
+        }
+
         return false;
     }
 
     public function sessionExist(): bool
     {
-        if (session_status() == PHP_SESSION_ACTIVE)
+        if (session_status() == PHP_SESSION_ACTIVE) {
             return true;
+        }
+
         return false;
     }
 
     public function keyExist(string $key): bool
     {
-        if ($this->sessionExist())
+        if ($this->sessionExist()) {
             return isset($_SESSION[$key]);
-        else
+        } else {
             return false;
+        }
     }
 
     public function destroy(): void
     {
-        if (!$this->cookieExist() || !$this->sessionExist())
+        if (!$this->cookieExist() || !$this->sessionExist()) {
             return;
+        }
+
         session_destroy();
         setcookie(self::COOKIE_PHPSESSID_KEY, "", time() - 3600, '/');
     }
