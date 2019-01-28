@@ -6,10 +6,17 @@ class Config
 {
     protected static $configArray = null;
 
-    public static function init()
+    public static function init(string $path = null)
     {
         self::$configArray = [];
-        foreach (glob("src/Config/*.config.php") as $filename) {
+
+        if ($path !== null) {
+            $path .= "*.config.php";
+        } else {
+            $path = "../src/Config/*.config.php";
+        }
+
+        foreach (glob($path) as $filename) {
             $arr = include $filename;
             self::$configArray = array_merge(self::$configArray, $arr);
         }
@@ -20,7 +27,7 @@ class Config
         if (self::exist($param)) {
             return self::$configArray[$param];
         } else {
-            throw new \InvalidArgumentException('Invalid config argument');
+            throw new \InvalidArgumentException('Invalid config argument ' . $param);
         }
     }
 

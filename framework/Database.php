@@ -25,20 +25,29 @@ class Database
 
     private function __construct()
     {
-        $host = Config::get("db_host");
-        $db = Config::get("db_name");
-        $user = Config::get("db_user");
-        $pass = Config::get("db_password");
-        $charset = Config::get("db_charset");
+        if (isset($_ENV['db_host']) && isset($_ENV['db_name']) && isset($_ENV['db_user'])
+            && isset($_ENV['db_password']) && isset($_ENV['db_charset'])) {
+            $host = $_ENV["db_host"];
+            $db = $_ENV["db_name"];
+            $user = $_ENV["db_user"];
+            $pass = $_ENV["db_password"];
+            $charset = $_ENV["db_charset"];
+        } else {
+            $host = Config::get("db_host");
+            $db = Config::get("db_name");
+            $user = Config::get("db_user");
+            $pass = Config::get("db_password");
+            $charset = Config::get("db_charset");
+        }
 
         $this->logger = new Log("Database");
 
         $dsn = "mysql:host=$host;dbname=$db;charset=$charset";
 
         $opt = [
-                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-                PDO::ATTR_EMULATE_PREPARES => false,
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+            PDO::ATTR_EMULATE_PREPARES => false,
         ];
 
         try {

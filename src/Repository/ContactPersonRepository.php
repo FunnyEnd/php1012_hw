@@ -18,6 +18,9 @@ class ContactPersonRepository extends AbstractRepository
     protected const SELECT_ALL_SQL = /** @lang text */
         "select id, first_name, last_name, phone, city, stock, email, create_at, update_at from contacts_persons";
 
+    protected const SELECT_COUNT_SQL = /** @lang text */
+        "select count(id) as count from contacts_persons";
+
     const INSERT_SQL = /** @lang text */
         "INSERT INTO `contacts_persons` " .
         "(`first_name`, `last_name`, `phone`, `city`, `stock`, `email`, `create_at`, `update_at`) " .

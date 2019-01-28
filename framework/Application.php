@@ -10,8 +10,8 @@ use Zaine\Log;
 
 class Application
 {
-    private const SRC_ROUTING_FILE = 'src/routes.php';
-    private const SRC_SERVICES_PHP = 'src/services.php';
+    private const SRC_ROUTING_FILE = '../src/routes.php';
+    private const SRC_SERVICES_PHP = '../src/services.php';
 
     private $logger;
 

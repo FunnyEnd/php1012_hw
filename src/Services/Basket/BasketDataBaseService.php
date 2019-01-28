@@ -38,25 +38,25 @@ class BasketDataBaseService extends AbstractBasketService
 
         if ($basket === null) {
             $basket = $this->basketRepository->save((new Basket())
-                    ->setUser((new User())->setId($userId)));
+                ->setUser((new User())->setId($userId)));
         }
 
         $basketProductFromDataBase = $this->basketProductRepository->findByProductIdAndBasketId(
-                $product->getId(),
-                $basket->getId()
+            $product->getId(),
+            $basket->getId()
         );
 
         if ($basketProductFromDataBase->isEmpty()) {
             $this->basketProductRepository->save((new BasketProduct())
-                    ->setCount($request->post('count'))
-                    ->setProduct($product)
-                    ->setBasket($basket)
+                ->setCount($request->post('count'))
+                ->setProduct($product)
+                ->setBasket($basket)
             );
         } else {
             $this->basketProductRepository->update((new BasketProduct())
-                    ->setCount($request->post('count') + $basketProductFromDataBase->getCount())
-                    ->setProduct($product)
-                    ->setBasket($basket)
+                ->setCount($request->post('count') + $basketProductFromDataBase->getCount())
+                ->setProduct($product)
+                ->setBasket($basket)
             );
         }
     }
@@ -64,7 +64,7 @@ class BasketDataBaseService extends AbstractBasketService
     public function getCountProducts(): int
     {
         return $this->basketProductRepository->getCountProductsAtUserBasket(
-                (new User)->setId($this->authService->getUserId())
+            (new User)->setId($this->authService->getUserId())
         );
     }
 
@@ -77,7 +77,7 @@ class BasketDataBaseService extends AbstractBasketService
         }
 
         return new BasketProduct($this->basketProductRepository->update(
-                $basketProduct->setCount($request->put('count'))
+            $basketProduct->setCount($request->put('count'))
         ));
     }
 

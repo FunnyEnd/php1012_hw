@@ -16,9 +16,11 @@ class CategoryFilterService extends AbstractCategoryService
     private $productRepository;
     private $filterService;
 
-    public function __construct(ProductCharacteristicsRepository $prodCharRep, ProductRepository $productRepository,
-                                FilterService $filterService)
-    {
+    public function __construct(
+        ProductCharacteristicsRepository $prodCharRep,
+        ProductRepository $productRepository,
+        FilterService $filterService
+    ) {
         $this->prodCharRep = $prodCharRep;
         $this->productRepository = $productRepository;
         $this->filterService = $filterService;

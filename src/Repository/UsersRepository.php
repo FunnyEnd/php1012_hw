@@ -20,6 +20,9 @@ class UsersRepository extends AbstractRepository
     protected const SELECT_ALL_SQL = /** @lang text */
         "select * from users";
 
+    protected const SELECT_COUNT_SQL = /** @lang text */
+        "select count(*) as count from users";
+
     private const INSERT_SQL = /** @lang text */
         "insert into users (email, password, contact_person_id, is_admin, create_at, update_at) " .
         "values (:email, :password, :contact_person_id, :is_admin, :create_at, :update_at) ";
