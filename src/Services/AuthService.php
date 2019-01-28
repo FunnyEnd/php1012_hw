@@ -27,9 +27,10 @@ class AuthService
 
     public function auth(string $email, string $password): bool
     {
-        try {
-            $user = $this->usersRepository->findByEmail($email);
-        } catch (UserNotExistExtension $e) {
+
+        $user = $this->usersRepository->findByEmail($email);
+
+        if ($user->isEmpty()) {
             $this->logger->warning("User with email '$email' and password '$password' mot found.");
             return false;
         }
