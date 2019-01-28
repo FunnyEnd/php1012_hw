@@ -24,14 +24,14 @@ class RegisterController extends Controller
     public function index()
     {
         return UserView::render('register', [
-                'error' => '',
-                'email' => '',
-                'password' => '',
-                'firstName' => '',
-                'lastName' => '',
-                'phone' => '',
-                'city' => '',
-                'stock' => ''
+            'error' => '',
+            'email' => '',
+            'password' => '',
+            'firstName' => '',
+            'lastName' => '',
+            'phone' => '',
+            'city' => '',
+            'stock' => ''
         ]);
     }
 
@@ -41,20 +41,20 @@ class RegisterController extends Controller
             $this->userService->create($request);
         } catch (UserAlreadyExistExtension $e) {
             return UserView::render('register', [
-                    'error' => 'User already exist',
-                    'email' => $request->post('email'),
-                    'password' => $request->post('password'),
-                    'firstName' => $request->post('first-name'),
-                    'lastName' => $request->post('last-name'),
-                    'phone' => $request->post('phone'),
-                    'city' => $request->post('city'),
-                    'stock' => $request->post('stock')
+                'error' => 'User already exist',
+                'email' => $request->post('email'),
+                'password' => $request->post('password'),
+                'firstName' => $request->post('first-name'),
+                'lastName' => $request->post('last-name'),
+                'phone' => $request->post('phone'),
+                'city' => $request->post('city'),
+                'stock' => $request->post('stock')
             ]);
         }
 
         $this->authService->auth(
-                $request->post('email'),
-                $request->post('password')
+            $request->post('email'),
+            $request->post('password')
         );
 
         return Response::redirect('/');
