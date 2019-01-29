@@ -20,21 +20,33 @@ class AuthController extends Controller
     public function index()
     {
         return UserView::render('auth', [
-                'email' => '',
-                'password' => ''
+            'email' => '',
+            'password' => ''
         ]);
     }
 
     public function auth(Request $request)
     {
+        $error = $request->check([
+            ['post', 'email', ':email', 'Email entered incorrectly.'],
+            ['post', 'password', ':password', 'Password entered incorrectly.'],
+        ]);
+
+        if($error != ''){
+            return UserView::render('auth', [
+                'error' => $error,
+                'email' => $request->fetch('post','email')
+            ]);
+        }
+
         $auth = $this->authService->auth(
-                $request->post('email'),
-                $request->post('password')
+            $request->fetch('post','email'),
+            $request->fetch('post','password')
         );
 
         if (!$auth) {
             return UserView::render('auth', [
-                    'email' => $request->post('email')
+                'email' => $request->fetch('post','email')
             ]);
         }
 

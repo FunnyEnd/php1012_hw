@@ -24,7 +24,6 @@ class RegisterController extends Controller
     public function index()
     {
         return UserView::render('register', [
-            'error' => '',
             'email' => '',
             'password' => '',
             'firstName' => '',
@@ -37,24 +36,39 @@ class RegisterController extends Controller
 
     public function register(Request $request)
     {
+        $error = $request->check([
+            ['post', 'email', ':email', 'Email entered incorrectly.'],
+            ['post', 'password', ':password', 'Password entered incorrectly.'],
+            ['post', 'first-name', '/^[a-z]{2,15}$/i', 'First name entered incorrectly.'],
+            ['post', 'last-name', '/^[a-z]{2,15}$/i', 'Last name entered incorrectly.'],
+            ['post', 'phone', '/^[0-9]{10}$/', 'Phone entered incorrectly.'],
+            ['post', 'city', '/^[a-z]{5,30}$/i', 'City name entered incorrectly.'],
+            ['post', 'stock', '/^[a-z0-9 ]{5,30}$/i', 'Stock name entered incorrectly.'],
+        ]);
+
         try {
             $this->userService->create($request);
         } catch (UserAlreadyExistExtension $e) {
+            if ($error == '') {
+                $error = 'User already registered.';
+            }
+        }
+
+        if ($error != '') {
             return UserView::render('register', [
-                'error' => 'User already exist',
-                'email' => $request->post('email'),
-                'password' => $request->post('password'),
-                'firstName' => $request->post('first-name'),
-                'lastName' => $request->post('last-name'),
-                'phone' => $request->post('phone'),
-                'city' => $request->post('city'),
-                'stock' => $request->post('stock')
+                'error' => $error,
+                'email' => $request->fetch('post', 'email'),
+                'firstName' => $request->fetch('post', 'first-name'),
+                'lastName' => $request->fetch('post', 'last-name'),
+                'phone' => $request->fetch('post', 'phone'),
+                'city' => $request->fetch('post', 'city'),
+                'stock' => $request->fetch('post', 'stock')
             ]);
         }
 
         $this->authService->auth(
-            $request->post('email'),
-            $request->post('password')
+            $request->fetch('post', 'email'),
+            $request->fetch('post', 'password')
         );
 
         return Response::redirect('/');

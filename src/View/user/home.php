@@ -8,13 +8,13 @@
       </ol>
       <div class="carousel-inner">
         <div class="carousel-item active">
-          <img class="d-block w-100" src="/public/images/header1.png" alt="Первый слайд">
+          <img class="d-block w-100" src="/images/header1.png" alt="Первый слайд">
         </div>
         <div class="carousel-item">
-          <img class="d-block w-100" src="/public/images/header1.png" alt="Второй слайд">
+          <img class="d-block w-100" src="/images/header1.png" alt="Второй слайд">
         </div>
         <div class="carousel-item">
-          <img class="d-block w-100" src="/public/images/header1.png" alt="Третий слайд">
+          <img class="d-block w-100" src="/images/header1.png" alt="Третий слайд">
         </div>
       </div>
       <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">

@@ -5,8 +5,8 @@
       <li class="breadcrumb-item active">Login</li>
     </ol>
   </div>
-<?php if (!empty($erorr)): ?>
-  <div><p><?= $error; ?></p></div>
+<?php if (isset($error)): ?>
+  <div class="text-center"><p><?= $error; ?></p></div>
 <?php endif; ?>
   <div class="w-50 ml-auto mr-auto mt-5">
     <form action="/auth" method="post">
