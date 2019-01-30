@@ -27,8 +27,6 @@ class AuthController extends Controller
 
     public function auth(Request $request)
     {
-
-
         $auth = $this->authService->auth(
             $request->fetch('post', 'email'),
             $request->fetch('post', 'password')

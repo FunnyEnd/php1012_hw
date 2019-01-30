@@ -8,7 +8,6 @@ use App\Services\FilterService;
 use App\View\UserView;
 use Framework\Controller;
 use Framework\HTTP\Request;
-use Framework\HTTP\Response;
 
 class CategoryController extends Controller
 {
@@ -23,16 +22,11 @@ class CategoryController extends Controller
 
     public function index(Request $request): string
     {
-        $currentCategory = $this->categoryRepository->findById($request->get('id'));
-
-        if ($currentCategory->isEmpty()) {
-            Response::setResponseCode(404);
-            return UserView::render('404');
-        }
+        $currentCategory = $this->categoryRepository->findById($request->fetch('get', 'id'));
 
         $categoryService = (new CategoryServiceFactory())->getCategoryService($request);
-        $currentPage = $categoryService->getCurrentPage($request);
 
+        $currentPage = $categoryService->getCurrentPage($request);
         $products = $categoryService->getProducts($request, $currentPage);
         $pagesCount = $categoryService->getPagesCount($request);
         $characteristics = $this->filterService->getCharacteristics($request);

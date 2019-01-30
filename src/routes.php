@@ -2,7 +2,6 @@
 
 namespace App;
 
-use App\Validators\AuthValidator;
 use Framework\Routing\Route;
 use Framework\Routing\Router;
 
@@ -18,31 +17,39 @@ Router::addRout(new Route(
     Router::GET_METHOD,
     "/product/:d",
     "App\Controller\ProductController::index",
-    ['id']
+    ['id'],
+    "App\Validators\ProductValidator::checkProduct"
 ));
 Router::addRout(new Route(
     Router::GET_METHOD,
     "/category/:d",
     "App\Controller\CategoryController::index",
-    ['id']
+    ['id'],
+    'App\Validators\CategoryValidator::checkCategory'
 ));
+
 Router::addRout(new Route(
     Router::GET_METHOD,
     "/category/:d/page/:d",
     "App\Controller\CategoryController::index",
-    ['id', 'page']
+    ['id', 'page'],
+    'App\Validators\CategoryValidator::checkCategory'
 ));
+
 Router::addRout(new Route(
     Router::GET_METHOD,
     "/category/:d/page/:d/filter/:any",
     "App\Controller\CategoryController::index",
-    ['id', 'page', 'filter']
+    ['id', 'page', 'filter'],
+    'App\Validators\CategoryValidator::checkCategory'
 ));
+
 Router::addRout(new Route(
     Router::GET_METHOD,
     "/auth",
     "App\Controller\AuthController::index"
 ));
+
 Router::addRout(new Route(
     Router::POST_METHOD,
     "/auth",
@@ -50,16 +57,21 @@ Router::addRout(new Route(
     [],
     "App\Validators\AuthValidator::checkAuth"
 ));
+
 Router::addRout(new Route(
     Router::GET_METHOD,
     "/register",
     "App\Controller\RegisterController::index"
 ));
+
 Router::addRout(new Route(
     Router::POST_METHOD,
     "/register",
-    "App\Controller\RegisterController::register"
+    "App\Controller\RegisterController::register",
+    [],
+    "App\Validators\RegisterValidator::checkRegister"
 ));
+
 Router::addRout(new Route(
     Router::GET_METHOD,
     "/logout",

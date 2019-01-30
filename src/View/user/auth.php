@@ -5,7 +5,7 @@
       <li class="breadcrumb-item active">Login</li>
     </ol>
   </div>
-<?php if (isset($error)): ?>
+<?php if (isset($error)) :?>
   <div class="text-center"><p><?= $error; ?></p></div>
 <?php endif; ?>
   <div class="w-50 ml-auto mr-auto mt-5">
@@ -13,7 +13,7 @@
       <div class="form-group row">
         <label for="email" class="col-sm-3 col-form-label">Email</label>
         <div class="col-sm-9">
-          <input type="text" class="form-control" id="email" name="email" placeholder="semo@email.com"
+          <input type="email" class="form-control" id="email" name="email" placeholder="semo@email.com"
                  value="<?= $email ?>"
                  required>
         </div>
