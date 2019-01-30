@@ -8,6 +8,7 @@ use App\Models\OrderProduct;
 use App\Repository\ContactPersonRepository;
 use App\Repository\OrderProductRepository;
 use App\Repository\OrderRepository;
+use App\Repository\ProductRepository;
 use App\Services\Basket\BasketServiceFactory;
 use Framework\Config;
 use Framework\HTTP\Request;
@@ -19,13 +20,15 @@ class OrderService
     private $orderRepository;
     private $basketService;
     private $orderProductRepository;
+    private $productRepository;
 
     public function __construct(
         ContactPersonRepository $contactPersonRepository,
         AuthService $authService,
         OrderRepository $orderRepository,
         BasketServiceFactory $basketServiceFactory,
-        OrderProductRepository $orderProductRepository
+        OrderProductRepository $orderProductRepository,
+        ProductRepository $productRepository
     )
     {
         $this->contactPersonRepository = $contactPersonRepository;
@@ -33,27 +36,32 @@ class OrderService
         $this->orderRepository = $orderRepository;
         $this->orderProductRepository = $orderProductRepository;
         $this->basketService = $basketServiceFactory->getBasketService($this->authService->isAuth());
+        $this->productRepository = $productRepository;
     }
 
     public function createFromBasket(Request $request): Order
     {
         $contactPerson = $this->contactPersonRepository->save((new ContactPerson())
-            ->setFirstName($request->post('first-name'))
-            ->setLastName($request->post('last-name'))
-            ->setEmail($request->post('email'))
-            ->setCity($request->post('city'))
-            ->setStock($request->post('stock'))
-            ->setPhone($request->post('phone')));
+            ->setFirstName($request->fetch('post', 'first-name'))
+            ->setLastName($request->fetch('post', 'last-name'))
+            ->setEmail($request->fetch('post', 'email'))
+            ->setCity($request->fetch('post', 'city'))
+            ->setStock($request->fetch('post', 'stock'))
+            ->setPhone($request->fetch('post', 'phone')));
 
         $order = $this->orderRepository->save((new Order())
             ->setUser($this->authService->getCurrentUser())
             ->setContactPerson($contactPerson)
             ->setConfirm(0)
-            ->setComment($request->post('comment')));
+            ->setComment($request->fetch('post', 'comment')));
 
         $basketsProducts = $this->basketService->getProducts();
 
         foreach ($basketsProducts as $basketsProduct) {
+            $product = $this->productRepository->findById($basketsProduct->getProduct()->getId());
+            $product->setAvailability($product->getAvailability() - $basketsProduct->getCount());
+            $this->productRepository->update($product);
+
             $this->orderProductRepository->save((new OrderProduct())
                 ->setOrder(new Order($order))
                 ->setProduct($basketsProduct->getProduct())
@@ -91,7 +99,7 @@ class OrderService
 
     public function getOrder(Request $request): Order
     {
-        $order = $this->orderRepository->findById($request->get('id'));
+        $order = $this->orderRepository->findById($request->fetch('get', 'id'));
         $order->setContactPerson($this->contactPersonRepository->findById($order->getContactPerson()->getId()));
 
         return new Order($order);
@@ -100,13 +108,13 @@ class OrderService
     public function getProducts(Request $request): array
     {
         return $this->orderProductRepository->findAll('order_id = :id', [
-            'id' => $request->get('id')
+            'id' => $request->fetch('get', 'id')
         ]);
     }
 
     public function confirm(Request $request)
     {
-        $order = $this->orderRepository->findById($request->get('id'));
+        $order = $this->orderRepository->findById($request->fetch('get', 'id'));
         $this->orderRepository->update($order->setConfirm(1));
     }
 

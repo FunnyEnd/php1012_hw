@@ -86,6 +86,7 @@
     </div>
     <script>
         $("input[type='number']").blur(function () {
+            var input = $(this);
             var id = $(this).attr('data-bp');
             var count = $('input[type="number"][data-bp="' + id + '"]').val();
             console.log(count);
@@ -98,6 +99,7 @@
                     if (result.success) {
                         $('#basket-total-price').html(result.totalPrice);
                         $('.product-price[data-bp=\"' + id + '\"]').html(result.productTotalPrice);
+                        $(input).val(result.countAtProduct);
                     } else {
                         let error = result.error;
                         $('#modal-body-text').html(error);

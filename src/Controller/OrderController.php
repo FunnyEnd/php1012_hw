@@ -15,28 +15,30 @@ class OrderController extends Controller
     private $orderService;
     private $basketService;
 
-    public function __construct(OrderService $orderService, BasketServiceFactory $basketServiceFactory,
-                                AuthService $authService)
-    {
+    public function __construct(
+        OrderService $orderService,
+        BasketServiceFactory $basketServiceFactory,
+        AuthService $authService
+    ) {
         $this->orderService = $orderService;
         $this->basketService = $basketServiceFactory->getBasketService($authService->isAuth());
     }
 
     public function index()
     {
-        if ($this->basketService->isEmpty()) {
-            return Response::redirect('/');
-        }
-
-        return UserView::render('order');
+        return UserView::render('order', [
+            'email' => '',
+            'firstName' => '',
+            'lastName' => '',
+            'phone' => '',
+            'city' => '',
+            'stock' => '',
+            'comment' => '',
+        ]);
     }
 
     public function store(Request $request)
     {
-        if ($this->basketService->isEmpty()) {
-            return Response::redirect('/');
-        }
-
         $order = $this->orderService->createFromBasket($request);
         $this->basketService->drop();
 

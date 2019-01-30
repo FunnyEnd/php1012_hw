@@ -59,7 +59,8 @@ class BasketController extends Controller
         return json_encode([
             'success' => true,
             'productTotalPrice' => $basketProduct->getPriceAtBills(),
-            'totalPrice' => $this->basketService->getTotalPrice()
+            'totalPrice' => $this->basketService->getTotalPrice(),
+            'countAtProduct' => $basketProduct->getCount()
         ]);
     }
 

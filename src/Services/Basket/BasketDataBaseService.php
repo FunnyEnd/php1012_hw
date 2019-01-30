@@ -8,23 +8,29 @@ use App\Models\Product;
 use App\Models\User;
 use App\Repository\BasketProductRepository;
 use App\Repository\BasketRepository;
+use App\Repository\ProductRepository;
 use App\Services\AuthService;
+use Framework\Dispatcher;
 use Framework\HTTP\Request;
+use Zaine\Log;
 
 class BasketDataBaseService extends AbstractBasketService
 {
     private $basketProductRepository;
     private $authService;
     private $basketRepository;
+    private $productRepository;
 
     public function __construct(
         BasketProductRepository $basketProductRepository,
         AuthService $authService,
-        BasketRepository $basketRepository
+        BasketRepository $basketRepository,
+        ProductRepository $productRepository
     ) {
         $this->basketProductRepository = $basketProductRepository;
         $this->authService = $authService;
         $this->basketRepository = $basketRepository;
+        $this->productRepository = $productRepository;
     }
 
     public function getProducts(): array
@@ -35,7 +41,8 @@ class BasketDataBaseService extends AbstractBasketService
     public function addProduct(Request $request): void
     {
         $userId = $this->authService->getUserId();
-        $product = (new Product())->setId($request->post('id'));
+        $product = $this->productRepository->findById($request->fetch('post', 'id'));
+
         $basket = $this->basketRepository->findByUserId($userId);
 
         if ($basket->isEmpty()) {
@@ -49,14 +56,21 @@ class BasketDataBaseService extends AbstractBasketService
         );
 
         if ($basketProductFromDataBase->isEmpty()) {
-            $this->basketProductRepository->save((new BasketProduct())
-                ->setCount($request->fetch('post', 'count'))
-                ->setProduct($product)
-                ->setBasket($basket)
-            );
+            if ($product->getAvailability() >= intval($request->fetch('post', 'count'))) {
+                $this->basketProductRepository->save((new BasketProduct())
+                    ->setCount($request->fetch('post', 'count'))
+                    ->setProduct($product)
+                    ->setBasket($basket)
+                );
+            }
         } else {
+            $count = intval($request->fetch('post', 'count')) + $basketProductFromDataBase->getCount();
+            if ($product->getAvailability() < $count) {
+                $count = $product->getAvailability();
+            }
+
             $this->basketProductRepository->update((new BasketProduct())
-                ->setCount($request->fetch('post', 'count') + $basketProductFromDataBase->getCount())
+                ->setCount($count)
                 ->setProduct($product)
                 ->setBasket($basket)
             );
@@ -72,14 +86,21 @@ class BasketDataBaseService extends AbstractBasketService
 
     public function updateProduct(Request $request): BasketProduct
     {
-        $basketProduct = $this->basketProductRepository->findById($request->get('id'));
+        $basketProduct = $this->basketProductRepository->findById($request->fetch('get', 'id'));
 
         if ($basketProduct->isEmpty()) {
-            return null;
+            return new BasketProduct();
+        }
+
+        $product = $this->productRepository->findById($basketProduct->getProduct()->getId());
+        $count = $request->fetch('put', 'count');
+
+        if ($product->getAvailability() < $count) {
+            $count = $product->getAvailability();
         }
 
         return new BasketProduct($this->basketProductRepository->update(
-            $basketProduct->setCount($request->put('count'))
+            $basketProduct->setCount($count)
         ));
     }
 

@@ -2,7 +2,6 @@
 
 namespace App\Validators;
 
-use App\View\UserView;
 use Framework\HTTP\Request;
 use Framework\Validator;
 

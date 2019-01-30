@@ -113,12 +113,16 @@ Router::addRout(new Route(
 Router::addRout(new Route(
     Router::GET_METHOD,
     '/order',
-    'App\Controller\OrderController::index'
+    'App\Controller\OrderController::index',
+    [],
+    'App\Validators\OrderValidator::check'
 ));
 Router::addRout(new Route(
     Router::POST_METHOD,
     '/order',
-    'App\Controller\OrderController::store'
+    'App\Controller\OrderController::store',
+    [],
+    'App\Validators\OrderValidator::checkStore'
 ));
 
 Router::addRout(new Route(

@@ -50,11 +50,20 @@ class BasketSessionService extends AbstractBasketService
             $basketProducts = [];
         }
 
+        $product = $this->productRepository->findById($request->fetch('post', 'id'));
+
         if (array_key_exists($request->fetch('post', 'id'), $basketProducts)) {
-            $basketProducts[$request->fetch('post', 'id')] += $request->fetch('post', 'count');
+            $count = intval($request->fetch('post', 'count')) +
+                $basketProducts[$request->fetch('post', 'id')];
         } else {
-            $basketProducts[$request->fetch('post', 'id')] = $request->fetch('post', 'count');
+            $count = intval($request->fetch('post', 'count'));
         }
+
+        if ($product->getAvailability() < $count) {
+            $count = $product->getAvailability();
+        }
+
+        $basketProducts[$request->fetch('post', 'id')] = $count;
 
         $this->session->set('basketProducts', $basketProducts);
     }
@@ -78,17 +87,24 @@ class BasketSessionService extends AbstractBasketService
 
     public function updateProduct(Request $request): BasketProduct
     {
+
         if ($this->session->sessionExist()) {
-            $id = $request->get('id');
-            $count = $request->put('count');
+            $id = $request->fetch('get', 'id');
+            $count = $request->fetch('put', 'count');
             $basketProducts = $this->session->get('basketProducts');
             if (array_key_exists($id, $basketProducts)) {
+                $product = $this->productRepository->findById($id);
+
+                if ($product->getAvailability() < $count) {
+                    $count = $product->getAvailability();
+                }
+
                 $basketProducts[$id] = $count;
                 $this->session->set('basketProducts', $basketProducts);
-                $productRepository = Dispatcher::get(ProductRepository::class);
+
                 return (new BasketProduct())
                         ->setId($id)
-                        ->setProduct($productRepository->findById($id))
+                        ->setProduct($this->productRepository->findById($id))
                         ->setCount($count);
             } else {
                 $logger = Dispatcher::get(Log::class);
