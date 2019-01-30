@@ -12,7 +12,7 @@ class AuthValidator extends Validator
     {
     }
 
-    public function checkAuth(Request $request)
+    public function check(Request $request)
     {
         $error = $request->check([
             ['post', 'email', ':email', 'Email entered incorrectly.'],

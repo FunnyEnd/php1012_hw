@@ -32,7 +32,7 @@ class SearchService
 
     public function getSearchString(Request $request): string
     {
-        $searchString = $request->get('search-string');
+        $searchString = $request->fetch('get', 'search-string');
         $searchString = str_replace('+', ' ', $searchString);
         $searchString = urldecode($searchString);
 
@@ -52,15 +52,12 @@ class SearchService
         return $pagesCount;
     }
 
-    public function getCurrentPage(Request $request, int $pagesCount): int
+    public function getCurrentPage(Request $request): int
     {
         $currentPage = 1;
 
-        if ($request->issetGet('page')) {
-            $currentPage = intval($request->get('page'));
-            if ($currentPage > $pagesCount || $currentPage < 1) {
-                return null;
-            }
+        if ($request->exist('get', 'page')) {
+            return intval($request->fetch('get', 'page'));
         }
 
         return $currentPage;

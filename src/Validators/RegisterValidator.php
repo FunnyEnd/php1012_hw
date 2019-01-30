@@ -12,7 +12,7 @@ class RegisterValidator extends Validator
     {
     }
 
-    public function checkRegister(Request $request)
+    public function check(Request $request)
     {
         $error = $request->check([
             ['post', 'email', ':email', 'Email entered incorrectly.'],

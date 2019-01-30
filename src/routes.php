@@ -18,14 +18,14 @@ Router::addRout(new Route(
     "/product/:d",
     "App\Controller\ProductController::index",
     ['id'],
-    "App\Validators\ProductValidator::checkProduct"
+    "App\Validators\ProductValidator::check"
 ));
 Router::addRout(new Route(
     Router::GET_METHOD,
     "/category/:d",
     "App\Controller\CategoryController::index",
     ['id'],
-    'App\Validators\CategoryValidator::checkCategory'
+    'App\Validators\CategoryValidator::check'
 ));
 
 Router::addRout(new Route(
@@ -33,7 +33,7 @@ Router::addRout(new Route(
     "/category/:d/page/:d",
     "App\Controller\CategoryController::index",
     ['id', 'page'],
-    'App\Validators\CategoryValidator::checkCategory'
+    'App\Validators\CategoryValidator::check'
 ));
 
 Router::addRout(new Route(
@@ -41,7 +41,7 @@ Router::addRout(new Route(
     "/category/:d/page/:d/filter/:any",
     "App\Controller\CategoryController::index",
     ['id', 'page', 'filter'],
-    'App\Validators\CategoryValidator::checkCategory'
+    'App\Validators\CategoryValidator::check'
 ));
 
 Router::addRout(new Route(
@@ -55,7 +55,7 @@ Router::addRout(new Route(
     "/auth",
     "App\Controller\AuthController::auth",
     [],
-    "App\Validators\AuthValidator::checkAuth"
+    "App\Validators\AuthValidator::check"
 ));
 
 Router::addRout(new Route(
@@ -69,7 +69,7 @@ Router::addRout(new Route(
     "/register",
     "App\Controller\RegisterController::register",
     [],
-    "App\Validators\RegisterValidator::checkRegister"
+    "App\Validators\RegisterValidator::check"
 ));
 
 Router::addRout(new Route(
@@ -125,7 +125,8 @@ Router::addRout(new Route(
     Router::GET_METHOD,
     '/search/:any',
     'App\Controller\SearchController::index',
-    ['search-string']
+    ['search-string'],
+    'App\Validators\SearchValidator::check'
 ));
 
 Router::addRout(new Route(

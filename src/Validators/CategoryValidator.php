@@ -17,7 +17,7 @@ class CategoryValidator extends Validator
         $this->categoryRepository = $categoryRepository;
     }
 
-    public function checkCategory(Request $request)
+    public function check(Request $request)
     {
         $error = $request->check([
             ['get', 'id', '/^[0-9]+$/', 'Id entered incorrectly.'],

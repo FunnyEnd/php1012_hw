@@ -21,20 +21,22 @@ class SearchController extends Controller
     {
         $searchString = $this->searchService->getSearchString($request);
         $pagesCount = $this->searchService->getPagesCount($searchString);
-        $currentPage = $this->searchService->getCurrentPage($request, $pagesCount);
-
-        if ($currentPage === null) {
-            Response::redirect('/');
-        }
-
+        $currentPage = $this->searchService->getCurrentPage($request);
         $products = $this->searchService->getProducts($searchString, $currentPage);
 
+        $error = null;
+
+        if (count($products) == 0) {
+            $error = 'Products dont found.';
+        }
+
         return UserView::render('search', [
-                'products' => $products,
-                'searchString' => $searchString,
-                'searchRequest' => $request->get('search-string'),
-                'pagesCount' => $pagesCount,
-                'currentPage' => $currentPage
+            'error' => $error,
+            'products' => $products,
+            'searchString' => $searchString,
+            'searchRequest' => $request->fetch('get', 'search-string'),
+            'pagesCount' => $pagesCount,
+            'currentPage' => $currentPage
         ]);
     }
 }

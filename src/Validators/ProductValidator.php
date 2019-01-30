@@ -17,7 +17,7 @@ class ProductValidator extends Validator
         $this->productRepository = $productRepository;
     }
 
-    public function checkProduct(Request $request)
+    public function check(Request $request)
     {
         $error = $request->check([
             ['get', 'id', '/^[0-9]+$/', 'Id entered incorrectly.'],
