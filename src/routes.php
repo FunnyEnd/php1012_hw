@@ -84,22 +84,29 @@ Router::addRout(new Route(
     '/basket',
     'App\Controller\BasketController::index'
 ));
+
 Router::addRout(new Route(
     Router::POST_METHOD,
     '/basket',
-    'App\Controller\BasketController::store'
+    'App\Controller\BasketController::store',
+    [],
+    'App\Validators\BasketValidator::checkStore'
 ));
+
 Router::addRout(new Route(
     Router::PUT_METHOD,
     '/basket/:d',
     'App\Controller\BasketController::update',
-    ['id']
+    ['id'],
+    'App\Validators\BasketValidator::checkUpdate'
 ));
+
 Router::addRout(new Route(
     Router::DELETE_METHOD,
     '/basket/:d',
     'App\Controller\BasketController::delete',
-    ['id']
+    ['id'],
+    'App\Validators\BasketValidator::checkDelete'
 ));
 
 // order

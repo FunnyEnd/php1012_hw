@@ -10,8 +10,8 @@
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-      <div class="modal-body">
-        <p>Product successfully added to cart!</p>
+      <div class="modal-body" id="modal-body-text">
+        <p></p>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-success" data-dismiss="modal">Continue shopping</button>
@@ -71,12 +71,12 @@
     </div>
     <div class="tab-pane fade" id="characteristic">
       <div class="product-detailed-characteristic w-50 ml-auto mr-auto mt-3">
-          <?php foreach ($characteristics as $c): ?>
-            <div class="row ch-row">
-              <div class="col-6 ch-name"><?= $c->getCharacteristic()->getTitle();?></div>
-              <div class="col-6 ch-data"><?= $c->getValue();?></div>
-            </div>
-          <?php endforeach; ?>
+        <?php foreach ($characteristics as $c) :?>
+          <div class="row ch-row">
+            <div class="col-6 ch-name"><?= $c->getCharacteristic()->getTitle();?></div>
+            <div class="col-6 ch-data"><?= $c->getValue();?></div>
+          </div>
+        <?php endforeach; ?>
       </div>
     </div>
   </div>
@@ -93,10 +93,14 @@
             data: formData,
             dataType: "json",
             success: function (result) {
-                console.log(result);
                 if (result.success) {
+                    $('#modal-body-text').html('Product successfully added to cart!');
                     $('#basket-modal').modal('show');
                     $("#countProductsAtUserBasket").html(result.countProductsAtUserBasket);
+                } else {
+                    let error = result.error;
+                    $('#modal-body-text').html(error);
+                    $('#basket-modal').modal('show');
                 }
             },
             error: function (result) {

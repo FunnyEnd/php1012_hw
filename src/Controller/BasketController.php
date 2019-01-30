@@ -24,9 +24,15 @@ class BasketController extends Controller
         $products = $this->basketService->getProducts();
         $totalPrice = $this->basketService->getTotalPrice();
 
+        $error = null;
+        if (count($products) == 0) {
+            $error = 'Basket is empty';
+        }
+
         return UserView::render('basket', [
-                'basketProducts' => $products,
-                'totalPrice' => $totalPrice
+            'error' => $error,
+            'basketProducts' => $products,
+            'totalPrice' => $totalPrice
         ]);
     }
 
@@ -36,50 +42,37 @@ class BasketController extends Controller
         $countProductsAtUserBasket = $this->basketService->getCountProducts();
 
         return json_encode([
-                'success' => true,
-                'countProductsAtUserBasket' => $countProductsAtUserBasket
+            'success' => true,
+            'countProductsAtUserBasket' => $countProductsAtUserBasket
         ]);
     }
 
-    // todo check id request param
     public function update(Request $request)
     {
-        $success = true;
-        if (intval($request->put('count')) <= 0) {
-            $success = false;
-        }
-
         $basketProduct = $this->basketService->updateProduct($request);
         if ($basketProduct->isEmpty()) {
-            $success = false;
+            return json_encode([
+                'success' => false
+            ]);
         }
 
-        if ($success) {
-            return json_encode([
-                    'success' => $success,
-                    'productTotalPrice' => $basketProduct->getPriceAtBills(),
-                    'totalPrice' => $this->basketService->getTotalPrice()
-            ]);
-        } else {
-            return json_encode([
-                    'success' => $success
-            ]);
-        }
+        return json_encode([
+            'success' => true,
+            'productTotalPrice' => $basketProduct->getPriceAtBills(),
+            'totalPrice' => $this->basketService->getTotalPrice()
+        ]);
     }
 
-    // todo check id request param
     public function delete(Request $request)
     {
         $this->basketService->deleteProduct($request);
-
         $totalPrice = $this->basketService->getTotalPrice();
         $countProductsAtUserBasket = $this->basketService->getCountProducts();
 
         return json_encode([
-                'success' => true,
-                'totalPrice' => $totalPrice,
-                'countProductsAtUserBasket' => $countProductsAtUserBasket
+            'success' => true,
+            'totalPrice' => $totalPrice,
+            'countProductsAtUserBasket' => $countProductsAtUserBasket
         ]);
     }
-
 }

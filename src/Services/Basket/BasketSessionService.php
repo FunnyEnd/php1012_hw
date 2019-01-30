@@ -46,13 +46,15 @@ class BasketSessionService extends AbstractBasketService
             $basketProducts = null;
         }
 
-        if (!is_array($basketProducts))
+        if (!is_array($basketProducts)) {
             $basketProducts = [];
+        }
 
-        if (array_key_exists($request->post('id'), $basketProducts))
-            $basketProducts[$request->post('id')] += $request->post('count');
-        else
-            $basketProducts[$request->post('id')] = $request->post('count');
+        if (array_key_exists($request->fetch('post', 'id'), $basketProducts)) {
+            $basketProducts[$request->fetch('post', 'id')] += $request->fetch('post', 'count');
+        } else {
+            $basketProducts[$request->fetch('post', 'id')] = $request->fetch('post', 'count');
+        }
 
         $this->session->set('basketProducts', $basketProducts);
     }

@@ -17,9 +17,11 @@ class BasketDataBaseService extends AbstractBasketService
     private $authService;
     private $basketRepository;
 
-    public function __construct(BasketProductRepository $basketProductRepository, AuthService $authService,
-                                BasketRepository $basketRepository)
-    {
+    public function __construct(
+        BasketProductRepository $basketProductRepository,
+        AuthService $authService,
+        BasketRepository $basketRepository
+    ) {
         $this->basketProductRepository = $basketProductRepository;
         $this->authService = $authService;
         $this->basketRepository = $basketRepository;
@@ -36,7 +38,7 @@ class BasketDataBaseService extends AbstractBasketService
         $product = (new Product())->setId($request->post('id'));
         $basket = $this->basketRepository->findByUserId($userId);
 
-        if ($basket === null) {
+        if ($basket->isEmpty()) {
             $basket = $this->basketRepository->save((new Basket())
                 ->setUser((new User())->setId($userId)));
         }
@@ -48,13 +50,13 @@ class BasketDataBaseService extends AbstractBasketService
 
         if ($basketProductFromDataBase->isEmpty()) {
             $this->basketProductRepository->save((new BasketProduct())
-                ->setCount($request->post('count'))
+                ->setCount($request->fetch('post', 'count'))
                 ->setProduct($product)
                 ->setBasket($basket)
             );
         } else {
             $this->basketProductRepository->update((new BasketProduct())
-                ->setCount($request->post('count') + $basketProductFromDataBase->getCount())
+                ->setCount($request->fetch('post', 'count') + $basketProductFromDataBase->getCount())
                 ->setProduct($product)
                 ->setBasket($basket)
             );
