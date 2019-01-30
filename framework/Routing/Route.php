@@ -11,19 +11,25 @@ use UnexpectedValueException;
 
 class Route
 {
-
     private $pattern;
     private $controller;
     private $method;
     private $logger;
     private $controllerParam;
+    private $validator;
 
-    public function __construct(string $method, string $pattern, string $controller, array $controllerParam = array())
-    {
+    public function __construct(
+        string $method,
+        string $pattern,
+        string $controller,
+        array $controllerParam = [],
+        $validator = null
+    ) {
         $this->method = $method;
         $this->pattern = $pattern;
         $this->controller = $controller;
         $this->controllerParam = $controllerParam;
+        $this->validator = $validator;
         $this->logger = new \Zaine\Log(get_class($this));
     }
 
@@ -80,56 +86,37 @@ class Route
 
     public function executeController(Request $request): string
     {
-        try {
-            $controllerInfo = $this->getControllerData();
-            $class = new ReflectionClass($controllerInfo['class']);
+        // set get data to request object
+        $request->setGetData($this->getRequestParam());
 
-            $constructParams = [];
-            $methodParam = [];
+        // check validator
+        if ($this->validator != null) {
+            $validatorData = $this->getValidatorData();
+            $result = $this->callClassMethod($validatorData['class'], $validatorData['method']);
 
-            // get __construct method params
-            if ($class->hasMethod('__construct')) {
-                $params = $class->getConstructor()->getParameters();
-                foreach ($params as $p) {
-                    array_push($constructParams, Dispatcher::get($p->getClass()->name));
-                }
-            } else {
-                throw new UnexpectedValueException(
-                    "Oh, method `__construct` don`t exit at {$controllerInfo['class']}.");
+            if ($result != '') {
+                return $result;
             }
-
-            // get call method method params
-            if ($class->hasMethod($controllerInfo['method'])) {
-                $params = $class->getMethod($controllerInfo['method'])->getParameters();
-                foreach ($params as $p) {
-                    array_push($methodParam, Dispatcher::get($p->getClass()->name));
-                }
-            } else {
-                throw new UnexpectedValueException(
-                    "Oh, method `{$controllerInfo['method']}` don`t exit at {$controllerInfo['class']}.");
-            }
-
-            // set get data to request object
-            $request->setGetData($this->getRequestParam());
-
-            // create controller instance
-            $controller = $class->newInstanceArgs($constructParams);
-
-            // returned result of the method invoked by the controller
-            return $controller->callMethod($controllerInfo['method'], $methodParam);
-
-        } catch (ReflectionException $e) {
-            $this->logger->error($e->getMessage());
-        } catch (UnexpectedValueException $e) {
-            $this->logger->error($e->getMessage());
         }
 
-        return '';
+        $controllerInfo = $this->getControllerData();
+
+        return $this->callClassMethod($controllerInfo['class'], $controllerInfo['method']);
     }
 
     private function getControllerData(): array
     {
         $data = explode('::', $this->controller);
+
+        return array(
+            'class' => $data[0],
+            'method' => $data[1]
+        );
+    }
+
+    private function getValidatorData(): array
+    {
+        $data = explode('::', $this->validator);
 
         return array(
             'class' => $data[0],
@@ -165,5 +152,46 @@ class Route
         }
 
         return $result;
+    }
+
+    private function callClassMethod($class, $method)
+    {
+        try {
+            $refClass = new ReflectionClass($class);
+            $validatorConstructParams = [];
+
+            // get __construct method params
+            if ($refClass->hasMethod('__construct')) {
+                $params = $refClass->getConstructor()->getParameters();
+                foreach ($params as $p) {
+                    array_push($validatorConstructParams, Dispatcher::get($p->getClass()->name));
+                }
+            } else {
+                throw new UnexpectedValueException("Oh, method `__construct` don`t exit at " .
+                    "{$class}.");
+            }
+
+            $validatorMethodParam = [];
+            // get call method method params
+            if ($refClass->hasMethod($method)) {
+                $params = $refClass->getMethod($method)->getParameters();
+                foreach ($params as $p) {
+                    array_push($validatorMethodParam, Dispatcher::get($p->getClass()->name));
+                }
+            } else {
+                throw new UnexpectedValueException("Oh, method `{$method}` don`t exit at " .
+                    "{$class}.");
+            }
+
+            $instance = $refClass->newInstanceArgs($validatorConstructParams);
+
+            return $instance->callMethod($method, $validatorMethodParam);
+        } catch (ReflectionException $e) {
+            $this->logger->error($e->getMessage());
+        } catch (UnexpectedValueException $e) {
+            $this->logger->error($e->getMessage());
+        }
+
+        return '';
     }
 }

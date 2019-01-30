@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Validators\AuthValidator;
 use Framework\Routing\Route;
 use Framework\Routing\Router;
 
@@ -45,7 +46,9 @@ Router::addRout(new Route(
 Router::addRout(new Route(
     Router::POST_METHOD,
     "/auth",
-    "App\Controller\AuthController::auth"
+    "App\Controller\AuthController::auth",
+    [],
+    "App\Validators\AuthValidator::checkAuth"
 ));
 Router::addRout(new Route(
     Router::GET_METHOD,
