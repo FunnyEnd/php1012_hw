@@ -40,7 +40,7 @@ class OrderValidator extends Validator
             ['post', 'city', '/^[a-z\s]{5,30}$/i', 'City entered incorrectly.'],
             ['post', 'stock', '/^[a-z0-9\s]{5,30}$/i', 'Stock entered incorrectly.'],
             ['post', 'phone', '/^[0-9]{10}$/', 'Phone entered incorrectly.'],
-            ['post', 'comment', '/^[a-z0-9\s]*$/i', 'Comment entered incorrectly.'],
+            ['post', 'comment', '/^[a-z0-9-\s]*$/i', 'Comment entered incorrectly.'],
         ]);
 
         if ($error != '') {

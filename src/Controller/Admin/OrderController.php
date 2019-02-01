@@ -27,8 +27,8 @@ class OrderController extends BaseController
         }
 
         $currentPage = 1;
-        if ($request->issetGet('page')) {
-            $currentPage = $request->get('page');
+        if ($request->exist('get', 'page')) {
+            $currentPage = $request->fetch('get', 'page');
         }
 
         $countPages = $this->orderService->getCountPages();

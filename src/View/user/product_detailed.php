@@ -43,15 +43,27 @@
       <p><?= $product->getPriceAtBills(); ?> UAH</p>
     </div>
     <div class="bd-highlight">
-      <form class="form-group" action="/" id="add-product-to-basket-form">
-        <div class="product-detailed-count">
-          <input class="form-control w-50 ml-auto mr-auto" type="number" name="count" value="1">
-          <input type="hidden" name="id" value="<?= $product->getId(); ?>">
-        </div>
-        <div class="product-detailed-buy mt-3">
-          <button type="button" id="buy_button" class="btn btn-success w-50 ml-auto mr-auto">Buy</button>
-        </div>
-      </form>
+        <?php if ($product->getAvailability() > 0) :?>
+        <form class="form-group" action="/" id="add-product-to-basket-form">
+          <div class="product-detailed-count">
+            <input class="form-control w-50 ml-auto mr-auto" type="number" name="count" value="1">
+            <input type="hidden" name="id" value="<?= $product->getId(); ?>">
+          </div>
+          <div class="product-detailed-buy mt-3">
+            <button type="button" id="buy_button" class="btn btn-success w-50 ml-auto mr-auto">Buy</button>
+          </div>
+        </form>
+        <?php else :?>
+          <form class="form-group" action="/" id="add-product-to-basket-form">
+            <div class="product-detailed-count">
+              <input class="form-control w-50 ml-auto mr-auto" type="number" name="count" value="0" disabled>
+              <input type="hidden" name="id" value="<?= $product->getId(); ?>">
+            </div>
+            <div class="product-detailed-buy mt-3">
+              <button type="button" id="buy_button" class="btn btn-danger w-50 ml-auto mr-auto" disabled>Buy</button>
+            </div>
+          </form>
+        <?php endif; ?>
     </div>
 
   </div>

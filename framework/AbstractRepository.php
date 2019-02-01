@@ -45,6 +45,16 @@ abstract class AbstractRepository
     {
         $query = static::SELECT_ALL_SQL;
         $query .= (!empty($where)) ? " WHERE $where" : '';
+        $query .= (array_key_exists('orderField', $param)) ? ' ORDER BY ' . $param['orderField'] : '';
+        if (array_key_exists('orderField', $param) && array_key_exists('orderBy', $param)) {
+            if (strtoupper($param['orderBy']) == 'DESC') {
+                $query .= ' DESC';
+            } else {
+                $query .= ' ASC';
+            }
+            unset($param['orderBy']);
+            unset($param['orderField']);
+        }
         $query .= (array_key_exists('from', $param)) ? ' LIMIT :from' : '';
         $query .= (array_key_exists('count', $param)) ? ', :count' : '';
 
@@ -61,7 +71,7 @@ abstract class AbstractRepository
     public function findById(int $id): AbstractModel
     {
         return $this->findOne('id = :id', [
-                'id' => $id
+            'id' => $id
         ]);
     }
 

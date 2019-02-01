@@ -56,23 +56,27 @@ class BasketDataBaseService extends AbstractBasketService
         );
 
         if ($basketProductFromDataBase->isEmpty()) {
-            if ($product->getAvailability() >= intval($request->fetch('post', 'count'))) {
-                $this->basketProductRepository->save((new BasketProduct())
-                    ->setCount($request->fetch('post', 'count'))
+            $count = intval($request->fetch('post', 'count'));
+            if ($product->getAvailability() < $count) {
+                $count = $product->getAvailability();
+            }
+
+            $this->basketProductRepository->save(
+                (new BasketProduct())
+                    ->setCount($count)
                     ->setProduct($product)
                     ->setBasket($basket)
-                );
-            }
+            );
         } else {
             $count = intval($request->fetch('post', 'count')) + $basketProductFromDataBase->getCount();
             if ($product->getAvailability() < $count) {
                 $count = $product->getAvailability();
             }
 
-            $this->basketProductRepository->update((new BasketProduct())
-                ->setCount($count)
-                ->setProduct($product)
-                ->setBasket($basket)
+            $this->basketProductRepository->update(
+                (new BasketProduct())->setCount($count)
+                    ->setProduct($product)
+                    ->setBasket($basket)
             );
         }
     }

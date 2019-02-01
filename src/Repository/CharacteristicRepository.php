@@ -13,25 +13,29 @@ class CharacteristicRepository extends AbstractRepository
     protected const MODEL_CLASS = Characteristic::class;
 
     protected const SELECT_ALL_SQL = /** @lang MySQL */
-            'SELECT id, title, create_at, update_at FROM characteristics';
+        'SELECT id, title, create_at, update_at FROM characteristics';
+
+    protected const SELECT_COUNT_SQL = /** @lang MySQL */
+        'SELECT count(id) as count FROM characteristics';
+
 
     protected const INSERT_SQL = /** @lang MySQL */
-            'INSERT INTO characteristics(title, create_at, update_at) VALUE (:title, :create_at, :update_at)';
+        'INSERT INTO characteristics(title, create_at, update_at) VALUE (:title, :create_at, :update_at)';
 
     protected const SELECT_CHARACTERISTICS_BY_CATEGORY_ID = /** @lang MySQL */
-            'select products_characteristics.characteristic_id as \'id\',  characteristics.title, characteristics.create_at, characteristics.update_at ' .
-            'FROM products_characteristics ' .
-            'left join characteristics on characteristics.id = products_characteristics.characteristic_id ' .
-            'where products_characteristics.product_id in ( ' .
-            'select id ' .
-            'from products ' .
-            'where products.category_id = :category_id) ' .
-            'group by products_characteristics.characteristic_id, characteristics.title';
+        'select products_characteristics.characteristic_id as \'id\',  characteristics.title, characteristics.create_at, characteristics.update_at ' .
+        'FROM products_characteristics ' .
+        'left join characteristics on characteristics.id = products_characteristics.characteristic_id ' .
+        'where products_characteristics.product_id in ( ' .
+        'select id ' .
+        'from products ' .
+        'where products.category_id = :category_id) ' .
+        'group by products_characteristics.characteristic_id, characteristics.title';
 
     public function findByCategoryId(int $id): array
     {
         $result = $this->db->getAll(self::SELECT_CHARACTERISTICS_BY_CATEGORY_ID, [
-                'category_id' => $id
+            'category_id' => $id
         ]);
 
         $res = [];
@@ -47,9 +51,9 @@ class CharacteristicRepository extends AbstractRepository
         try {
             $currentDateTime = new DateTime();
             $this->db->execute(self::INSERT_SQL, [
-                    'title' => $characteristic->getTitle(),
-                    'create_at' => $currentDateTime->format(Constants::DATETIME_FORMAT),
-                    'update_at' => $currentDateTime->format(Constants::DATETIME_FORMAT),
+                'title' => $characteristic->getTitle(),
+                'create_at' => $currentDateTime->format(Constants::DATETIME_FORMAT),
+                'update_at' => $currentDateTime->format(Constants::DATETIME_FORMAT),
             ]);
 
             $characteristic->setCreateAt($currentDateTime);

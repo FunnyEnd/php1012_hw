@@ -205,3 +205,9 @@ Router::addRout(new Route(
     'App\Controller\Admin\CategoryController::delete',
     ['id']
 ));
+
+Router::addRout(new Route(
+    Router::GET_METHOD,
+    '/admin/characteristic',
+    'App\Controller\Admin\CharacteristicController::index'
+));
