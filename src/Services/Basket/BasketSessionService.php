@@ -4,10 +4,8 @@ namespace App\Services\Basket;
 
 use App\Models\BasketProduct;
 use App\Repository\ProductRepository;
-use Framework\Dispatcher;
 use Framework\HTTP\Request;
 use Framework\Session;
-use Zaine\Log;
 
 class BasketSessionService extends AbstractBasketService
 {
@@ -28,9 +26,9 @@ class BasketSessionService extends AbstractBasketService
             // really, in this scope, $id this is product id
             foreach ($basketProducts as $id => $count) {
                 $products[] = (new BasketProduct())
-                        ->setProduct($this->productRepository->findById($id))
-                        ->setCount($count)
-                        ->setId($id);
+                    ->setProduct($this->productRepository->findById($id))
+                    ->setCount($count)
+                    ->setId($id);
             }
         }
 
@@ -87,32 +85,31 @@ class BasketSessionService extends AbstractBasketService
 
     public function updateProduct(Request $request): BasketProduct
     {
-
-        if ($this->session->sessionExist()) {
-            $id = $request->fetch('get', 'id');
-            $count = $request->fetch('put', 'count');
-            $basketProducts = $this->session->get('basketProducts');
-            if (array_key_exists($id, $basketProducts)) {
-                $product = $this->productRepository->findById($id);
-
-                if ($product->getAvailability() < $count) {
-                    $count = $product->getAvailability();
-                }
-
-                $basketProducts[$id] = $count;
-                $this->session->set('basketProducts', $basketProducts);
-
-                return (new BasketProduct())
-                        ->setId($id)
-                        ->setProduct($this->productRepository->findById($id))
-                        ->setCount($count);
-            } else {
-                $logger = Dispatcher::get(Log::class);
-                $logger->error("BasketProductNotExistExtension at updateProductCountAtBasket method.");
-            }
+        if (!$this->session->sessionExist()) {
+            return new BasketProduct();
         }
 
-        return null;
+        $id = $request->fetch('get', 'id');
+        $basketProducts = $this->session->get('basketProducts');
+
+        if (!array_key_exists($id, $basketProducts)) {
+            return new BasketProduct();
+        }
+
+        $product = $this->productRepository->findById($id);
+        $count = $request->fetch('put', 'count');
+
+        if ($product->getAvailability() < $count) {
+            $count = $product->getAvailability();
+        }
+
+        $basketProducts[$id] = $count;
+        $this->session->set('basketProducts', $basketProducts);
+
+        return (new BasketProduct())
+            ->setId($id)
+            ->setProduct($this->productRepository->findById($id))
+            ->setCount($count);
     }
 
     public function deleteProduct(Request $request): void
