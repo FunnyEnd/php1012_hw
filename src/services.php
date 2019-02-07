@@ -62,3 +62,7 @@
 \Framework\Dispatcher::addClass(\App\Services\Admin\CategoryService::class, [
     \Framework\Dispatcher::get(\App\Repository\CategoryRepository::class)
 ]);
+
+\Framework\Dispatcher::addClass(\App\Services\Admin\CharacteristicService::class,[
+    \Framework\Dispatcher::get(\App\Repository\CharacteristicRepository::class)
+]);

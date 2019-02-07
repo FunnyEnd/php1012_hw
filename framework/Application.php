@@ -78,4 +78,17 @@ class Application
             $log->error($res);
         });
     }
+
+    public static function dump($variable, $mess = '')
+    {
+        $logger = Dispatcher::get(Log::class);
+        $logger->emergency($mess . " [" . $variable . ']');
+    }
+
+    public static function dumpModel($modelObject, $mess = '')
+    {
+        $logger = Dispatcher::get(Log::class);
+        $prop = json_encode($modelObject->getProperties());
+        $logger->emergency($mess . " [" . $prop . ']');
+    }
 }

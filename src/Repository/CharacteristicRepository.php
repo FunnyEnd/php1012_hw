@@ -32,6 +32,12 @@ class CharacteristicRepository extends AbstractRepository
         'where products.category_id = :category_id) ' .
         'group by products_characteristics.characteristic_id, characteristics.title';
 
+    private const DELETE_BY_ID_SQL = /** @lang text */
+        "delete from characteristics where id = :id";
+
+    protected const UPDATE_BY_ID_SQL = /** @lang text */
+        "update characteristics set title = :title, update_at = :update_at where id = :id;";
+
     public function findByCategoryId(int $id): array
     {
         $result = $this->db->getAll(self::SELECT_CHARACTERISTICS_BY_CATEGORY_ID, [
@@ -66,5 +72,31 @@ class CharacteristicRepository extends AbstractRepository
         }
 
         return new Characteristic();
+    }
+
+    public function update(Characteristic $char): Characteristic
+    {
+        try {
+            $currentDateTime = new DateTime();
+            $this->db->execute(self::UPDATE_BY_ID_SQL, [
+                "title" => $char->getTitle(),
+                "update_at" => $currentDateTime->format(Constants::DATETIME_FORMAT),
+                "id" => $char->getId()
+            ]);
+            $char->setUpdateAt($currentDateTime);
+            return $char;
+
+        } catch (Exception $e) {
+            $this->logException($e);
+        }
+
+        return new Characteristic();
+    }
+
+    public function delete(Characteristic $char)
+    {
+        $this->db->execute(self::DELETE_BY_ID_SQL, [
+            "id" => $char->getId()
+        ]);
     }
 }

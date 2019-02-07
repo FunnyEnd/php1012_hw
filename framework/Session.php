@@ -73,6 +73,13 @@ class Session
         }
     }
 
+    public function unset(string $key)
+    {
+        if ($this->sessionExist() && $this->keyExist($key)) {
+            unset($_SESSION[$key]);
+        }
+    }
+
     public function getName(): string
     {
         if ($this->sessionExist()) {

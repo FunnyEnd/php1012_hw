@@ -7,8 +7,8 @@
     <php>
         <env name="db_host" value="localhost" />
         <env name="db_name" value="kornienko_db_test" />
-        <env name="db_user" value="kornienko" />
-        <env name="db_password" value="kornienko" />
+        <env name="db_user" value="root" />
+        <env name="db_password" value="" />
         <env name="db_charset" value="utf8" />
     </php>
 </phpunit>

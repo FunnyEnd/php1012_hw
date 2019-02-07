@@ -211,3 +211,32 @@ Router::addRout(new Route(
     '/admin/characteristic',
     'App\Controller\Admin\CharacteristicController::index'
 ));
+
+
+Router::addRout(new Route(
+    Router::GET_METHOD,
+    '/admin/characteristic/page/:d',
+    'App\Controller\Admin\CharacteristicController::index',
+    ['page']
+));
+
+Router::addRout(new Route(
+    Router::POST_METHOD,
+    '/admin/characteristic',
+    'App\Controller\Admin\CharacteristicController::store'
+));
+
+Router::addRout(new Route(
+    Router::PUT_METHOD,
+    '/admin/characteristic/:d',
+    'App\Controller\Admin\CharacteristicController::update',
+    ['id']
+));
+
+Router::addRout(new Route(
+    Router::DELETE_METHOD,
+    '/admin/characteristic/:d',
+    'App\Controller\Admin\CharacteristicController::delete',
+    ['id'],
+    "App\Validators\Admin\CharacteristicValidator::checkDelete"
+));

@@ -13,10 +13,12 @@ class Request
 
     private function __construct()
     {
-        if ($_SERVER['REQUEST_METHOD'] == 'PUT') {
+        $method = $this->getCurrentMethod();
+
+        if ($method == 'PUT') {
             parse_str(file_get_contents("php://input"), $post_vars);
             $this->putData = $post_vars;
-        } elseif ($_SERVER['REQUEST_METHOD'] == 'POST') {
+        } elseif ($method == 'POST') {
             $this->postData = $_POST;
         }
     }
@@ -45,10 +47,11 @@ class Request
         }
     }
 
-    public function fetch(string $method, string $field){
+    public function fetch(string $method, string $field)
+    {
         $method = strtoupper($method);
 
-        if(!$this->exist($method, $field)){
+        if (!$this->exist($method, $field)) {
             throw new InvalidArgumentException("Invalid {$method} argument `{$field}`.");
         }
 
@@ -146,6 +149,9 @@ class Request
                 $dataRow[2] = '/^\w{4,32}$/';
             }
 
+            if ($dataRow[2] == ':id') {
+                $dataRow[2] = '/^[1-9][0-9]*$/';
+            }
 
             if (!preg_match($dataRow[2], $this->fetch($dataRow[0], $dataRow[1]))) {
                 return $dataRow[3];
@@ -153,5 +159,15 @@ class Request
         }
 
         return '';
+    }
+
+    public function getCurrentMethod(){
+        $method = $_SERVER['REQUEST_METHOD'];
+
+        if (isset($_POST['__method'])) {
+            $method = strtoupper($_POST['__method']);
+        }
+
+        return $method;
     }
 }
