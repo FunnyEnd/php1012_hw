@@ -42,20 +42,25 @@ class CategoryService
     public function store(Request $request)
     {
         $this->categoryRepository->save((new Category())
-            ->setTitle($request->post('title'))
+            ->setTitle($request->fetch('post', 'title'))
         );
     }
 
     public function update(Request $request): Category
     {
-        $category = $this->categoryRepository->findById($request->get('id'));
+        $category = $this->categoryRepository->findById($request->fetch('get', 'id'));
+
+        if ($category->isEmpty()) {
+            return new Category();
+        }
+
         $category->setTitle($request->post('title'));
         return $this->categoryRepository->update(new Category($category));
     }
 
     public function delete(Request $request)
     {
-        $category = $this->categoryRepository->findById($request->get('id'));
+        $category = $this->categoryRepository->findById($request->fetch('get', 'id'));
         $this->categoryRepository->delete(new Category($category));
     }
 }

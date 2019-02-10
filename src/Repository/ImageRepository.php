@@ -4,36 +4,44 @@ namespace App\Repository;
 
 use App\Models\Image;
 use DateTime;
-use Framework\AbstractModel;
+use Exception;
 use Framework\AbstractRepository;
 use Framework\Constants;
 
 class ImageRepository extends AbstractRepository
 {
-    private const SELECT_BY_ID = /** @lang text */
-            "select * from images where id = ?";
-    private const SELECT_ALL = /** @lang text */
-            "select * from images";
+    protected const SELECT_ALL_SQL = /** @lang text */
+        "select * from images";
 
-//    public function findById(int $id): AbstractModel
-//    {
-//        $result = $this->db->getOne(self::SELECT_BY_ID, [$id]);
-//
-//        if (empty($result)) {
-//            return new Image();
-//        }
-//
-//        return $this->mapFromArray($result);
-//    }
+    protected const  SELECT_COUNT_SQL = /** @lang text */
+        "select count(*) as count from images";
 
+    private const INSERT_SQL = /** @lang text */
+        'insert into images (path, alt, create_at, update_at) values (:path, :alt, :create_at, :update_at)';
 
-
-    protected function mapFromArray(array $row): Model
+    public function save(Image $image): Image
     {
-        $image = new Image();
-        $row['create_at'] = DateTime::createFromFormat(Constants::DATETIME_FORMAT, $row['create_at']);
-        $row['update_at'] = DateTime::createFromFormat(Constants::DATETIME_FORMAT, $row['update_at']);
-        $image->fromArray($row);
-        return $image;
+        try {
+            $currentDateTime = new DateTime();
+            $this->db->execute(self::INSERT_SQL, [
+                'alt' => $image->getAlt(),
+                'path' => $image->getPath(),
+                'create_at' => $currentDateTime->format(Constants::DATETIME_FORMAT),
+                'update_at' => $currentDateTime->format(Constants::DATETIME_FORMAT),
+            ]);
+
+            $image->setCreateAt($currentDateTime);
+            $image->setUpdateAt($currentDateTime);
+            $image->setId($this->db->insertId());
+
+            return $image;
+
+        } catch (Exception $e) {
+            $this->logException($e);
+        }
+
+        return new Image();
     }
+
+
 }

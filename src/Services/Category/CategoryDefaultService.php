@@ -19,12 +19,17 @@ class CategoryDefaultService extends AbstractCategoryService
     {
         $countAtPage = Config::get('count_at_page');
         $from = ($currentPage - 1) * $countAtPage;
-        return $this->productRepository->findByCategoryIdWithLimit($request->get('id'), $from, $countAtPage);
+
+        return $this->productRepository->findByCategoryIdWithLimit(
+            $request->fetch('get', 'id'),
+            $from,
+            $countAtPage
+        );
     }
 
     public function getPagesCount(Request $request): int
     {
-        $count = $this->productRepository->findCountByCategoryId($request->get('id'));
+        $count = $this->productRepository->findCountByCategoryId($request->fetch('get', 'id'));
         $countAtPage = Config::get('count_at_page');
 
         if ($count < $countAtPage) {

@@ -57,6 +57,12 @@ class CategoryRepository extends AbstractRepository
     public function update(Category $category)
     {
         try {
+            $categoryFromDataBase = $this->findById($category->getId());
+
+            if($categoryFromDataBase->isEmpty()){
+                return new Category();
+            }
+
             $currentDateTime = new DateTime();
             $this->db->execute(self::UPDATE_BY_ID_SQL, [
                 "title" => $category->getTitle(),

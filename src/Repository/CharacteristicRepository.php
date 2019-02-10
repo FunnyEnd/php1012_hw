@@ -26,7 +26,7 @@ class CharacteristicRepository extends AbstractRepository
         'select products_characteristics.characteristic_id as \'id\',  characteristics.title, characteristics.create_at, characteristics.update_at ' .
         'FROM products_characteristics ' .
         'left join characteristics on characteristics.id = products_characteristics.characteristic_id ' .
-        'where products_characteristics.product_id in ( ' .
+        'where products_characteristics.produc  t_id in ( ' .
         'select id ' .
         'from products ' .
         'where products.category_id = :category_id) ' .
